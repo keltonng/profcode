@@ -42,6 +42,7 @@
     .app-title{font-size:22px;font-weight:900;letter-spacing:.2px;}
     .header-actions{display:flex;align-items:center;gap:12px;color:var(--text);}
     .header-actions .icon-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);width:32px;height:32px;border-radius:10px;display:grid;place-items:center;cursor:pointer;}
+    .header-actions .icon-btn:hover{border-color:rgba(255,255,255,.22);}
 
     /* FILTROS / TABS */
     .filters{display:flex;gap:8px;margin:14px 16px 8px;flex-wrap:wrap;}
@@ -115,8 +116,47 @@
     .profile-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35);}
 
     /* BOTÕES DE INÍCIO */
-    .home-fab{position:fixed;right:16px;bottom:90px;background:var(--red);color:#fff;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;z-index:997;display:none;box-shadow:0 20px 40px rgba(0,0,0,.45);}    
+    .home-fab{position:fixed;right:16px;bottom:90px;background:var(--red);color:#fff;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;z-index:997;display:none;box-shadow:0 20px 40px rgba(0,0,0,.45);}
     .home-fab span{display:flex;align-items:center;gap:6px;letter-spacing:.1px;}
+
+    /* BUSCA */
+    .search-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:none;align-items:flex-start;justify-content:center;z-index:1000;padding:30px 18px 18px;}
+    .search-box{width:100%;max-width:520px;background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;box-shadow:0 18px 36px rgba(0,0,0,.55);}
+    .search-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+    .search-pill{background:rgba(255,255,255,.08);color:var(--text);padding:8px 12px;border-radius:999px;font-weight:800;letter-spacing:.2px;border:1px solid rgba(255,255,255,.12);display:inline-flex;align-items:center;gap:8px;}
+    .search-close{background:transparent;color:var(--text);border:none;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;opacity:.85;}
+    .search-input{width:100%;padding:14px 14px 14px 44px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;color:var(--text);margin-bottom:12px;position:relative;}
+    .search-input::placeholder{color:var(--muted);}    
+    .search-input-wrap{position:relative;}
+    .search-input-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);}
+    .search-tags{display:flex;flex-wrap:wrap;gap:10px;}
+    .search-chip{padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);cursor:pointer;font-weight:700;color:var(--text);display:inline-flex;align-items:center;gap:8px;}
+    .search-chip i{width:16px;height:16px;}
+
+    /* PLANOS */
+    .plan-card{display:flex;flex-direction:column;gap:6px;background:var(--card);padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.05);}
+    .plan-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+    .plan-price{font-size:18px;font-weight:900;color:var(--gold);}
+    .plan-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:800;}
+    .payments-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+    .pay-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:700;color:var(--text);}
+    .pay-chip i{width:16px;height:16px;}
+
+    /* TEMA SOL E LUA */
+    .theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;padding-right:16px;}
+    .theme-card{padding:18px;border-radius:16px;border:1px solid rgba(255,255,255,.06);background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(0,0,0,.28));display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;}
+    .theme-card .theme-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.08);}
+    .theme-card .theme-icon i{width:24px;height:24px;}
+    .theme-card h4{margin:0;font-size:16px;}
+    .theme-card p{margin:0;font-size:12px;color:var(--muted);}
+    .theme-card.sun{background:linear-gradient(150deg,#f6d365,#fda085);color:#24180f;}
+    .theme-card.sun h4,.theme-card.sun p{color:#24180f;}
+    .theme-card.sun .theme-icon{background:rgba(255,255,255,.55);}
+    .theme-card.moon{background:linear-gradient(150deg,#0b1224,#1b1f34);}    
+    .theme-card.active{border-color:var(--gold);box-shadow:0 18px 36px rgba(0,0,0,.55);transform:translateY(-2px);}
+
+    .plan-section-title{display:flex;align-items:center;gap:10px;margin:10px 0 4px 0;font-weight:800;color:var(--muted);}
+    .plan-section-title i{width:18px;height:18px;}
   </style>
 </head>
 
@@ -141,7 +181,7 @@
         <small style="color:var(--muted);font-weight:600;">Modulo</small>
       </div>
       <div class="header-actions">
-        <div class="icon-btn"><i data-lucide="search"></i></div>
+        <div class="icon-btn" onclick="openSearch()"><i data-lucide="search"></i></div>
         <div class="icon-btn"><i data-lucide="download"></i></div>
       </div>
     </div>
@@ -185,6 +225,21 @@
     <div id="clipsContent"></div>
   </div>
 
+  <!-- BUSCA -->
+  <div id="searchOverlay" class="search-overlay">
+    <div class="search-box">
+      <div class="search-head">
+        <span class="search-pill"><i data-lucide="sparkles"></i>Explorar por temas</span>
+        <button class="search-close" onclick="closeSearch()"><i data-lucide="x"></i>Fechar</button>
+      </div>
+      <div class="search-input-wrap">
+        <i data-lucide="search"></i>
+        <input id="searchInput" class="search-input" type="text" placeholder="Buscar por lifestyle, casais, carros de luxo..." oninput="filterSearchTags(this.value)">
+      </div>
+      <div id="searchTags" class="search-tags"></div>
+    </div>
+  </div>
+
   <!-- ALERTAS -->
   <div id="alertas" class="screen">
     <div class="clips-header">
@@ -208,8 +263,19 @@
       <p class="clips-sub">Personalize sua experiência.</p>
     </div>
     <div class="section">
-      <div class="profile-btn" style="margin-right:16px;" onclick="setTheme('dark')">Tema escuro</div>
-      <div class="profile-btn" style="margin-right:16px;" onclick="setTheme('light')">Tema claro</div>
+      <div class="section-title">Estética Sol & Lua</div>
+      <div class="theme-grid">
+        <div class="theme-card sun" data-mode="sun" onclick="setTheme('sun')">
+          <div class="theme-icon"><i data-lucide="sun"></i></div>
+          <h4>Modo Sol</h4>
+          <p>Visual claro inspirado no amanhecer.</p>
+        </div>
+        <div class="theme-card moon" data-mode="moon" onclick="setTheme('moon')">
+          <div class="theme-icon"><i data-lucide="moon"></i></div>
+          <h4>Modo Lua</h4>
+          <p>Contraste profundo para noites silenciosas.</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -238,27 +304,56 @@
       <p class="clips-sub">Escolha entre Básico, Premium ou Supreme.</p>
     </div>
     <div class="section" style="padding-right:16px;">
-      <div class="episode" style="cursor:default;" onclick="returnToProfile()">
-        <div>
-          <h4>Plano Básico</h4>
-          <p>Qualidade HD, um dispositivo por vez.</p>
+      <div class="plan-card" onclick="returnToProfile()">
+        <div class="plan-header">
+          <div>
+            <h4>Plano Básico</h4>
+            <p style="color:var(--muted);">Qualidade HD, um dispositivo por vez.</p>
+          </div>
+          <div class="plan-price">R$ 10 / mês</div>
+        </div>
+        <div class="plan-chip">Essencial</div>
+        <div class="payments-row">
+          <span class="pay-chip"><i data-lucide="credit-card"></i>Cartão</span>
+          <span class="pay-chip"><i data-lucide="smartphone"></i>Pix</span>
+          <span class="pay-chip"><i data-lucide="barcode"></i>Boleto</span>
         </div>
         <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Básico');event.stopPropagation();">Selecionar</button>
       </div>
-      <div class="episode" style="cursor:default;" onclick="returnToProfile()">
-        <div>
-          <h4>Plano Premium</h4>
-          <p>Full HD, dois dispositivos simultâneos.</p>
+      <div class="plan-card" onclick="returnToProfile()">
+        <div class="plan-header">
+          <div>
+            <h4>Plano Premium</h4>
+            <p style="color:var(--muted);">Full HD, dois dispositivos simultâneos.</p>
+          </div>
+          <div class="plan-price">R$ 25 / mês</div>
+        </div>
+        <div class="plan-chip">Mais assistido</div>
+        <div class="payments-row">
+          <span class="pay-chip"><i data-lucide="credit-card"></i>Cartão</span>
+          <span class="pay-chip"><i data-lucide="smartphone"></i>Pix</span>
+          <span class="pay-chip"><i data-lucide="barcode"></i>Boleto</span>
         </div>
         <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Premium');event.stopPropagation();">Selecionar</button>
       </div>
-      <div class="episode" style="cursor:default;" onclick="returnToProfile()">
-        <div>
-          <h4>Plano Supreme</h4>
-          <p>4K + HDR, até quatro dispositivos.</p>
+      <div class="plan-card" onclick="returnToProfile()">
+        <div class="plan-header">
+          <div>
+            <h4>Plano Supreme</h4>
+            <p style="color:var(--muted);">4K + HDR, até quatro dispositivos. Vitalício.</p>
+          </div>
+          <div class="plan-price">R$ 100 / vitalício</div>
+        </div>
+        <div class="plan-chip">Acesso vitalício</div>
+        <div class="payments-row">
+          <span class="pay-chip"><i data-lucide="credit-card"></i>Cartão</span>
+          <span class="pay-chip"><i data-lucide="smartphone"></i>Pix</span>
+          <span class="pay-chip"><i data-lucide="barcode"></i>Boleto</span>
         </div>
         <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Supreme');event.stopPropagation();">Selecionar</button>
       </div>
+      <div class="plan-section-title"><i data-lucide="wallet"></i>Formas de pagamento aceitas</div>
+      <p style="margin:0 0 6px 0;color:var(--muted);">Pix instantâneo, cartão de crédito e boleto estão disponíveis para todas as assinaturas.</p>
       <button class="ghost-btn" style="margin:16px 0 0 0;" onclick="returnToProfile()">← Voltar ao perfil</button>
     </div>
   </div>
@@ -376,6 +471,24 @@
       "https://i.imgur.com/ehKC2uD.jpeg"
     ];
 
+    const searchTagsList=[
+      "Lifestyle de casais",
+      "Carros de luxo",
+      "Viagens exclusivas",
+      "Empreendedorismo",
+      "Gastronomia autoral",
+      "Fitness premium",
+      "Mentorias ARV",
+      "Alta performance",
+      "Investimentos",
+      "Experiências de spa",
+      "Moda premium",
+      "Colecionáveis",
+      "Imersões ao vivo",
+      "Minimalismo",
+      "Tecnologia e gadgets"
+    ];
+
     const imagensSeries=expandCarousel(baseSeriesImgs,10);
     const imagensFilmes=expandCarousel(baseFilmesImgs,10);
     const imagensAnimes=expandCarousel(baseAnimesImgs,10);
@@ -417,6 +530,17 @@
       return Array.from({length:count},(_,i)=>baseArray[i%baseArray.length]);
     }
 
+    function renderSearchTags(filter=""){
+      const container=document.getElementById("searchTags");
+      if(!container) return;
+      const normalized=filter.toLowerCase();
+      const tags=searchTagsList.filter(tag=>tag.toLowerCase().includes(normalized));
+      container.innerHTML=tags.map(tag=>`
+        <span class="search-chip" onclick="selectSearchTag('${tag}')"><i data-lucide="bookmark"></i>${tag}</span>
+      `).join("");
+      lucide.createIcons();
+    }
+
     /* ===== LOGIN ===== */
     function deriveFirstName(email){
       const local=email.split("@")[0]||email;
@@ -455,6 +579,7 @@
       document.getElementById("profileName").innerText=profileLabel;
       renderHome();
       renderClips();
+      renderSearchTags();
       setActiveNav("home");
     }
 
@@ -541,6 +666,34 @@
       document.querySelectorAll(".filter").forEach(f=>f.classList.remove("active"));
       el.classList.add("active");
       toggleBadgeFlash();
+    }
+
+    /* ===== BUSCA ===== */
+    function openSearch(){
+      const overlay=document.getElementById("searchOverlay");
+      if(!overlay) return;
+      overlay.style.display="flex";
+      renderSearchTags(document.getElementById("searchInput")?.value||"");
+      setTimeout(()=>document.getElementById("searchInput")?.focus(),120);
+    }
+
+    function closeSearch(){
+      const overlay=document.getElementById("searchOverlay");
+      if(overlay){
+        overlay.style.display="none";
+      }
+    }
+
+    function filterSearchTags(value){
+      renderSearchTags(value||"");
+    }
+
+    function selectSearchTag(tag){
+      const input=document.getElementById("searchInput");
+      if(input){
+        input.value=tag;
+      }
+      renderSearchTags(tag);
     }
 
     /* ===== EPISÓDIOS ===== */
@@ -707,11 +860,12 @@
       }
     }
 
-    const savedTheme=localStorage.getItem("arv_theme")||"dark";
+    const savedTheme=localStorage.getItem("arv_theme")||"moon";
     setTheme(savedTheme,true);
 
     function setTheme(mode,skipSave){
-      const isLight=mode==="light";
+      const isLight=mode==="light" || mode==="sun";
+      const storedMode=isLight?"sun":"moon";
       const root=document.documentElement;
       root.style.setProperty("--bg",isLight?"#f4f4f5":"#080808");
       root.style.setProperty("--card",isLight?"#ffffff":"#141414");
@@ -727,8 +881,13 @@
       document.body.style.background=isLight
         ? "radial-gradient(circle at 20% 20%,rgba(120,120,120,.15),transparent 30%),#f4f4f5"
         : "radial-gradient(circle at 20% 20%,rgba(63,63,63,.22),transparent 30%),#080808";
+
+      document.querySelectorAll(".theme-card").forEach(card=>{
+        card.classList.toggle("active",card.dataset.mode===storedMode);
+      });
+
       if(!skipSave){
-        localStorage.setItem("arv_theme",mode);
+        localStorage.setItem("arv_theme",storedMode);
       }
     }
 
