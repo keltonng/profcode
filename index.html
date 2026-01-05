@@ -116,21 +116,6 @@
 </head>
 
 <body>
-  <div id="topBar" class="nav-bar" style="display:none">
-    <div class="nav-item" onclick="goHome()" aria-label="Ir para o início">
-      <i data-lucide="home"></i>
-      <span>Início</span>
-    </div>
-    <div class="nav-item">
-      <i data-lucide="bell"></i>
-      <span>Alertas</span>
-    </div>
-    <div class="nav-item">
-      <i data-lucide="settings"></i>
-      <span>Config</span>
-    </div>
-  </div>
-
   <!-- LOGIN -->
   <div id="login" class="screen active">
     <div class="login">
@@ -195,6 +180,34 @@
     <div id="clipsContent"></div>
   </div>
 
+  <!-- ALERTAS -->
+  <div id="alertas" class="screen">
+    <div class="clips-header">
+      <h1>Alertas</h1>
+      <p class="clips-sub">Confira novidades e avisos importantes.</p>
+    </div>
+    <div class="section">
+      <div class="episode" style="margin:0 16px;cursor:default;">
+        <div>
+          <h4>Nenhum alerta novo</h4>
+          <p>Você verá notificações e comunicados aqui.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIGURAÇÕES -->
+  <div id="config" class="screen">
+    <div class="clips-header">
+      <h1>Configurações</h1>
+      <p class="clips-sub">Personalize sua experiência.</p>
+    </div>
+    <div class="section">
+      <div class="profile-btn" style="margin-right:16px;" onclick="setTheme('dark')">Tema escuro</div>
+      <div class="profile-btn" style="margin-right:16px;" onclick="setTheme('light')">Tema claro</div>
+    </div>
+  </div>
+
   <!-- PERFIL -->
   <div id="perfil" class="screen">
     <div class="profile">
@@ -233,6 +246,16 @@
     <div class="nav-item" data-icon="clapperboard" data-target="clips" onclick="go('clips',this)">
       <i data-lucide="clapperboard"></i>
       <span>Clips</span>
+    </div>
+
+    <div class="nav-item" data-icon="bell" data-target="alertas" onclick="go('alertas',this)">
+      <i data-lucide="bell"></i>
+      <span>Alertas</span>
+    </div>
+
+    <div class="nav-item" data-icon="settings" data-target="config" onclick="go('config',this)">
+      <i data-lucide="settings"></i>
+      <span>Config</span>
     </div>
 
     <div class="nav-item" data-target="perfil" onclick="go('perfil',this)">
@@ -497,10 +520,6 @@
       if(bottom){
         bottom.style.display=showNav?"flex":"none";
       }
-      const topBar=document.getElementById("topBar");
-      if(topBar){
-        topBar.style.display=showNav?"flex":"none";
-      }
       toggleHomeFab(showNav && document.getElementById("player").style.display!=="block");
     }
 
@@ -549,6 +568,27 @@
       const avatarMiniTop=document.getElementById("avatarMiniTop");
       if(avatarMiniTop){
         avatarMiniTop.src=savedAvatar;
+      }
+    }
+
+    const savedTheme=localStorage.getItem("arv_theme")||"dark";
+    setTheme(savedTheme,true);
+
+    function setTheme(mode,skipSave){
+      const isLight=mode==="light";
+      const root=document.documentElement;
+      root.style.setProperty("--bg",isLight?"#f4f4f5":"#080808");
+      root.style.setProperty("--card",isLight?"#ffffff":"#141414");
+      root.style.setProperty("--soft",isLight?"#e5e7eb":"#1f1f1f");
+      root.style.setProperty("--text",isLight?"#0f172a":"#fff");
+      root.style.setProperty("--muted",isLight?"#475569":"#9ca3af");
+      root.style.setProperty("--red","#e50914");
+      root.style.setProperty("--gold",isLight?"#b48a2b":"#c7a45b");
+      document.body.style.background=isLight
+        ? "radial-gradient(circle at 20% 20%,rgba(120,120,120,.15),transparent 30%),#f4f4f5"
+        : "radial-gradient(circle at 20% 20%,rgba(63,63,63,.22),transparent 30%),#080808";
+      if(!skipSave){
+        localStorage.setItem("arv_theme",mode);
       }
     }
 
