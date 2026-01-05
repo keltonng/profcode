@@ -121,8 +121,8 @@
     <div class="login">
       <div class="login-box">
         <h1>Entrar no ARV</h1>
-        <input id="name" placeholder="Seu nome" autocomplete="name">
-        <input id="email" placeholder="Email" autocomplete="email">
+        <input id="email" type="email" placeholder="Email" autocomplete="email">
+        <input id="password" type="password" placeholder="Senha" autocomplete="current-password">
         <button onclick="login()">Entrar</button>
       </div>
     </div>
@@ -289,21 +289,24 @@
 
     /* ===== LOGIN ===== */
     function login(){
-      const name=document.getElementById("name").value.trim();
-      if(!name) return;
-      localStorage.setItem("arv_name",name);
+      const email=document.getElementById("email").value.trim();
+      const password=document.getElementById("password").value.trim();
+      if(!email || !password) return;
+      localStorage.setItem("arv_email",email);
+      localStorage.setItem("arv_pass",password);
       start();
     }
 
     function start(){
-      const name=localStorage.getItem("arv_name");
-      if(!name){
+      const email=localStorage.getItem("arv_email");
+      if(!email){
         show("login");
         return;
       }
+      const profileLabel=email.split("@")[0] || email;
       show("home");
-      document.getElementById("welcome").innerText=name.split(" ")[0];
-      document.getElementById("profileName").innerText=name.split(" ")[0];
+      document.getElementById("welcome").innerText=profileLabel;
+      document.getElementById("profileName").innerText=profileLabel;
       renderHome();
       renderClips();
     }
