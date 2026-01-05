@@ -117,19 +117,20 @@
 
 <body>
   <!-- LOGIN -->
-  <div id="login" class="screen active">
+  <div id="login" class="screen">
     <div class="login">
       <div class="login-box">
         <h1>Entrar no ARV</h1>
         <input id="email" type="email" placeholder="Email" autocomplete="email">
         <input id="password" type="password" placeholder="Senha" autocomplete="current-password">
         <button onclick="login()">Entrar</button>
+        <button class="ghost-btn" style="width:100%;margin-top:10px" onclick="goHome()">Cancelar</button>
       </div>
     </div>
   </div>
 
   <!-- HOME -->
-  <div id="home" class="screen">
+  <div id="home" class="screen active">
     <div class="app-header">
       <div>
         <div class="app-title">Para <span id="welcome"></span></div>
@@ -193,9 +194,38 @@
       </div>
 
       <div class="profile-btn" onclick="trocarFoto()">Editar foto de perfil</div>
-      <div class="profile-btn">Plano Premium</div>
-      <div class="profile-btn">Termos de Uso</div>
+      <div class="profile-btn" onclick="showLoginFromProfile()">Entrar / trocar conta</div>
+      <div class="profile-btn" onclick="openPlano()">Plano Premium</div>
+      <div class="profile-btn" onclick="openTermos()">Termos de Uso</div>
       <div class="profile-btn" onclick="logout()">Sair</div>
+    </div>
+  </div>
+
+  <!-- PLANO PREMIUM -->
+  <div id="plano" class="screen">
+    <div class="profile">
+      <div class="app-header" style="padding-left:0">
+        <div class="icon-btn" onclick="go('perfil',document.getElementById('navPerfil'))"><i data-lucide="arrow-left"></i></div>
+        <div class="app-title">Plano Premium</div>
+      </div>
+      <p style="color:var(--muted);margin:12px 0 18px;line-height:1.5;">Aproveite downloads, 4K e acesso ilimitado em todos os dispositivos. Atualize seu plano quando quiser.</p>
+      <div class="profile-btn" onclick="goHome()">Assinar agora</div>
+    </div>
+  </div>
+
+  <!-- TERMOS DE USO -->
+  <div id="termos" class="screen">
+    <div class="profile">
+      <div class="app-header" style="padding-left:0">
+        <div class="icon-btn" onclick="go('perfil',document.getElementById('navPerfil'))"><i data-lucide="arrow-left"></i></div>
+        <div class="app-title">Termos de Uso</div>
+      </div>
+      <div style="color:var(--muted);line-height:1.6;margin-top:12px;">
+        <p>• Uso pessoal e intransferível.</p>
+        <p>• Conteúdo sujeito a disponibilidade regional.</p>
+        <p>• Cancelamento pode ser feito a qualquer momento.</p>
+      </div>
+      <div class="profile-btn" style="margin-top:20px" onclick="goHome()">Voltar para início</div>
     </div>
   </div>
 
@@ -219,7 +249,7 @@
       <span>Clips</span>
     </div>
 
-    <div class="nav-item" onclick="go('perfil',this)">
+    <div id="navPerfil" class="nav-item" onclick="go('perfil',this)">
       <img class="profile-pic" id="avatarMini" src="https://i.imgur.com/6VBx3io.jpg" alt="Avatar mini">
       <span>Meu Perfil</span>
     </div>
@@ -295,15 +325,12 @@
       localStorage.setItem("arv_email",email);
       localStorage.setItem("arv_pass",password);
       start();
+      goHome();
     }
 
     function start(){
       const email=localStorage.getItem("arv_email");
-      if(!email){
-        show("login");
-        return;
-      }
-      const profileLabel=email.split("@")[0] || email;
+      const profileLabel=email?(email.split("@")[0]||email):"Visitante";
       show("home");
       document.getElementById("welcome").innerText=profileLabel;
       document.getElementById("profileName").innerText=profileLabel;
@@ -394,7 +421,10 @@
     /* ===== EPISÓDIOS ===== */
     function openEpisodes(){
       const content=document.getElementById("content");
-      content.innerHTML=`<div class="section"><div class="section-title">Episódios</div></div>`;
+      content.innerHTML=`<div class="section"><div class="section-title" style="display:flex;align-items:center;gap:10px;">
+        <button class="ghost-btn small-ghost" onclick="renderHome()">↩ Início</button>
+        Episódios
+      </div></div>`;
       for(let i=1;i<=10;i++){
         content.innerHTML+=`
           <div class="episode" onclick="openPlayer()">
@@ -422,16 +452,15 @@
       if(id==="clips") renderClips();
       show(id);
       document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
-      el.classList.add("active");
+      if(el) el.classList.add("active");
       updateIcons();
     }
 
     function show(id){
       document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
       document.getElementById(id).classList.add("active");
-      const showNav=id!=="login";
-      document.getElementById("bottom").style.display=showNav?"flex":"none";
-      document.getElementById("homeBtn").classList.toggle("hidden",!showNav);
+      document.getElementById("bottom").style.display="flex";
+      document.getElementById("homeBtn").classList.remove("hidden");
     }
 
     function goHome(){
@@ -441,6 +470,7 @@
       }else{
         show("home");
       }
+      renderHome();
     }
 
     function updateIcons(){
@@ -453,8 +483,27 @@
       lucide.createIcons();
     }
 
-    /* ===== FOTO DE PERFIL ===== */
+    /* ===== FOTO DE PERFIL E LOGIN ===== */
     function trocarFoto(){document.getElementById("uploadFoto").click();}
+
+    function showLoginFromProfile(){
+      show("login");
+      updateIcons();
+    }
+
+    function openPlano(){
+      show("plano");
+      document.getElementById("navPerfil").classList.add("active");
+      document.getElementById("navHome").classList.remove("active");
+      updateIcons();
+    }
+
+    function openTermos(){
+      show("termos");
+      document.getElementById("navPerfil").classList.add("active");
+      document.getElementById("navHome").classList.remove("active");
+      updateIcons();
+    }
 
     document.getElementById("uploadFoto").addEventListener("change",e=>{
       const file=e.target.files[0];
