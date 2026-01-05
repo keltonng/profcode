@@ -17,6 +17,10 @@
       --muted:#9ca3af;
       --red:#e50914;
       --gold:#c7a45b;
+      --nav-bg:linear-gradient(180deg,rgba(12,12,12,.85),#000);
+      --nav-border:rgba(255,255,255,.05);
+      --nav-text:#a5a5a5;
+      --nav-active:#fff;
     }
 
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif;}
@@ -71,14 +75,15 @@
     .section-title{font-size:20px;font-weight:900;margin-bottom:12px;}
 
     /* CAROUSEL */
-    .carousel{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-right:16px;}
+    .carousel{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-right:16px;scroll-behavior:smooth;}
     .carousel::-webkit-scrollbar{display:none;}
 
     /* CARD */
-    .card{width:150px;aspect-ratio:2/3;border-radius:14px;overflow:hidden;position:relative;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease;scroll-snap-align:start;background:var(--soft);} 
+    .card{width:150px;flex:0 0 150px;aspect-ratio:2/3;border-radius:14px;overflow:hidden;position:relative;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease;scroll-snap-align:start;background:var(--soft);} 
     .card:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(0,0,0,.55);} 
     .card img{width:100%;height:100%;object-fit:cover;display:block;}
-    .badge{position:absolute;bottom:10px;left:8px;background:var(--red);padding:5px 7px;font-size:11px;font-weight:800;border-radius:6px;box-shadow:0 10px 20px rgba(0,0,0,.45);animation:badgeBlink 3.8s ease-in-out infinite;} 
+    .badge{position:absolute;bottom:10px;left:8px;background:var(--red);padding:5px 7px;font-size:11px;font-weight:800;border-radius:6px;box-shadow:0 10px 20px rgba(0,0,0,.45);animation:badgeBlink 3.8s ease-in-out infinite;transition:opacity .25s ease;} 
+    .badge.badge-hidden{opacity:0;}
     @keyframes badgeBlink{0%,25%{opacity:1;transform:scale(1);}50%{opacity:.25;transform:scale(.98);}75%,100%{opacity:1;transform:scale(1);} }
 
     /* EPISÓDIOS / CLIPS */
@@ -101,12 +106,12 @@
     .player-home{position:absolute;right:16px;bottom:22px;background:var(--red);color:#fff;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 20px 40px rgba(0,0,0,.45);}    
 
     /* BARRAS DE NAVEGAÇÃO */
-    .nav-bar{position:sticky;top:0;left:0;width:100%;height:64px;background:linear-gradient(180deg,rgba(12,12,12,.82),rgba(0,0,0,.78));backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;z-index:998;border-bottom:1px solid rgba(255,255,255,.05);padding:0 6px;}
-    .bottom{position:fixed;bottom:0;left:0;width:100%;height:74px;background:linear-gradient(180deg,rgba(12,12,12,.85),#000);backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;z-index:999;border-top:1px solid rgba(255,255,255,.05);} 
-    .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:#a5a5a5;cursor:pointer;transition:.25s;}
-    .nav-item i{width:22px;height:22px;stroke-width:2;opacity:.85;}
-    .nav-item.active{color:#fff;transform:scale(1.05);}
-    .nav-item.active i{opacity:1;stroke:#fff;}
+    .nav-bar{position:sticky;top:0;left:0;width:100%;height:64px;background:linear-gradient(180deg,rgba(12,12,12,.82),rgba(0,0,0,.78));backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;z-index:998;border-bottom:1px solid var(--nav-border);padding:0 6px;}
+    .bottom{position:fixed;bottom:0;left:0;width:100%;height:74px;background:var(--nav-bg);backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;z-index:999;border-top:1px solid var(--nav-border);transition:background .25s ease,border-color .25s ease;}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--nav-text);cursor:pointer;transition:.25s;}
+    .nav-item i{width:22px;height:22px;stroke-width:2;opacity:.85;stroke:currentColor;}
+    .nav-item.active{color:var(--nav-active);transform:scale(1.05);}
+    .nav-item.active i{opacity:1;stroke:var(--nav-active);}
     .profile-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35);}
 
     /* BOTÕES DE INÍCIO */
@@ -220,9 +225,70 @@
       </div>
 
       <div class="profile-btn" onclick="trocarFoto()">Editar foto de perfil</div>
-      <div class="profile-btn">Plano Premium</div>
-      <div class="profile-btn">Termos de Uso</div>
+      <div class="profile-btn" onclick="openPlanos()">Plano Premium</div>
+      <div class="profile-btn" onclick="openTermos()">Termos de Uso</div>
       <div class="profile-btn" onclick="logout()">Sair</div>
+    </div>
+  </div>
+
+  <!-- PLANOS -->
+  <div id="planos" class="screen">
+    <div class="clips-header">
+      <h1>Planos</h1>
+      <p class="clips-sub">Escolha entre Básico, Premium ou Supreme.</p>
+    </div>
+    <div class="section" style="padding-right:16px;">
+      <div class="episode" style="cursor:default;" onclick="returnToProfile()">
+        <div>
+          <h4>Plano Básico</h4>
+          <p>Qualidade HD, um dispositivo por vez.</p>
+        </div>
+        <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Básico');event.stopPropagation();">Selecionar</button>
+      </div>
+      <div class="episode" style="cursor:default;" onclick="returnToProfile()">
+        <div>
+          <h4>Plano Premium</h4>
+          <p>Full HD, dois dispositivos simultâneos.</p>
+        </div>
+        <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Premium');event.stopPropagation();">Selecionar</button>
+      </div>
+      <div class="episode" style="cursor:default;" onclick="returnToProfile()">
+        <div>
+          <h4>Plano Supreme</h4>
+          <p>4K + HDR, até quatro dispositivos.</p>
+        </div>
+        <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Supreme');event.stopPropagation();">Selecionar</button>
+      </div>
+      <button class="ghost-btn" style="margin:16px 0 0 0;" onclick="returnToProfile()">← Voltar ao perfil</button>
+    </div>
+  </div>
+
+  <!-- TERMOS -->
+  <div id="termos" class="screen">
+    <div class="clips-header">
+      <h1>Termos de Uso</h1>
+      <p class="clips-sub">Leia os principais pontos antes de continuar.</p>
+    </div>
+    <div class="section" style="padding-right:16px;">
+      <div class="episode" style="cursor:default;">
+        <div>
+          <h4>Privacidade</h4>
+          <p>Seus dados são utilizados apenas para personalização e login.</p>
+        </div>
+      </div>
+      <div class="episode" style="cursor:default;">
+        <div>
+          <h4>Uso responsável</h4>
+          <p>Evite compartilhar sua conta e respeite direitos autorais do conteúdo.</p>
+        </div>
+      </div>
+      <div class="episode" style="cursor:default;">
+        <div>
+          <h4>Suporte</h4>
+          <p>Em caso de dúvidas ou problemas, contate o suporte pela área de perfil.</p>
+        </div>
+      </div>
+      <button class="ghost-btn" style="margin:16px 0 0 0;" onclick="returnToProfile()">← Voltar ao perfil</button>
     </div>
   </div>
 
@@ -277,17 +343,37 @@
       "https://i.imgur.com/aqYRxrg.jpeg",
       "https://i.imgur.com/zvX7y7n.jpg",
       "https://i.imgur.com/0JpYpZK.jpg",
-      "https://i.imgur.com/6YV1E1D.jpg"
+      "https://i.imgur.com/6YV1E1D.jpg",
+      "https://i.imgur.com/Vwg6jYP.jpeg",
+      "https://i.imgur.com/Fg5xyXd.jpeg",
+      "https://i.imgur.com/Ag2C7nK.jpeg",
+      "https://i.imgur.com/2MtM9ly.jpeg",
+      "https://i.imgur.com/15aG9ca.jpeg",
+      "https://i.imgur.com/ozqhKNc.jpeg"
     ];
     const baseFilmesImgs=[
       "https://i.imgur.com/9YcKZ3R.jpg",
       "https://i.imgur.com/6YV1E1D.jpg",
-      "https://i.imgur.com/aqYRxrg.jpeg"
+      "https://i.imgur.com/aqYRxrg.jpeg",
+      "https://i.imgur.com/oOGLGvB.jpeg",
+      "https://i.imgur.com/t3MfWQJ.jpeg",
+      "https://i.imgur.com/rm4VDe0.jpeg",
+      "https://i.imgur.com/Cynzo8E.jpeg",
+      "https://i.imgur.com/XUHe15T.jpeg",
+      "https://i.imgur.com/BbqfYwa.jpeg",
+      "https://i.imgur.com/3GJ6s30.jpeg"
     ];
     const baseAnimesImgs=[
       "https://i.imgur.com/6YV1E1D.jpg",
       "https://i.imgur.com/zvX7y7n.jpg",
-      "https://i.imgur.com/0JpYpZK.jpg"
+      "https://i.imgur.com/0JpYpZK.jpg",
+      "https://i.imgur.com/DM57Knl.jpeg",
+      "https://i.imgur.com/FCMn5N1.jpeg",
+      "https://i.imgur.com/lpZ6vCU.jpeg",
+      "https://i.imgur.com/r6Km86E.jpeg",
+      "https://i.imgur.com/pz5VXEv.jpeg",
+      "https://i.imgur.com/Hx0Vx3N.jpeg",
+      "https://i.imgur.com/ehKC2uD.jpeg"
     ];
 
     const imagensSeries=expandCarousel(baseSeriesImgs,10);
@@ -453,6 +539,7 @@
       });
       document.querySelectorAll(".filter").forEach(f=>f.classList.remove("active"));
       el.classList.add("active");
+      toggleBadgeFlash();
     }
 
     /* ===== EPISÓDIOS ===== */
@@ -562,11 +649,32 @@
       closePlayer(true);
     }
 
+    function openPlanos(){
+      show("planos");
+      setActiveNav("perfil");
+      toggleBadgeFlash();
+    }
+
+    function openTermos(){
+      show("termos");
+      setActiveNav("perfil");
+      toggleBadgeFlash();
+    }
+
+    function returnToProfile(){
+      show("perfil");
+      setActiveNav("perfil");
+      toggleBadgeFlash();
+    }
+
+    function selectPlano(nome){
+      alert(`Plano ${nome} selecionado!`);
+    }
+
     function toggleBadgeFlash(){
-      document.querySelectorAll(".badge").forEach(badge=>badge.style.display="none");
-      setTimeout(()=>{
-        document.querySelectorAll(".badge").forEach(badge=>badge.style.display="inline-flex");
-      },200);
+      const badges=document.querySelectorAll(".badge");
+      badges.forEach(badge=>badge.classList.add("badge-hidden"));
+      setTimeout(()=>badges.forEach(badge=>badge.classList.remove("badge-hidden")),220);
     }
 
     /* ===== FOTO DE PERFIL ===== */
@@ -611,6 +719,10 @@
       root.style.setProperty("--muted",isLight?"#475569":"#9ca3af");
       root.style.setProperty("--red","#e50914");
       root.style.setProperty("--gold",isLight?"#b48a2b":"#c7a45b");
+      root.style.setProperty("--nav-bg",isLight?"linear-gradient(180deg,rgba(255,255,255,.9),#e5e7eb)":"linear-gradient(180deg,rgba(12,12,12,.85),#000)");
+      root.style.setProperty("--nav-border",isLight?"rgba(0,0,0,.08)":"rgba(255,255,255,.05)");
+      root.style.setProperty("--nav-text",isLight?"#475569":"#a5a5a5");
+      root.style.setProperty("--nav-active",isLight?"#0f172a":"#fff");
       document.body.style.background=isLight
         ? "radial-gradient(circle at 20% 20%,rgba(120,120,120,.15),transparent 30%),#f4f4f5"
         : "radial-gradient(circle at 20% 20%,rgba(63,63,63,.22),transparent 30%),#080808";
