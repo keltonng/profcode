@@ -138,6 +138,11 @@
     .search-result img{width:64px;height:64px;border-radius:10px;object-fit:cover;}
     .search-result h4{font-size:14px;margin-bottom:4px;}
     .search-result p{font-size:12px;color:var(--muted);}
+    .search-carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;}
+    .search-carousel::-webkit-scrollbar{display:none;}
+    .search-card{flex:0 0 140px;scroll-snap-align:start;background:var(--soft);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);}
+    .search-card img{width:100%;height:160px;object-fit:cover;display:block;}
+    .search-card span{display:block;padding:8px 10px;font-size:12px;font-weight:700;}
 
     /* PLANOS */
     .plan-card{display:flex;flex-direction:column;gap:6px;background:var(--card);padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.05);transition:border-color .2s ease,box-shadow .2s ease;}
@@ -175,6 +180,19 @@
     .payment-qr{width:180px;height:180px;border-radius:16px;background:rgba(255,255,255,.08);display:grid;place-items:center;align-self:center;border:1px solid rgba(255,255,255,.12);}
     .payment-qr svg{width:140px;height:140px;}
     .payment-info{font-size:12px;color:var(--muted);line-height:1.4;}
+
+    .settings-section{padding:18px 16px 0;display:flex;flex-direction:column;gap:10px;}
+    .settings-card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;}
+    .settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+    .settings-row:last-child{border-bottom:none;}
+    .settings-row h4{font-size:14px;font-weight:800;}
+    .settings-row p{font-size:12px;color:var(--muted);}
+    .settings-label{display:flex;align-items:center;gap:10px;}
+    .settings-label i{width:20px;height:20px;}
+    .toggle{position:relative;width:44px;height:26px;background:rgba(255,255,255,.15);border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.08);}
+    .toggle::after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .2s ease;}
+    .toggle.active{background:#3b82f6;}
+    .toggle.active::after{transform:translateX(18px);}
   </style>
 </head>
 
@@ -256,6 +274,7 @@
       </div>
       <div id="searchTags" class="search-tags"></div>
       <div id="searchResults" class="search-results"></div>
+      <div id="searchCarousel" class="search-carousel"></div>
     </div>
   </div>
 
@@ -301,6 +320,76 @@
       <div class="design-system">
         <span class="design-token">Light</span>
         <span class="design-token">Dark</span>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="section-title">Conta</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="lock"></i>
+            <div>
+              <h4>Senha</h4>
+              <p>Atualize sua senha de acesso.</p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="mail"></i>
+            <div>
+              <h4>Email</h4>
+              <p>brenda@arv.com</p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="smartphone"></i>
+            <div>
+              <h4>Celular</h4>
+              <p>Adicionar um número de telefone.</p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="section-title">Downloads</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="wifi"></i>
+            <div>
+              <h4>Somente Wi-Fi</h4>
+              <p>Ative para economizar dados móveis.</p>
+            </div>
+          </div>
+          <button class="toggle active" type="button"></button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="sliders-horizontal"></i>
+            <div>
+              <h4>Qualidade de vídeo</h4>
+              <p>Padrão</p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="trash-2"></i>
+            <div>
+              <h4>Excluir todos os downloads</h4>
+              <p>Libere espaço no dispositivo.</p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
       </div>
     </div>
   </div>
@@ -415,7 +504,7 @@
 
   <!-- PLAYER -->
   <div id="player">
-    <video controls autoplay>
+    <video controls autoplay poster="imagens/1A367628-73EA-4CAD-86F7-F4ECCDB64FAF.png">
       <source src="video-demo.mp4" type="video/mp4">
     </video>
     <button class="player-home" onclick="returnHomeFromPlayer()"> Início</button>
@@ -564,7 +653,7 @@
           numero:i+1,
           titulo:`Episódio ${i+1}`,
           descricao:"Continue assistindo de onde parou.",
-          thumb:"https://i.imgur.com/9YcKZ3R.jpg"
+          thumb:baseSeriesImgs[i%baseSeriesImgs.length]
         }))
       },
       {
@@ -574,7 +663,7 @@
           numero:i+1,
           titulo:`Capítulo ${i+1}`,
           descricao:"Pronto para voltar à ação?",
-          thumb:"https://i.imgur.com/6YV1E1D.jpg"
+          thumb:baseFilmesImgs[i%baseFilmesImgs.length]
         }))
       },
       {
@@ -584,7 +673,7 @@
           numero:i+3,
           titulo:`Episódio ${i+3}`,
           descricao:"Retome imediatamente.",
-          thumb:"https://i.imgur.com/0JpYpZK.jpg"
+          thumb:baseAnimesImgs[i%baseAnimesImgs.length]
         }))
       }
     ];
@@ -606,12 +695,16 @@
 
     function renderSearchResults(filter=""){
       const container=document.getElementById("searchResults");
+      const carousel=document.getElementById("searchCarousel");
       if(!container) return;
       const normalized=filter.toLowerCase();
       const matchedTags=searchTagsList.filter(tag=>tag.toLowerCase().includes(normalized));
       const results=matchedTags.flatMap(tag=>searchItemsCatalog[tag]||[]);
       if(results.length===0){
         container.innerHTML="<p class=\"payment-info\">Nenhum item encontrado para este tema.</p>";
+        if(carousel){
+          carousel.innerHTML="";
+        }
         return;
       }
       container.innerHTML=results.map(item=>`
@@ -623,6 +716,14 @@
           </div>
         </div>
       `).join("");
+      if(carousel){
+        carousel.innerHTML=results.map(item=>`
+          <div class="search-card" onclick="openPlayer()">
+            <img src="${item.img}" alt="${item.titulo}">
+            <span>${item.titulo}</span>
+          </div>
+        `).join("");
+      }
     }
 
     /* ===== LOGIN ===== */
@@ -756,11 +857,15 @@
     /* ===== BUSCA ===== */
     function openSearch(){
       const overlay=document.getElementById("searchOverlay");
+      const input=document.getElementById("searchInput");
       if(!overlay) return;
       overlay.style.display="flex";
-      renderSearchTags(document.getElementById("searchInput")?.value||"");
-      renderSearchResults(document.getElementById("searchInput")?.value||"");
-      setTimeout(()=>document.getElementById("searchInput")?.focus(),120);
+      if(input && !input.value){
+        input.value="Lifestyle de casais";
+      }
+      renderSearchTags(input?.value||"");
+      renderSearchResults(input?.value||"");
+      setTimeout(()=>input?.focus(),120);
     }
 
     function closeSearch(){
@@ -789,9 +894,10 @@
       const content=document.getElementById("content");
       content.innerHTML=`<div class="section"><div class="section-title">Episódios</div></div>`;
       for(let i=1;i<=10;i++){
+        const image=baseSeriesImgs[i%baseSeriesImgs.length];
         content.innerHTML+=`
           <div class="episode" onclick="openPlayer()">
-            <img src="https://i.imgur.com/0JpYpZK.jpg" alt="Thumb episódio">
+            <img src="${image}" alt="Thumb episódio">
             <div>
               <h4>Episódio ${i}</h4>
               <p>Descrição do episódio ${i}</p>
@@ -1013,6 +1119,12 @@
 
     lucide.createIcons();
     start();
+
+    document.querySelectorAll(".toggle").forEach(toggle=>{
+      toggle.addEventListener("click",()=>{
+        toggle.classList.toggle("active");
+      });
+    });
   </script>
 </body>
 </html>
