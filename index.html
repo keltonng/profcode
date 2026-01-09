@@ -1,11 +1,1359 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARV | Plataforma</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#080808;
+      --card:#141414;
+      --soft:#1f1f1f;
+      --text:#fff;
+      --muted:#9ca3af;
+      --red:#e50914;
+      --badge:#e50914;
+      --gold:#c7a45b;
+      --nav-bg:linear-gradient(180deg,rgba(12,12,12,.85),#000);
+      --nav-border:rgba(255,255,255,.05);
+      --nav-text:#a5a5a5;
+      --nav-active:#fff;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif;}
+    body{background:radial-gradient(circle at 20% 20%,rgba(63,63,63,.22),transparent 30%),var(--bg);color:var(--text);padding-bottom:90px;min-height:100vh;}
+
+    /* TELAS */
+    .screen{display:none;min-height:100vh;}
+    .screen.active{display:block;}
+
+    /* LOGIN */
+    .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#111,#000);} 
+    .login-box{width:100%;max-width:360px;background:rgba(20,20,20,.9);border-radius:18px;padding:24px;box-shadow:0 12px 40px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.04);} 
+    .login-box h1{text-align:center;margin-bottom:18px;font-weight:900;letter-spacing:.5px;}
+    .login-box input{width:100%;padding:14px;margin-bottom:12px;background:#0f0f0f;border:1px solid #2c2c2c;border-radius:12px;color:#fff;}
+    .login-box button{width:100%;padding:14px;background:var(--red);border:none;border-radius:12px;color:#fff;font-weight:800;cursor:pointer;letter-spacing:.3px;}
+
+    /* HEADER HOME */
+    .app-header{padding:20px 16px 6px;display:flex;align-items:center;justify-content:space-between;}
+    .app-title{font-size:22px;font-weight:900;letter-spacing:.2px;}
+    .header-actions{display:flex;align-items:center;gap:12px;color:var(--text);}
+    .header-actions .icon-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);width:32px;height:32px;border-radius:10px;display:grid;place-items:center;cursor:pointer;}
+    .header-actions .icon-btn:hover{border-color:rgba(255,255,255,.22);}
+
+    /* FILTROS / TABS */
+    .filters{display:flex;gap:8px;margin:14px 16px 8px;flex-wrap:wrap;}
+    .filter{padding:8px 16px;border:1px solid #333;border-radius:20px;font-size:13px;cursor:pointer;color:#ccc;transition:.25s;background:rgba(255,255,255,.03);} 
+    .filter.active{border-color:#fff;color:#fff;font-weight:700;background:rgba(255,255,255,.08);} 
+
+    /* HERO */
+    .hero{position:relative;margin:10px 16px 18px;border-radius:22px;overflow:hidden;box-shadow:0 18px 36px rgba(0,0,0,.55);background:linear-gradient(160deg,#1c1a16,#0d0d0f);} 
+    .hero img{width:100%;height:280px;object-fit:cover;filter:saturate(.95);} 
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.6),transparent 35%,rgba(0,0,0,.85));}
+    .hero-info{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:18px 18px 24px;gap:10px;}
+    .hero-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:12px;background:rgba(0,0,0,.55);font-size:12px;color:#d6d6d6;border:1px solid rgba(255,255,255,.08);} 
+    .hero-title{font-size:26px;font-weight:900;letter-spacing:.3px;}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap;color:#e6e6e6;font-weight:600;font-size:12px;}
+    .hero-tags span{background:rgba(255,255,255,.08);padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.08);} 
+    .hero-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .primary-btn,.ghost-btn{border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;}
+    .primary-btn{background:#fff;color:#000;}
+    .ghost-btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.18);} 
+    .small-ghost{padding:8px 12px;font-size:12px;}
+    .hero-tabs{display:flex;gap:8px;margin-top:4px;}
+    .hero-tab{padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);font-weight:700;font-size:13px;cursor:pointer;color:#eaeaea;}
+
+    /* CLIPS HEADER */
+    .clips-header{padding:18px 16px 0;display:flex;flex-direction:column;gap:6px;}
+    .clips-header h1{font-size:22px;font-weight:900;}
+    .clips-sub{color:var(--muted);font-size:13px;line-height:1.4;}
+
+    /* SEÇÕES */
+    .section{padding:22px 0 16px 16px;}
+    .section-title{font-size:20px;font-weight:900;margin-bottom:12px;}
+
+    /* CAROUSEL */
+    .carousel{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-right:16px;scroll-behavior:smooth;}
+    .carousel::-webkit-scrollbar{display:none;}
+
+    /* CARD */
+    .card{width:150px;flex:0 0 150px;aspect-ratio:2/3;border-radius:14px;overflow:hidden;position:relative;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease;scroll-snap-align:start;background:var(--soft);} 
+    .card:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(0,0,0,.55);} 
+    .card img{width:100%;height:100%;object-fit:cover;display:block;}
+    .badge{position:absolute;bottom:10px;left:8px;background:var(--badge);padding:5px 7px;font-size:11px;font-weight:800;border-radius:6px;box-shadow:0 10px 20px rgba(0,0,0,.45);animation:badgeBlink 3.8s ease-in-out infinite;transition:opacity .25s ease;} 
+    .badge.badge-hidden{opacity:0;}
+    @keyframes badgeBlink{0%,25%{opacity:1;transform:scale(1);}50%{opacity:.25;transform:scale(.98);}75%,100%{opacity:1;transform:scale(1);} }
+
+    /* EPISÓDIOS / CLIPS */
+    .episode{display:flex;gap:14px;background:var(--card);padding:12px;border-radius:14px;margin:10px 16px;cursor:pointer;border:1px solid rgba(255,255,255,.04);} 
+    .episode img,
+    .episode video{width:116px;height:72px;border-radius:10px;object-fit:cover;}
+    .episode h4{margin-bottom:4px;}
+
+    /* PERFIL */
+    .profile{padding:30px;}
+    .profile-header{display:flex;gap:16px;align-items:center;}
+    .profile-header img{width:90px;height:90px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;}
+    .profile-header h2{margin-bottom:4px;}
+    .profile-btn{margin-top:14px;padding:16px;background:var(--card);border-radius:14px;cursor:pointer;color:var(--text);border:1px solid rgba(255,255,255,.05);} 
+
+    /* PLAYER */
+    #player{position:fixed;inset:0;background:#000;display:none;z-index:999;}
+    #player video{width:100%;height:100%;object-fit:contain;}
+    #player span{position:absolute;top:20px;right:20px;font-size:26px;color:#fff;cursor:pointer;}
+    .player-back{position:absolute;top:20px;left:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:8px 12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;}
+    .player-home{position:absolute;right:16px;bottom:22px;background:var(--red);color:#fff;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 20px 40px rgba(0,0,0,.45);}    
+
+    /* BARRAS DE NAVEGAÇÃO */
+    .nav-bar{position:sticky;top:0;left:0;width:100%;height:64px;background:linear-gradient(180deg,rgba(12,12,12,.82),rgba(0,0,0,.78));backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;z-index:998;border-bottom:1px solid var(--nav-border);padding:0 6px;}
+    .bottom{position:fixed;bottom:0;left:0;width:100%;height:74px;background:var(--nav-bg);backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;z-index:999;border-top:1px solid var(--nav-border);transition:background .25s ease,border-color .25s ease;}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--nav-text);cursor:pointer;transition:.25s;}
+    .nav-item i{width:22px;height:22px;stroke-width:2;opacity:.85;stroke:currentColor;}
+    .nav-item.active{color:var(--nav-active);transform:scale(1.05);}
+    .nav-item.active i{opacity:1;stroke:var(--nav-active);}
+    .profile-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35);}
+
+    /* BOTÕES DE INÍCIO */
+    .home-fab{position:fixed;right:16px;bottom:90px;background:var(--red);color:#fff;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;z-index:997;display:none;box-shadow:0 20px 40px rgba(0,0,0,.45);}    
+    .home-fab span{display:flex;align-items:center;gap:6px;letter-spacing:.1px;}
+
+    /* BUSCA */
+    .search-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:none;align-items:flex-start;justify-content:center;z-index:1000;padding:30px 18px 18px;}
+    .search-box{width:100%;max-width:520px;background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;box-shadow:0 18px 36px rgba(0,0,0,.55);}
+    .search-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+    .search-pill{background:rgba(255,255,255,.08);color:var(--text);padding:8px 12px;border-radius:999px;font-weight:800;letter-spacing:.2px;border:1px solid rgba(255,255,255,.12);display:inline-flex;align-items:center;gap:8px;}
+    .search-close{background:transparent;color:var(--text);border:none;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;opacity:.85;}
+    .search-input{width:100%;padding:14px 14px 14px 44px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;color:var(--text);margin-bottom:12px;position:relative;}
+    .search-input::placeholder{color:var(--muted);}    
+    .search-input-wrap{position:relative;}
+    .search-input-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);}
+    .search-tags{display:flex;flex-wrap:wrap;gap:10px;}
+    .search-chip{padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);cursor:pointer;font-weight:700;color:var(--text);display:inline-flex;align-items:center;gap:8px;}
+    .search-chip i{width:16px;height:16px;}
+    .search-results{margin-top:14px;display:flex;flex-direction:column;gap:10px;}
+    .search-result{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);padding:10px;border-radius:12px;cursor:pointer;}
+    .search-result img{width:64px;height:64px;border-radius:10px;object-fit:cover;}
+    .search-result h4{font-size:14px;margin-bottom:4px;}
+    .search-result p{font-size:12px;color:var(--muted);}
+    .search-carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;}
+    .search-carousel::-webkit-scrollbar{display:none;}
+    .search-card{flex:0 0 140px;scroll-snap-align:start;background:var(--soft);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08);}
+    .search-card img{width:100%;height:160px;object-fit:cover;display:block;}
+    .search-card span{display:block;padding:8px 10px;font-size:12px;font-weight:700;}
+
+    /* PLANOS */
+    .plan-card{display:flex;flex-direction:column;gap:6px;background:var(--card);padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.05);transition:border-color .2s ease,box-shadow .2s ease;}
+    .plan-card.selected{border-color:var(--gold);box-shadow:0 20px 40px rgba(0,0,0,.35);}
+    .plan-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+    .plan-price{font-size:18px;font-weight:900;color:var(--gold);}
+    .plan-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:800;}
+    .payments-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+    .pay-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:700;color:var(--text);cursor:pointer;}
+    .pay-chip i{width:16px;height:16px;}
+
+    /* TEMA SOL E LUA */
+    .theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;padding-right:16px;}
+    .theme-card{padding:18px;border-radius:16px;border:1px solid rgba(255,255,255,.06);background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(0,0,0,.28));display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;}
+    .theme-card .theme-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.08);}
+    .theme-card .theme-icon i{width:24px;height:24px;}
+    .theme-card h4{margin:0;font-size:16px;}
+    .theme-card p{margin:0;font-size:12px;color:var(--muted);}
+    .theme-card.light{background:linear-gradient(150deg,#f6d365,#fda085);color:#24180f;}
+    .theme-card.light h4,.theme-card.light p{color:#24180f;}
+    .theme-card.light .theme-icon{background:rgba(255,255,255,.55);}
+    .theme-card.dark{background:linear-gradient(150deg,#0b1224,#1b1f34);}    
+    .theme-card.active{border-color:var(--gold);box-shadow:0 18px 36px rgba(0,0,0,.55);transform:translateY(-2px);}
+
+    .plan-section-title{display:flex;align-items:center;gap:10px;margin:10px 0 4px 0;font-weight:800;color:var(--muted);}
+    .plan-section-title i{width:18px;height:18px;}
+
+    .design-system{display:flex;gap:10px;flex-wrap:wrap;}
+    .design-token{padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:800;color:var(--text);}
+
+    .payment-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:1001;padding:24px;}
+    .payment-card{width:100%;max-width:420px;background:var(--card);border-radius:18px;padding:18px;border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 40px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:12px;}
+    .payment-head{display:flex;align-items:center;justify-content:space-between;}
+    .payment-title{font-weight:900;font-size:18px;}
+    .payment-qr{width:180px;height:180px;border-radius:16px;background:rgba(255,255,255,.08);display:grid;place-items:center;align-self:center;border:1px solid rgba(255,255,255,.12);}
+    .payment-qr img{width:140px;height:140px;}
+    .payment-qr canvas{width:140px;height:140px;}
+    .payment-info{font-size:12px;color:var(--muted);line-height:1.4;}
+    .payment-card-form{display:flex;flex-direction:column;gap:12px;}
+    .payment-row{display:flex;flex-wrap:wrap;gap:12px;}
+    .payment-field{flex:1;display:flex;flex-direction:column;gap:6px;min-width:140px;}
+    .payment-field label{font-size:12px;font-weight:700;color:var(--muted);}
+    .payment-input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--text);font-size:13px;}
+    .payment-input::placeholder{color:var(--muted);}
+
+    .settings-section{padding:18px 16px 0;display:flex;flex-direction:column;gap:10px;}
+    .settings-card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;}
+    .settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+    .settings-row:last-child{border-bottom:none;}
+    .settings-row h4{font-size:14px;font-weight:800;}
+    .settings-row p{font-size:12px;color:var(--muted);}
+    .settings-label{display:flex;align-items:center;gap:10px;}
+    .settings-label i{width:20px;height:20px;}
+    .toggle{position:relative;width:44px;height:26px;background:rgba(255,255,255,.15);border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.08);}
+    .toggle::after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .2s ease;}
+    .toggle.active{background:#3b82f6;}
+    .toggle.active::after{transform:translateX(18px);}  
+  </style>
 </head>
+
 <body>
-    <h1>Prof Ajax</h1>
+  <!-- LOGIN -->
+  <div id="login" class="screen active">
+    <div class="login">
+      <div class="login-box">
+        <h1>Entrar no ARV</h1>
+        <input id="email" type="email" placeholder="Email" autocomplete="email">
+        <input id="password" type="password" placeholder="Senha" autocomplete="current-password">
+        <button onclick="login()">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="home" class="screen">
+    <div class="app-header">
+      <div>
+        <div class="app-title">Para <span id="welcome"></span></div>
+        <small style="color:var(--muted);font-weight:600;">Modulo</small>
+      </div>
+      <div class="header-actions">
+        <div class="icon-btn" onclick="openSearch()"><i data-lucide="search"></i></div>
+        <div class="icon-btn"><i data-lucide="download"></i></div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="filter active" onclick="filterContent('inicio',this)">Início</div>
+      <div class="filter" onclick="filterContent('Modalidade',this)">Modalidade</div>
+      <div class="filter" onclick="filterContent('packs',this)">Packs</div>
+      <div class="filter" onclick="filterContent('categorias',this)">Categorias</div>
+    </div>
+
+    <div class="hero">
+      <img src="imagens/01EBFB7A-B8A8-456E-8B95-A9267B1F51C9.png" alt="Destaque principal">
+      <div class="hero-info">
+        <span class="hero-chip">Top 10 no Brasil</span>
+        <div class="hero-title">Metodo ARV</div>
+        <div class="hero-tags">
+          <span>Facil</span><span>Medio</span><span>Avancado</span>
+        </div>
+        <div class="hero-actions">
+          <button class="primary-btn" onclick="openPlayer()"> Assistir</button>
+          <button class="ghost-btn">✚ Minha lista</button>
+        </div>
+        <div class="hero-tabs">
+          <div class="hero-tab">Modulos</div>
+          <div class="hero-tab">O segredo</div>
+          <div class="hero-tab">Categorias</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="content"></div>
+  </div>
+
+  <!-- CLIPS / CONTINUAR -->
+  <div id="clips" class="screen">
+    <div class="clips-header">
+      <h1>Clipes & Continuação</h1>
+      <p class="clips-sub">Volte para qualquer episódio e continue de onde parou.</p>
+    </div>
+    <div id="clipsContent"></div>
+  </div>
+
+  <!-- BUSCA -->
+  <div id="searchOverlay" class="search-overlay">
+    <div class="search-box">
+      <div class="search-head">
+        <span class="search-pill"><i data-lucide="sparkles"></i>Explorar por temas</span>
+        <button class="search-close" onclick="closeSearch()"><i data-lucide="x"></i>Fechar</button>
+      </div>
+      <div class="search-input-wrap">
+        <i data-lucide="search"></i>
+        <input id="searchInput" class="search-input" type="text" placeholder="Buscar por lifestyle, casais, carros de luxo..." oninput="filterSearchTags(this.value)">
+      </div>
+      <div id="searchTags" class="search-tags"></div>
+      <div id="searchResults" class="search-results"></div>
+      <div id="searchCarousel" class="search-carousel"></div>
+    </div>
+  </div>
+
+  <!-- ALERTAS -->
+  <div id="alertas" class="screen">
+    <div class="clips-header">
+      <h1>Alertas</h1>
+      <p class="clips-sub">Confira novidades e avisos importantes.</p>
+    </div>
+    <div class="section">
+      <div class="episode" style="margin:0 16px;cursor:default;">
+        <div>
+          <h4>Nenhum alerta novo</h4>
+          <p>Você verá notificações e comunicados aqui.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIGURAÇÕES -->
+  <div id="config" class="screen">
+    <div class="clips-header">
+      <h1>Configurações</h1>
+      <p class="clips-sub">Personalize sua experiência.</p>
+    </div>
+    <div class="section">
+      <div class="section-title">Tema Light & Dark</div>
+      <div class="theme-grid">
+        <div class="theme-card light" data-mode="light" onclick="setTheme('light')">
+          <div class="theme-icon"><i data-lucide="sun"></i></div>
+          <h4>Light</h4>
+          <p>Visual claro e leve para o dia.</p>
+        </div>
+        <div class="theme-card dark" data-mode="dark" onclick="setTheme('dark')">
+          <div class="theme-icon"><i data-lucide="moon"></i></div>
+          <h4>Dark</h4>
+          <p>Contraste profundo para o modo noturno.</p>
+        </div>
+      </div>
+    </div>
+    <div class="section" style="padding-top:0;">
+      <div class="section-title">Design System</div>
+      <div class="design-system">
+        <span class="design-token">Light</span>
+        <span class="design-token">Dark</span>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="section-title">Conta</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="lock"></i>
+            <div>
+              <h4>Senha</h4>
+              <p>Atualize sua senha de acesso.</p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="mail"></i>
+            <div>
+              <h4>Email</h4>
+              <p></p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="smartphone"></i>
+            <div>
+              <h4>Celular</h4>
+              <p>Adicionar um número de telefone.</p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="section-title">Downloads</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="wifi"></i>
+            <div>
+              <h4>Somente Wi-Fi</h4>
+              <p>Ative para economizar dados móveis.</p>
+            </div>
+          </div>
+          <button class="toggle active" type="button"></button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="sliders-horizontal"></i>
+            <div>
+              <h4>Qualidade de vídeo</h4>
+              <p>Padrão</p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <i data-lucide="trash-2"></i>
+            <div>
+              <h4>Excluir todos os downloads</h4>
+              <p>Libere espaço no dispositivo.</p>
+            </div>
+          </div>
+          <span>›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFIL -->
+  <div id="perfil" class="screen">
+    <div class="profile">
+      <div class="profile-header">
+        <img id="avatar" src="https://i.imgur.com/6VBx3io.jpg" alt="Avatar" onclick="trocarFoto()">
+        <div>
+          <h2 id="profileName"></h2>
+          <p>Membro Premium</p>
+        </div>
+      </div>
+
+      <div class="profile-btn" onclick="trocarFoto()">Editar foto de perfil</div>
+      <div class="profile-btn" onclick="openPlanos()">Plano Premium</div>
+      <div class="profile-btn" onclick="openTermos()">Termos de Uso</div>
+      <div class="profile-btn" onclick="logout()">Sair</div>
+    </div>
+  </div>
+
+  <!-- PLANOS -->
+  <div id="planos" class="screen">
+    <div class="clips-header">
+      <h1>Planos</h1>
+      <p class="clips-sub">Escolha entre Básico, Médio ou Anual.</p>
+    </div>
+    <div class="section" style="padding-right:16px;">
+      <div class="plan-card" data-plan="Básico" onclick="selectPlano('Básico')">
+        <div class="plan-header">
+          <div>
+            <h4>Plano Básico</h4>
+            <p style="color:var(--muted);">Qualidade HD, um dispositivo por vez.</p>
+          </div>
+          <div class="plan-price">R$ 10 / mês</div>
+        </div>
+        <div class="plan-chip">Essencial</div>
+        <div class="payments-row">
+          <button class="pay-chip" onclick="openPaymentModal('Cartão', 'Básico');event.stopPropagation();"><i data-lucide="credit-card"></i>Cartão</button>
+          <button class="pay-chip" onclick="openPaymentModal('Pix', 'Básico');event.stopPropagation();"><i data-lucide="smartphone"></i>Pix</button>
+          <button class="pay-chip" onclick="openPaymentModal('Boleto', 'Básico');event.stopPropagation();"><i data-lucide="barcode"></i>Boleto</button>
+        </div>
+        <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Básico');event.stopPropagation();">Selecionar</button>
+      </div>
+      <div class="plan-card" data-plan="Médio" onclick="selectPlano('Médio')">
+        <div class="plan-header">
+          <div>
+            <h4>Plano Médio</h4>
+            <p style="color:var(--muted);">Full HD, dois dispositivos simultâneos.</p>
+          </div>
+          <div class="plan-price">R$ 25 / mês</div>
+        </div>
+        <div class="plan-chip">Mais escolhido</div>
+        <div class="payments-row">
+          <button class="pay-chip" onclick="openPaymentModal('Cartão', 'Médio');event.stopPropagation();"><i data-lucide="credit-card"></i>Cartão</button>
+          <button class="pay-chip" onclick="openPaymentModal('Pix', 'Médio');event.stopPropagation();"><i data-lucide="smartphone"></i>Pix</button>
+          <button class="pay-chip" onclick="openPaymentModal('Boleto', 'Médio');event.stopPropagation();"><i data-lucide="barcode"></i>Boleto</button>
+        </div>
+        <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Médio');event.stopPropagation();">Selecionar</button>
+      </div>
+      <div class="plan-card" data-plan="Anual" onclick="selectPlano('Anual')">
+        <div class="plan-header">
+          <div>
+            <h4>Plano Anual</h4>
+            <p style="color:var(--muted);">4K + HDR, acesso completo por 12 meses.</p>
+          </div>
+          <div class="plan-price">R$ 240 / ano</div>
+        </div>
+        <div class="plan-chip">Economize 20%</div>
+        <div class="payments-row">
+          <button class="pay-chip" onclick="openPaymentModal('Cartão', 'Anual');event.stopPropagation();"><i data-lucide="credit-card"></i>Cartão</button>
+          <button class="pay-chip" onclick="openPaymentModal('Pix', 'Anual');event.stopPropagation();"><i data-lucide="smartphone"></i>Pix</button>
+          <button class="pay-chip" onclick="openPaymentModal('Boleto', 'Anual');event.stopPropagation();"><i data-lucide="barcode"></i>Boleto</button>
+        </div>
+        <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Anual');event.stopPropagation();">Selecionar</button>
+      </div>
+      <div class="plan-section-title"><i data-lucide="wallet"></i>Formas de pagamento aceitas</div>
+      <p style="margin:0 0 6px 0;color:var(--muted);">Pix instantâneo, cartão de crédito e boleto estão disponíveis para todas as assinaturas.</p>
+      <button class="ghost-btn" style="margin:16px 0 0 0;" onclick="returnToProfile()">← Voltar ao perfil</button>
+    </div>
+  </div>
+
+  <!-- TERMOS -->
+  <div id="termos" class="screen">
+    <div class="clips-header">
+      <h1>Termos de Uso</h1>
+      <p class="clips-sub">Leia os principais pontos antes de continuar.</p>
+    </div>
+    <div class="section" style="padding-right:16px;">
+      <div class="episode" style="cursor:default;">
+        <div>
+          <h4>Privacidade</h4>
+          <p>Seus dados são utilizados apenas para personalização e login.</p>
+        </div>
+      </div>
+      <div class="episode" style="cursor:default;">
+        <div>
+          <h4>Uso responsável</h4>
+          <p>Evite compartilhar sua conta e respeite direitos autorais do conteúdo.</p>
+        </div>
+      </div>
+      <div class="episode" style="cursor:default;">
+        <div>
+          <h4>Suporte</h4>
+          <p>Em caso de dúvidas ou problemas, contate o suporte pela área de perfil.</p>
+        </div>
+      </div>
+      <button class="ghost-btn" style="margin:16px 0 0 0;" onclick="returnToProfile()">← Voltar ao perfil</button>
+    </div>
+  </div>
+
+  <!-- PLAYER -->
+  <div id="player">
+    <video controls autoplay poster="imagens/1A367628-73EA-4CAD-86F7-F4ECCDB64FAF.png">
+      <source id="playerSource" src="video-demo.mp4" type="video/mp4">
+    </video>
+    <button class="player-home" onclick="returnHomeFromPlayer()"> Início</button>
+    <button class="player-back" onclick="returnHomeFromPlayer()">← Início</button>
+    <span onclick="closePlayer()">✕</span>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="bottom" id="bottom">
+    <div id="navHome" class="nav-item active" data-icon="home" data-target="home" onclick="go('home',this)">
+      <i data-lucide="home"></i>
+      <span>Início</span>
+    </div>
+
+    <div class="nav-item" data-icon="clapperboard" data-target="clips" onclick="go('clips',this)">
+      <i data-lucide="clapperboard"></i>
+      <span>Modulos</span>
+    </div>
+
+    <div class="nav-item" data-icon="bell" data-target="alertas" onclick="go('alertas',this)">
+      <i data-lucide="bell"></i>
+      <span>Alertas</span>
+    </div>
+
+    <div class="nav-item" data-icon="settings" data-target="config" onclick="go('config',this)">
+      <i data-lucide="settings"></i>
+      <span>Config</span>
+    </div>
+
+    <div class="nav-item" data-target="perfil" onclick="go('perfil',this)">
+      <img class="profile-pic" id="avatarMini" src="https://i.imgur.com/6VBx3io.jpg" alt="Avatar mini">
+      <span>Meu Perfil</span>
+    </div>
+  </div>
+
+  <button id="homeFab" class="home-fab" onclick="returnHome()">
+    <span>Início</span>
+  </button>
+
+  <div id="paymentModal" class="payment-modal" onclick="closePaymentModal()">
+    <div class="payment-card" onclick="event.stopPropagation()">
+      <div class="payment-head">
+        <div>
+          <div class="payment-title" id="paymentTitle">Pagamento via Pix</div>
+          <div class="payment-info" id="paymentPlan">Plano selecionado: Básico</div>
+        </div>
+        <button class="ghost-btn small-ghost" onclick="closePaymentModal()">Fechar</button>
+      </div>
+      <div class="payment-qr" id="paymentQr"></div>
+      <div class="payment-card-form" id="paymentCardForm" style="display:none;">
+        <div class="payment-row">
+          <div class="payment-field">
+            <label for="cardType">Tipo do cartão</label>
+            <select id="cardType" class="payment-input">
+              <option value="credito">Crédito</option>
+              <option value="debito">Débito</option>
+            </select>
+          </div>
+        </div>
+        <div class="payment-row">
+          <div class="payment-field">
+            <label for="cardName">Nome no cartão</label>
+            <input id="cardName" class="payment-input" type="text" placeholder="Como impresso no cartão">
+          </div>
+        </div>
+        <div class="payment-row">
+          <div class="payment-field">
+            <label for="cardNumber">Nº do cartão</label>
+            <input id="cardNumber" class="payment-input" type="text" inputmode="numeric" placeholder="0000 0000 0000 0000" maxlength="19">
+          </div>
+        </div>
+        <div class="payment-row">
+          <div class="payment-field">
+            <label for="cardExpiry">Validade</label>
+            <input id="cardExpiry" class="payment-input" type="text" inputmode="numeric" placeholder="MM/AA" maxlength="5">
+          </div>
+          <div class="payment-field">
+            <label for="cardCvv">Cód. de segurança</label>
+            <input id="cardCvv" class="payment-input" type="text" inputmode="numeric" placeholder="123" maxlength="3">
+          </div>
+        </div>
+      </div>
+      <div class="payment-info" id="paymentInfo">
+        Use este QR Code para finalizar o pagamento. Banco Mercado Pago • Agência 0001 • Conta 86456720223.
+      </div>
+      <button class="primary-btn" onclick="confirmPayment()">Já paguei</button>
+    </div>
+  </div>
+
+  <!-- INPUT DE UPLOAD -->
+  <input type="file" id="uploadFoto" accept="image/*" hidden>
+
+  <script>
+    /* ===== DADOS ===== */
+    const baseSeriesImgs=[
+      "imagens/1A367628-73EA-4CAD-86F7-F4ECCDB64FAF.png",
+      "imagens/5D3ECED7-4E97-4D34-8887-4AFAD2BD6710.png",
+      "imagens/8AC5165D-345E-4F63-B362-037D2E872DDD.png",
+      "imagens/77EFDD95-FCD6-452C-BA87-F4E031CE8200.png",
+      "imagens/32850CDC-312F-4B4E-9221-6824B8AFF888.png",
+      "imagens/609255D5-4846-4FE7-8915-81ECFAB46C46.png",
+      "imagens/D21AB934-FCDB-46BE-8D3E-1CA8448DE25D.png",
+      "imagens/B017F1C7-AA19-4FD6-8C79-50BE06315997.jpeg",
+      "imagens/434C7272-2212-4251-BF5C-9DC3CC9DB174.png",
+      "imagens/030D457A-25AB-48DD-84CF-9159D9F1C227.png"
+    ];
+    const baseFilmesImgs=[
+      "imagens/23CBB367-FB29-4513-84BB-33AC781897B5.png",
+      "imagens/2F7A1AF2-135E-40AE-A704-B0AC61056D68.png",
+      "imagens/96E54436-1E31-4F39-8401-146C2C883E78.png",
+      "imagens/FD5482DA-7C0E-45D1-8441-E18D90C44301.png",
+      "imagens/1C53B792-6C51-425F-80FA-E78D7694A3D5.png",
+      "imagens/2067991B-F3F7-4CC6-9CCD-00B54075773D.png",
+      "imagens/476D7F40-F4C7-418C-AA88-0F0909975B40.png",
+      "imagens/A2986097-CA04-4DBD-B793-C7E77587B2FF.png",
+      "imagens/7CD60E4E-BB79-4329-A917-94B8DCF23B50.png",
+      "imagens/A6D116F5-BAB3-4DCD-B722-876B951A6560.png"
+    ];
+    const baseAnimesImgs=[
+      "imagens/F48EB169-B8B0-40B5-9E87-1F9612536648.png",
+      "imagens/9F7EB726-EF62-4580-9353-4EFA06C0F162.png",
+      "imagens/33C7E6F9-CB03-4941-94E1-D4BD5DA5CB9B.png",
+      "imagens/540DA89E-5729-4793-AE54-EFDA193AB31C.png",
+      "imagens/0A6E959C-99D7-4F93-A23A-4746D0557834.png",
+      "imagens/EAAAA7C2-270E-4E55-9CDD-D5BB583C6FA3.png",
+      "imagens/72A4F491-9765-444F-A111-F35EA8DA761A.png",
+      "imagens/1E27736A-CEB5-4699-8E14-3BB0BAF4A195.png",
+      "imagens/FE3BA1F6-1225-4F92-B6B9-52F7D77D7A24.png",
+      "imagens/3675C1E5-9175-4AA9-A2BA-641C33F5BF4D.png"
+    ];
+
+    const episodiosPacotesModulosImgs=[
+      "imagens/1A367628-73EA-4CAD-86F7-F4ECCDB64FAF.png",
+      "imagens/609255D5-4846-4FE7-8915-81ECFAB46C46.png",
+      "imagens/77EFDD95-FCD6-452C-BA87-F4E031CE8200.png",
+      "imagens/434C7272-2212-4251-BF5C-9DC3CC9DB174.png",
+      "imagens/32850CDC-312F-4B4E-9221-6824B8AFF888.png",
+      "imagens/030D457A-25AB-48DD-84CF-9159D9F1C227.png",
+      "imagens/8AC5165D-345E-4F63-B362-037D2E872DDD.png",
+      "imagens/B017F1C7-AA19-4FD6-8C79-50BE06315997.jpeg",
+      "imagens/D21AB934-FCDB-46BE-8D3E-1CA8448DE25D.png",
+      "imagens/5D3ECED7-4E97-4D34-8887-4AFAD2BD6710.png"
+    ];
+    const episodiosAvancadosImgs=[
+      "imagens/23CBB367-FB29-4513-84BB-33AC781897B5.png",
+      "imagens/2F7A1AF2-135E-40AE-A704-B0AC61056D68.png",
+      "imagens/96E54436-1E31-4F39-8401-146C2C883E78.png",
+      "imagens/FD5482DA-7C0E-45D1-8441-E18D90C44301.png",
+      "imagens/1C53B792-6C51-425F-80FA-E78D7694A3D5.png",
+      "imagens/2067991B-F3F7-4CC6-9CCD-00B54075773D.png",
+      "imagens/476D7F40-F4C7-418C-AA88-0F0909975B40.png",
+      "imagens/A2986097-CA04-4DBD-B793-C7E77587B2FF.png",
+      "imagens/7CD60E4E-BB79-4329-A917-94B8DCF23B50.png",
+      "imagens/A6D116F5-BAB3-4DCD-B722-876B951A6560.png"
+    ];
+    const episodiosDocumentariosImgs=[
+      "imagens/IMG_3085.jpeg",
+      "imagens/9F7EB726-EF62-4580-9353-4EFA06C0F162.png",
+      "imagens/33C7E6F9-CB03-4941-94E1-D4BD5DA5CB9B.png",
+      "imagens/540DA89E-5729-4793-AE54-EFDA193AB31C.png",
+      "imagens/0A6E959C-99D7-4F93-A23A-4746D0557834.png",
+      "imagens/EAAAA7C2-270E-4E55-9CDD-D5BB583C6FA3.png",
+      "imagens/72A4F491-9765-444F-A111-F35EA8DA761A.png",
+      "imagens/1E27736A-CEB5-4699-8E14-3BB0BAF4A195.png",
+      "imagens/FE3BA1F6-1225-4F92-B6B9-52F7D77D7A24.png",
+      "imagens/3675C1E5-9175-4AA9-A2BA-641C33F5BF4D.png"
+    ];
+
+    const episodiosPacotesModulosVideos=[
+      "videos/pacotes-modulos/ep01.mp4",
+      "videos/pacotes-modulos/ep02.mp4",
+      "videos/pacotes-modulos/ep03.mp4",
+      "videos/pacotes-modulos/ep04.mp4",
+      "videos/pacotes-modulos/ep05.mp4",
+      "videos/pacotes-modulos/ep06.mp4",
+      "videos/pacotes-modulos/ep07.mp4",
+      "videos/pacotes-modulos/ep08.mp4",
+      "videos/pacotes-modulos/ep09.mp4",
+      "videos/pacotes-modulos/ep10.mp4"
+    ];
+    const episodiosAvancadosVideos=[
+      "videos/modulos-avancados/ep01.mp4",
+      "videos/modulos-avancados/ep02.mp4",
+      "videos/modulos-avancados/ep03.mp4",
+      "videos/modulos-avancados/ep04.mp4",
+      "videos/modulos-avancados/ep05.mp4",
+      "videos/modulos-avancados/ep06.mp4",
+      "videos/modulos-avancados/ep07.mp4",
+      "videos/modulos-avancados/ep08.mp4",
+      "videos/modulos-avancados/ep09.mp4",
+      "videos/modulos-avancados/ep10.mp4"
+    ];
+    const episodiosDocumentariosVideos=[
+      "videos/documentarios/ep01.mp4",
+      "videos/documentarios/ep02.mp4",
+      "videos/documentarios/ep03.mp4",
+      "videos/documentarios/ep04.mp4",
+      "videos/documentarios/ep05.mp4",
+      "videos/documentarios/ep06.mp4",
+      "videos/documentarios/ep07.mp4",
+      "videos/documentarios/ep08.mp4",
+      "videos/documentarios/ep09.mp4",
+      "videos/documentarios/ep10.mp4"
+    ];
+
+    const searchTagsList=[
+      "Lifestyle de casais",
+      "Carros de luxo",
+      "Viagens exclusivas",
+      "Empreendedorismo",
+      "Lei da atração",
+      "Fitness premium",
+      "Mentorias ARV",
+      "Alta performance",
+      "Investimentos",
+      "Experiências de spa",
+      "Moda premium",
+      "Colecionáveis",
+      "Imersões ao vivo",
+      "Minimalismo",
+      "Tecnologia e gadgets"
+    ];
+
+    const searchItemsCatalog=searchTagsList.reduce((acc,tag,idx)=>{
+      acc[tag]=[
+        {titulo:`${tag} — Conteúdo 1`,img:baseSeriesImgs[idx%baseSeriesImgs.length]},
+        {titulo:`${tag} — Conteúdo 2`,img:baseFilmesImgs[idx%baseFilmesImgs.length]},
+        {titulo:`${tag} — Conteúdo 3`,img:baseAnimesImgs[idx%baseAnimesImgs.length]}
+      ];
+      return acc;
+    },{});
+
+    const imagensSeries=expandCarousel(baseSeriesImgs,10);
+    const imagensFilmes=expandCarousel(baseFilmesImgs,10);
+    const imagensAnimes=expandCarousel(baseAnimesImgs,10);
+
+    const seriesCatalog=[
+      {
+        titulo:"Pacotes e Módulos",
+        banner:"https://i.imgur.com/0JpYpZK.jpg",
+        episodios:Array.from({length:6}).map((_,i)=>({
+          numero:i+1,
+          titulo:`Episódio ${i+1}`,
+          descricao:"Continue assistindo de onde parou.",
+          thumb:episodiosPacotesModulosImgs[i%episodiosPacotesModulosImgs.length],
+          video:episodiosPacotesModulosVideos[i%episodiosPacotesModulosVideos.length]
+        }))
+      },
+      {
+        titulo:"Módulos avançados",
+        banner:"https://i.imgur.com/zvX7y7n.jpg",
+        episodios:Array.from({length:8}).map((_,i)=>({
+          numero:i+1,
+          titulo:`Capítulo ${i+1}`,
+          descricao:"Pronto para voltar à ação?",
+          thumb:episodiosAvancadosImgs[i%episodiosAvancadosImgs.length],
+          video:episodiosAvancadosVideos[i%episodiosAvancadosVideos.length]
+        }))
+      },
+      {
+        titulo:"Documentários de mentalidade",
+        banner:"https://i.imgur.com/6YV1E1D.jpg",
+        episodios:Array.from({length:5}).map((_,i)=>({
+          numero:i+1,
+          titulo:`Episódio ${i+1}`,
+          descricao:"Retome imediatamente.",
+          thumb:episodiosDocumentariosImgs[i%episodiosDocumentariosImgs.length],
+          video:episodiosDocumentariosVideos[i%episodiosDocumentariosVideos.length]
+        }))
+      }
+    ];
+
+    const episodiosCatalog={
+      "Pacotes e Módulos":{
+        titulo:"Pacotes e Módulos",
+        imagens:episodiosPacotesModulosImgs,
+        videos:episodiosPacotesModulosVideos,
+        descricaoBase:"Nesta temporada estao os pack mais usados "
+      },
+      "Só na ARV":{
+        titulo:"Só na ARV",
+        imagens:baseFilmesImgs,
+        videos:episodiosAvancadosVideos,
+        descricaoBase:"Seleção exclusiva com conteúdos inéditos."
+      },
+      "Módulos avançados":{
+        titulo:"Módulos avançados",
+        imagens:episodiosAvancadosImgs,
+        videos:episodiosAvancadosVideos,
+        descricaoBase:"Bem vindo ao proximo Passo"
+      },
+      "Documentários de mentalidade":{
+        titulo:"Documentários de mentalidade",
+        imagens:episodiosDocumentariosImgs,
+        videos:episodiosDocumentariosVideos,
+        descricaoBase:"Lei da atracao o segredo para o sucesso"
+      },
+      "Inicio":{
+        titulo:"Início",
+        imagens:baseAnimesImgs,
+        videos:episodiosDocumentariosVideos,
+        descricaoBase:"Atualizações da semana para você continuar."
+      }
+    };
+
+    function expandCarousel(baseArray,count){
+      return Array.from({length:count},(_,i)=>baseArray[i%baseArray.length]);
+    }
+
+    function renderSearchTags(filter=""){
+      const container=document.getElementById("searchTags");
+      if(!container) return;
+      const normalized=filter.toLowerCase();
+      const tags=searchTagsList.filter(tag=>tag.toLowerCase().includes(normalized));
+      container.innerHTML=tags.map(tag=>`
+        <button class="search-chip" type="button" onclick="selectSearchTag('${tag}')"><i data-lucide="bookmark"></i>${tag}</button>
+      `).join("");
+      lucide.createIcons();
+    }
+
+    function renderSearchResults(filter=""){
+      const container=document.getElementById("searchResults");
+      const carousel=document.getElementById("searchCarousel");
+      if(!container) return;
+      const normalized=filter.toLowerCase();
+      const matchedTags=searchTagsList.filter(tag=>tag.toLowerCase().includes(normalized));
+      const results=matchedTags.flatMap(tag=>searchItemsCatalog[tag]||[]);
+      if(results.length===0){
+        container.innerHTML="<p class=\"payment-info\">Nenhum item encontrado para este tema.</p>";
+        if(carousel){
+          carousel.innerHTML="";
+        }
+        return;
+      }
+      container.innerHTML=results.map(item=>`
+        <div class="search-result" onclick="openPlayer()">
+          <img src="${item.img}" alt="${item.titulo}">
+          <div>
+            <h4>${item.titulo}</h4>
+            <p>Toque para visualizar os itens relacionados.</p>
+          </div>
+        </div>
+      `).join("");
+      if(carousel){
+        carousel.innerHTML=results.map(item=>`
+          <div class="search-card" onclick="openPlayer()">
+            <img src="${item.img}" alt="${item.titulo}">
+            <span>${item.titulo}</span>
+          </div>
+        `).join("");
+      }
+    }
+
+    /* ===== LOGIN ===== */
+    function deriveFirstName(email){
+      const local=email.split("@")[0]||email;
+      const cleaned=local.replace(/[^a-zA-ZÀ-ÿ]+/g," ").trim();
+      const surnames=["silva","souza","oliveira","santos","neves","pereira","almeida","lima","costa","martins","rocha","ferreira","gomes","rodrigues","dias","barbosa","araujo"]; 
+      const lower=cleaned.toLowerCase().replace(/\s+/g,"");
+      let candidate="";
+      surnames.forEach(sn=>{
+        const idx=lower.indexOf(sn);
+        if(idx>2 && (candidate==="" || idx<candidate.length)){
+          candidate=lower.slice(0,idx);
+        }
+      });
+      const basis=candidate||cleaned.split(/\s+/)[0]||local;
+      return basis.charAt(0).toUpperCase()+basis.slice(1);
+    }
+
+    function login(){
+      const email=document.getElementById("email").value.trim();
+      const password=document.getElementById("password").value.trim();
+      if(!email || !password) return;
+      localStorage.setItem("arv_email",email);
+      localStorage.setItem("arv_pass",password);
+      start();
+    }
+
+    function start(){
+      const email=localStorage.getItem("arv_email");
+      if(!email){
+        show("login");
+        return;
+      }
+      const profileLabel=deriveFirstName(email);
+      show("home");
+      document.getElementById("welcome").innerText=profileLabel;
+      document.getElementById("profileName").innerText=profileLabel;
+      renderHome();
+      renderClips();
+      renderSearchTags();
+      renderSearchResults("");
+      setActiveNav("home");
+    }
+
+    function logout(){
+      localStorage.clear();
+      location.reload();
+    }
+
+    /* ===== HOME ===== */
+    function renderHome(){
+      const content=document.getElementById("content");
+      content.innerHTML="";
+      const sections=[
+        {titulo:"Pacotes e Módulos",tipo:"Modalidade",imagens:imagensSeries},
+        {titulo:"Só na ARV",tipo:"packs",imagens:imagensFilmes},
+        {titulo:"Documentários de mentalidade",tipo:"Modalidade",imagens:imagensAnimes},
+        {titulo:"Módulos avançados",tipo:"categorias",imagens:imagensFilmes},
+        {titulo:"Inicio",tipo:"inicio",imagens:imagensAnimes}
+      ];
+
+      sections.forEach(sec=>{
+        const section=document.createElement("div");
+        section.className="section";
+        section.dataset.type=sec.tipo;
+        section.innerHTML=`
+          <div class="section-title">${sec.titulo}</div>
+          <div class="carousel"></div>
+        `;
+        content.appendChild(section);
+        montarCarousel(section.querySelector(".carousel"),sec.imagens,sec.titulo);
+      });
+    }
+
+    function renderClips(){
+      const clipsContent=document.getElementById("clipsContent");
+      clipsContent.innerHTML="";
+
+      seriesCatalog.forEach(series=>{
+        const section=document.createElement("div");
+        section.className="section";
+        section.innerHTML=`
+          <div class="section-title">${series.titulo}</div>
+        `;
+
+        series.episodios.forEach(ep=>{
+          const epEl=document.createElement("div");
+          epEl.className="episode";
+          epEl.innerHTML=`
+            <img src="${ep.thumb}" alt="Thumb do ${ep.titulo}">
+            <div>
+              <h4>${series.titulo} — ${ep.titulo}</h4>
+              <p>${ep.descricao}</p>
+              <button class="ghost-btn small-ghost" style="margin-top:8px" onclick="openPlayerFromClip('${series.titulo}','${ep.titulo}','${ep.video}','${ep.thumb}');event.stopPropagation();">Continuar episódio</button>
+            </div>
+          `;
+          epEl.onclick=()=>openPlayerFromClip(series.titulo,ep.titulo,ep.video,ep.thumb);
+          section.appendChild(epEl);
+        });
+
+        clipsContent.appendChild(section);
+      });
+    }
+
+    function montarCarousel(carouselElement,imagens,sectionTitle){
+      carouselElement.innerHTML="";
+      imagens.forEach(img=>{
+        carouselElement.innerHTML+=`
+          <div class="card" onclick="openEpisodes('${sectionTitle}')">
+            <img src="${img}" alt="Capa">
+            <span class="badge">Novo</span>
+          </div>
+        `;
+      });
+    }
+
+    function filterContent(type,el){
+      if(type==="all"){
+        goHome();
+      }
+      const showAll = type==="all" || type==="categorias" || type==="inicio";
+      document.querySelectorAll(".section").forEach(sec=>{
+        sec.style.display=showAll || sec.dataset.type===type ? "block" : "none";
+      });
+      document.querySelectorAll(".filter").forEach(f=>f.classList.remove("active"));
+      el.classList.add("active");
+      toggleBadgeFlash();
+    }
+
+    /* ===== BUSCA ===== */
+    function openSearch(){
+      const overlay=document.getElementById("searchOverlay");
+      const input=document.getElementById("searchInput");
+      if(!overlay) return;
+      overlay.style.display="flex";
+      if(input && !input.value){
+        input.value="Lifestyle de casais";
+      }
+      renderSearchTags(input?.value||"");
+      renderSearchResults(input?.value||"");
+      setTimeout(()=>input?.focus(),120);
+    }
+
+    function closeSearch(){
+      const overlay=document.getElementById("searchOverlay");
+      if(overlay){
+        overlay.style.display="none";
+      }
+    }
+
+    function filterSearchTags(value){
+      renderSearchTags(value||"");
+      renderSearchResults(value||"");
+    }
+
+    function selectSearchTag(tag){
+      const input=document.getElementById("searchInput");
+      if(input){
+        input.value=tag;
+      }
+      renderSearchTags(tag);
+      renderSearchResults(tag);
+    }
+
+    /* ===== EPISÓDIOS ===== */
+    function openPlayerWithEpisode(episodeId,videoSrc,posterSrc) {
+      const player = document.getElementById("player");
+      const video = player.querySelector("video");
+      const playerSource = document.getElementById("playerSource");
+      const episodeVideo = videoSrc || "";
+
+      player.dataset.episodeId = episodeId;
+
+      if(playerSource){
+        playerSource.src = episodeVideo;
+      }
+      if(video && posterSrc){
+        video.setAttribute("poster",posterSrc);
+      }
+      if(video){
+        video.load();
+      }
+
+      video.onended = () => {
+        localStorage.setItem("watched_" + episodeId, "true");
+      };
+
+      openPlayer();
+    }
+
+    function openEpisodes(sectionTitle="Pacotes e Módulos") {
+      const content = document.getElementById("content");
+      const sectionData = episodiosCatalog[sectionTitle] || episodiosCatalog["Pacotes e Módulos"];
+      const imagens = sectionData.imagens;
+      const videos = sectionData.videos;
+      const titulo = sectionData.titulo;
+      const descricaoBase = sectionData.descricaoBase;
+
+      content.innerHTML = `
+        <div class="section">
+          <div class="section-title">${titulo}</div>
+        </div>
+      `;
+
+      for (let i = 1; i <= 10; i++) {
+        const videoSrc = videos[i - 1] || videos[0];
+        const thumbSrc = imagens[i - 1] || imagens[0];
+        const episodeId = "episodio_" + i;
+        const watched = localStorage.getItem("watched_" + episodeId);
+
+        content.innerHTML += `
+          <div class="episode" onclick="openPlayerWithEpisode('${episodeId}','${videoSrc}','${thumbSrc}')">
+            <video muted playsinline preload="metadata" poster="${thumbSrc}">
+              <source src="${videoSrc}" type="video/mp4">
+            </video>
+            <div>
+              <h4>Episódio ${i}</h4>
+              <p>${descricaoBase} ${i}</p>
+              ${watched ? "" : "<span class='badge'>Novo</span>"}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    /* ===== PLAYER ===== */
+    function openPlayerFromClip(seriesTitle,episodeTitle,videoSrc,posterSrc){
+      const player=document.getElementById("player");
+      const video=player.querySelector("video");
+      const playerSource=document.getElementById("playerSource");
+      player.dataset.current=`${seriesTitle} — ${episodeTitle}`;
+      if(playerSource && videoSrc){
+        playerSource.src=videoSrc;
+        video.load();
+      }
+      if(video && posterSrc){
+        video.setAttribute("poster",posterSrc);
+      }
+      openPlayer();
+    }
+
+    function openPlayer(){
+      document.getElementById("player").style.display="block";
+      toggleNavigationVisibility(false);
+      toggleHomeFab(false);
+    }
+    function closePlayer(goStart){
+      document.getElementById("player").style.display="none";
+      toggleNavigationVisibility(true);
+      if(goStart){
+        goHome();
+      }else{
+        toggleHomeFab(true);
+      }
+    }
+
+    /* ===== NAVEGAÇÃO ===== */
+    function toggleHomeFab(show){
+      const fab=document.getElementById("homeFab");
+      if(!fab) return;
+      fab.style.display=show?"block":"none";
+    }
+
+    function toggleNavigationVisibility(show){
+      const bottom=document.getElementById("bottom");
+      if(bottom){
+        bottom.style.display=show?"flex":"none";
+      }
+      document.querySelectorAll(".badge").forEach(badge=>{
+        badge.style.display=show?"inline-flex":"none";
+      });
+    }
+
+    function setActiveNav(target){
+      document.querySelectorAll(".nav-item").forEach(item=>{
+        const isTarget=item.dataset.target===target;
+        item.classList.toggle("active",isTarget);
+        const icon=item.dataset.icon;
+        if(icon){
+          const i=item.querySelector("i");
+          i.setAttribute("data-lucide",isTarget?`${icon}-filled`:icon);
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function go(id,el){
+      if(id==="clips") renderClips();
+      if(id==="home") renderHome();
+      show(id);
+      const target=el?.dataset?.target || id;
+      setActiveNav(target);
+      toggleBadgeFlash();
+    }
+
+    function show(id){
+      document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      const showNav=id!=="login";
+      const bottom=document.getElementById("bottom");
+      if(bottom){
+        bottom.style.display=showNav?"flex":"none";
+      }
+      toggleHomeFab(showNav && document.getElementById("player").style.display!=="block");
+    }
+
+    function goHome(){
+      renderHome();
+      const homeNav=document.getElementById("navHome");
+      if(homeNav){
+        go("home",homeNav);
+      }else{
+        show("home");
+        setActiveNav("home");
+      }
+    }
+
+    function returnHome(){
+      closePlayer(true);
+    }
+
+    function returnHomeFromPlayer(){
+      closePlayer(true);
+    }
+
+    function openPlanos(){
+      show("planos");
+      setActiveNav("perfil");
+      toggleBadgeFlash();
+    }
+
+    function openTermos(){
+      show("termos");
+      setActiveNav("perfil");
+      toggleBadgeFlash();
+    }
+
+    function returnToProfile(){
+      show("perfil");
+      setActiveNav("perfil");
+      toggleBadgeFlash();
+    }
+
+    let selectedPlan="";
+
+    function selectPlano(nome){
+      selectedPlan=nome;
+      document.querySelectorAll(".plan-card").forEach(card=>{
+        card.classList.toggle("selected",card.dataset.plan===nome);
+      });
+    }
+
+    const paymentQrCode="00020126580014br.gov.bcb.pix013632ee26a2-085a-4766-a7c4-58ecdd1d59745204000053039865802BR5925NEVESKELTON202305161115416009Sao Paulo610901227-20062240520daqr1375965046879887630493A7";
+
+    function renderPaymentQr(){
+      const qrContainer=document.getElementById("paymentQr");
+      if(!qrContainer || typeof QRCode==="undefined") return;
+      qrContainer.innerHTML="";
+      new QRCode(qrContainer,{
+        text:paymentQrCode,
+        width:140,
+        height:140,
+        colorDark:"#111",
+        colorLight:"#fff",
+        correctLevel:QRCode.CorrectLevel.M
+      });
+    }
+
+    function openPaymentModal(method,plan){
+      const modal=document.getElementById("paymentModal");
+      const title=document.getElementById("paymentTitle");
+      const planLabel=document.getElementById("paymentPlan");
+      const info=document.getElementById("paymentInfo");
+      const qr=document.getElementById("paymentQr");
+      const cardForm=document.getElementById("paymentCardForm");
+      if(!modal || !title || !planLabel || !info) return;
+      title.textContent=`Pagamento via ${method}`;
+      planLabel.textContent=`Plano selecionado: ${plan}`;
+      if(method==="Cartão"){
+        if(cardForm){
+          cardForm.style.display="flex";
+        }
+        if(qr){
+          qr.style.display="none";
+        }
+        info.textContent="Preencha os dados do cartão para concluir o pagamento.";
+      }else{
+        if(cardForm){
+          cardForm.style.display="none";
+        }
+        if(qr){
+          qr.style.display="grid";
+        }
+        info.textContent=`Use este QR Code para finalizar o pagamento em ${method}. Banco Mercado Pago • Agência 0001 • Conta 86456720223.`;
+        renderPaymentQr();
+      }
+      modal.style.display="flex";
+    }
+
+    function closePaymentModal(){
+      const modal=document.getElementById("paymentModal");
+      if(modal){
+        modal.style.display="none";
+      }
+    }
+
+    function confirmPayment(){
+      closePaymentModal();
+      if(selectedPlan){
+        alert(`Pagamento recebido para o plano ${selectedPlan}.`);
+      }
+    }
+
+    function toggleBadgeFlash(){
+      const badges=document.querySelectorAll(".badge");
+      badges.forEach(badge=>badge.classList.add("badge-hidden"));
+      setTimeout(()=>badges.forEach(badge=>badge.classList.remove("badge-hidden")),220);
+    }
+
+    /* ===== FOTO DE PERFIL ===== */
+    function trocarFoto(){document.getElementById("uploadFoto").click();}
+
+    document.getElementById("uploadFoto").addEventListener("change",e=>{
+      const file=e.target.files[0];
+      if(!file) return;
+      const reader=new FileReader();
+      reader.onload=()=>{
+        document.getElementById("avatar").src=reader.result;
+        document.getElementById("avatarMini").src=reader.result;
+        const avatarMiniTop=document.getElementById("avatarMiniTop");
+        if(avatarMiniTop){
+          avatarMiniTop.src=reader.result;
+        }
+        localStorage.setItem("arv_avatar",reader.result);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    const savedAvatar=localStorage.getItem("arv_avatar");
+    if(savedAvatar){
+      document.getElementById("avatar").src=savedAvatar;
+      document.getElementById("avatarMini").src=savedAvatar;
+      const avatarMiniTop=document.getElementById("avatarMiniTop");
+      if(avatarMiniTop){
+        avatarMiniTop.src=savedAvatar;
+      }
+    }
+
+    const savedTheme=localStorage.getItem("arv_theme")||"dark";
+    setTheme(savedTheme,true);
+
+    function setTheme(mode,skipSave){
+      const isLight=mode==="light";
+      const storedMode=isLight?"light":"dark";
+      const root=document.documentElement;
+      root.style.setProperty("--bg",isLight?"#f4f4f5":"#080808");
+      root.style.setProperty("--card",isLight?"#ffffff":"#141414");
+      root.style.setProperty("--soft",isLight?"#e5e7eb":"#1f1f1f");
+      root.style.setProperty("--text",isLight?"#0f172a":"#fff");
+      root.style.setProperty("--muted",isLight?"#475569":"#9ca3af");
+      root.style.setProperty("--red","#e50914");
+      root.style.setProperty("--badge",isLight?"#2563eb":"#e50914");
+      root.style.setProperty("--gold",isLight?"#b48a2b":"#c7a45b");
+      root.style.setProperty("--nav-bg",isLight?"linear-gradient(180deg,rgba(255,255,255,.9),#e5e7eb)":"linear-gradient(180deg,rgba(12,12,12,.85),#000)");
+      root.style.setProperty("--nav-border",isLight?"rgba(0,0,0,.08)":"rgba(255,255,255,.05)");
+      root.style.setProperty("--nav-text",isLight?"#475569":"#a5a5a5");
+      root.style.setProperty("--nav-active",isLight?"#0f172a":"#fff");
+      document.body.style.background=isLight
+        ? "radial-gradient(circle at 20% 20%,rgba(120,120,120,.15),transparent 30%),#f4f4f5"
+        : "radial-gradient(circle at 20% 20%,rgba(63,63,63,.22),transparent 30%),#080808";
+
+      document.querySelectorAll(".theme-card").forEach(card=>{
+        card.classList.toggle("active",card.dataset.mode===storedMode);
+      });
+
+      if(!skipSave){
+        localStorage.setItem("arv_theme",storedMode);
+      }
+    }
+
+    lucide.createIcons();
+    start();
+
+    document.querySelectorAll(".toggle").forEach(toggle=>{
+      toggle.addEventListener("click",()=>{
+        toggle.classList.toggle("active");
+      });
+    });
+  </script>
 </body>
 </html>
