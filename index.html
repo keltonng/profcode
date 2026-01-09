@@ -749,6 +749,14 @@
     const imagensSeries=expandCarousel(baseSeriesImgs,10);
     const imagensFilmes=expandCarousel(baseFilmesImgs,10);
     const imagensAnimes=expandCarousel(baseAnimesImgs,10);
+    const imagensFallback=[
+      ...episodiosPacotesModulosImgs,
+      ...episodiosAvancadosImgs,
+      ...episodiosDocumentariosImgs,
+      ...baseSeriesImgs,
+      ...baseFilmesImgs,
+      ...baseAnimesImgs
+    ];
 
     const seriesCatalog=[
       {
@@ -861,12 +869,28 @@
       return Array.from({length:count},(_,i)=>baseArray[i%baseArray.length]);
     }
 
-    function getModuloImages(moduloId,fallback){
+    function getModuloImages(moduloId,fallback,count=10){
       const modulo=episodiosCatalog[moduloId];
-      if(modulo?.episodios?.length){
-        return modulo.episodios.map(episodio=>episodio.imagem);
+      const images=modulo?.episodios?.map(episodio=>episodio.imagem)||[];
+      const unique=[...new Set(images)];
+
+      if(unique.length < count){
+        imagensFallback.forEach(img=>{
+          if(unique.length < count && !unique.includes(img)){
+            unique.push(img);
+          }
+        });
       }
-      return fallback||[];
+
+      if(unique.length < count && Array.isArray(fallback)){
+        fallback.forEach(img=>{
+          if(unique.length < count && !unique.includes(img)){
+            unique.push(img);
+          }
+        });
+      }
+
+      return unique.slice(0,count);
     }
 
     function renderSearchTags(filter=""){
