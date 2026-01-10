@@ -1134,7 +1134,9 @@
       `;
 
       sectionData.episodios.forEach((ep,index)=>{
-        const rotatedEpisode = sectionData.episodios[(index + offset) % totalEpisodes] || ep;
+        const isFirst = index === 0;
+        const rotatedIndex = totalEpisodes ? (index + offset + 1) % totalEpisodes : index;
+        const rotatedEpisode = isFirst ? ep : (sectionData.episodios[rotatedIndex] || ep);
         const thumb = rotatedEpisode.imagem || ep.imagem;
         const video = rotatedEpisode.video || ep.video;
         const episodeId = `${moduloId}_${ep.id}`;
