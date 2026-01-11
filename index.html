@@ -1,11 +1,1067 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ARV | Premium</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#080808;
+      --card:#141414;
+      --soft:#1f1f1f;
+      --text:#fff;
+      --muted:#9ca3af;
+      --red:#e50914;
+      --badge:#e50914;
+      --nav-bg:linear-gradient(180deg,rgba(12,12,12,.85),#000);
+      --nav-border:rgba(255,255,255,.05);
+      --nav-text:#a5a5a5;
+      --nav-active:#fff;
+      --border:rgba(255,255,255,.08);
+    }
+
+    .light-mode{
+      --bg:#f4f4f5;
+      --card:#ffffff;
+      --soft:#e5e7eb;
+      --text:#0f172a;
+      --muted:#475569;
+      --badge:#2563eb;
+      --nav-bg:linear-gradient(180deg,rgba(255,255,255,.9),#e5e7eb);
+      --nav-border:rgba(0,0,0,.08);
+      --nav-text:#475569;
+      --nav-active:#0f172a;
+      --border:rgba(0,0,0,.08);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif;-webkit-tap-highlight-color:transparent;}
+    body{background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;padding-bottom:90px;transition:.3s;}
+
+    .screen{display:none;min-height:100vh;animation:fadeIn .3s ease;}
+    .screen.active{display:block;}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+    .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#000;}
+    .login-box{width:100%;max-width:360px;background:var(--card);border-radius:18px;padding:30px;box-shadow:0 12px 40px rgba(0,0,0,.45);border:1px solid var(--soft);text-align:center;}
+    .login-box h1{text-align:center;margin-bottom:18px;font-weight:900;letter-spacing:.5px;color:var(--red);font-size:32px;}
+    .login-box input{width:100%;padding:14px;margin-bottom:12px;background:#000;border:1px solid #333;border-radius:10px;color:#fff;text-align:center;font-size:16px;}
+    .login-box button{width:100%;padding:14px;background:var(--red);border:none;border-radius:10px;color:#fff;font-weight:800;cursor:pointer;letter-spacing:.3px;}
+
+    .app-header{padding:20px 16px 6px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:100;}
+    .app-title{font-size:22px;font-weight:900;letter-spacing:.2px;color:var(--text);}
+    .header-actions{display:flex;align-items:center;gap:12px;color:var(--text);}
+    .icon-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;cursor:pointer;}
+
+    .filters{display:flex;gap:12px;margin:14px 16px 8px;flex-wrap:wrap;}
+    .filter{padding:8px 16px;border:1px solid transparent;border-radius:20px;font-size:13px;cursor:pointer;color:var(--muted);transition:.25s;background:var(--soft);font-weight:700;white-space:nowrap;}
+    .filter.active{border-color:var(--red);color:var(--red);}
+
+    .section{padding:22px 0 16px 16px;}
+    .section-title{font-size:18px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+    .section-title::before{content:"";width:3px;height:18px;background:var(--red);border-radius:10px;}
+
+    .carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-right:16px;scroll-behavior:smooth;}
+    .carousel::-webkit-scrollbar{display:none;}
+
+    .card{width:140px;flex:0 0 140px;aspect-ratio:2/3;border-radius:12px;overflow:hidden;position:relative;cursor:pointer;transition:transform .3s ease,box-shadow .25s ease;scroll-snap-align:start;background:var(--soft);}
+    .card:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(0,0,0,.55);}
+    .card img{width:100%;height:100%;object-fit:cover;display:block;}
+    .card-info{position:absolute;bottom:0;width:100%;padding:8px;background:linear-gradient(transparent,rgba(0,0,0,.9));font-size:10px;font-weight:700;}
+    .progress-bar{position:absolute;bottom:0;left:0;width:100%;height:3px;background:rgba(255,255,255,.2);}
+    .progress-fill{height:100%;background:var(--red);}
+    .card-options{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);border-radius:8px;padding:4px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);}
+
+    .detail-view{position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;display:none;padding-bottom:50px;}
+    .hero-banner{width:100%;aspect-ratio:16/9;position:relative;}
+    .hero-banner img{width:100%;height:100%;object-fit:cover;}
+    .hero-close{position:absolute;top:20px;right:20px;background:rgba(0,0,0,.6);border-radius:50%;padding:8px;border:1px solid rgba(255,255,255,.2);}
+
+    .episode-list{padding:20px;}
+    .season-selector{display:flex;align-items:center;gap:8px;font-weight:800;margin-bottom:20px;background:var(--soft);padding:8px 12px;border-radius:8px;width:fit-content;}
+
+    .episode-item{margin-bottom:25px;background:var(--card);padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.06);}
+    .ep-header{display:flex;align-items:center;gap:15px;margin-bottom:10px;}
+    .ep-thumb{width:130px;aspect-ratio:16/9;position:relative;border-radius:8px;overflow:hidden;flex-shrink:0;}
+    .ep-thumb img{width:100%;height:100%;object-fit:cover;}
+    .ep-thumb .play-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);}
+    .ep-info{flex:1;}
+    .ep-title{font-size:14px;font-weight:800;margin-bottom:2px;}
+    .ep-meta{font-size:12px;color:var(--muted);}
+    .ep-desc{font-size:13px;color:var(--muted);line-height:1.4;}
+
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;}
+    .bottom-sheet{position:fixed;bottom:0;left:0;width:100%;background:var(--card);border-radius:16px 16px 0 0;z-index:1001;padding:20px;transform:translateY(100%);transition:.3s;border-top:1px solid rgba(255,255,255,.08);}
+    .sheet-active{transform:translateY(0);}
+    .sheet-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+    .sheet-header h3{font-size:18px;font-weight:800;}
+    .sheet-option{display:flex;align-items:center;gap:15px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;}
+    .sheet-option span{font-size:15px;font-weight:600;}
+
+    .bottom{position:fixed;bottom:0;left:0;width:100%;height:74px;background:var(--nav-bg);backdrop-filter:blur(10px);display:none;justify-content:space-around;align-items:center;z-index:200;border-top:1px solid var(--nav-border);}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--nav-text);cursor:pointer;transition:.25s;font-weight:600;}
+    .nav-item i{width:22px;height:22px;stroke-width:2;opacity:.85;stroke:currentColor;}
+    .nav-item.active{color:var(--nav-active);transform:scale(1.05);}
+
+    #global-player{position:fixed;inset:0;background:#000;z-index:2000;display:none;}
+    #global-player video{width:100%;height:100%;object-fit:contain;}
+    .player-back{position:absolute;top:20px;left:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:8px 12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;z-index:3000;}
+
+    .btn-inicio-red{position:fixed;right:16px;bottom:90px;background:var(--red);color:#fff;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;z-index:150;box-shadow:0 20px 40px rgba(0,0,0,.45);display:none;}
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <div id="screen-login" class="screen active">
+    <div class="login">
+      <div class="login-box">
+        <h1>Entrar no ARV</h1>
+        <input type="text" id="login-name" placeholder="Quem está assistindo?">
+        <button onclick="doLogin()">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-home" class="screen">
+    <header class="app-header">
+      <div class="app-title">Para <span id="user-display">Kelton</span></div>
+      <div class="header-actions">
+        <div class="icon-btn"><i data-lucide="download"></i></div>
+        <div class="icon-btn"><i data-lucide="search"></i></div>
+        <div class="icon-btn" onclick="toggleTheme()"><i data-lucide="sun-moon"></i></div>
+      </div>
+    </header>
+
+    <div class="filters">
+      <div class="filter active" data-filter="inicio" onclick="setFilter('inicio', this)">Início</div>
+      <div class="filter" data-filter="novo" onclick="setFilter('novo', this)">Novidades</div>
+      <div class="filter" data-filter="series" onclick="setFilter('series', this)">Séries</div>
+      <div class="filter" data-filter="filmes" onclick="setFilter('filmes', this)">Filmes</div>
+    </div>
+
+    <div id="home-content"></div>
+
+    <button id="home-fab" class="btn-inicio-red" onclick="returnHome()">Início</button>
+  </div>
+
+  <div id="detail-view" class="detail-view">
+    <div class="hero-banner">
+      <img id="detail-hero-img" src="" alt="">
+      <div class="hero-close" onclick="closeDetails()"><i data-lucide="x" color="white"></i></div>
+    </div>
+
+    <div class="episode-list">
+      <h2 id="detail-title" style="font-size: 24px; margin-bottom: 10px;"></h2>
+
+      <div class="season-selector">
+        Temporada 1 <i data-lucide="chevron-down" size="18"></i>
+      </div>
+
+      <div id="episodes-container"></div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay" onclick="closeSheet()"></div>
+  <div id="bottom-sheet" class="bottom-sheet">
+    <div class="sheet-header">
+      <h3 id="sheet-title">Título</h3>
+      <div onclick="closeSheet()"><i data-lucide="x" color="white"></i></div>
+    </div>
+    <div class="sheet-option" onclick="openDetailsFromSheet()">
+      <i data-lucide="info"></i>
+      <span>Episódios e informações</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="download"></i>
+      <span>Baixar episódio</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="thumbs-down"></i>
+      <span>Não é para mim</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="thumbs-up"></i>
+      <span>Gostei</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="heart"></i>
+      <span>Amei!</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="x-circle"></i>
+      <span>Remover da fileira</span>
+    </div>
+  </div>
+
+  <nav class="bottom" id="bot-nav">
+    <div class="nav-item active"><i data-lucide="home"></i><span>Início</span></div>
+    <div class="nav-item"><i data-lucide="play-square"></i><span>Módulos</span></div>
+    <div class="nav-item"><i data-lucide="bell"></i><span>Alertas</span></div>
+    <div class="nav-item"><i data-lucide="settings"></i><span>Config</span></div>
+    <div class="nav-item"><i data-lucide="user-circle"></i><span>Meu Perfil</span></div>
+  </nav>
+
+  <div id="global-player">
+    <button class="player-back" onclick="closePlayer()"><i data-lucide="arrow-left"></i>Voltar</button>
+    <video id="v-player" controls></video>
+  </div>
+
+  <script>
+    const catalog = [
+      { id: 1, title: "Exploding Kittens", thumb: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400", banner: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800", progress: 40 },
+      { id: 2, title: "Stranger Things", thumb: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=400", banner: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=800", progress: 80 },
+      { id: 3, title: "Record of Ragnarok", thumb: "https://images.unsplash.com/photo-1541562232579-512a21360020?w=400", banner: "https://images.unsplash.com/photo-1541562232579-512a21360020?w=800", progress: 10 },
+      { id: 4, title: "Elite ARV", thumb: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=400", banner: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=800", progress: 0 },
+      { id: 5, title: "The Witcher", thumb: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400", banner: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800", progress: 50 }
+    ];
+
+    const categories = [
+      { label: "Continuar assistindo como Kelton", type: "inicio" },
+      { label: "Jogos para celulares", type: "novo" },
+      { label: "Séries premiadas", type: "series" },
+      { label: "Só na ARV", type: "series" },
+      { label: "Ação", type: "filmes" },
+      { label: "Documentários", type: "filmes" },
+      { label: "Minha Lista", type: "inicio" }
+    ];
+
+    let currentShow = null;
+
+    function doLogin() {
+      const name = document.getElementById('login-name').value || "Kelton";
+      document.getElementById('user-display').innerText = name;
+      document.getElementById('screen-login').classList.remove('active');
+      document.getElementById('screen-home').classList.add('active');
+      document.getElementById('bot-nav').style.display = 'flex';
+      document.getElementById('home-fab').style.display = 'block';
+      renderHome();
+    }
+
+    function renderHome() {
+      const container = document.getElementById('home-content');
+      container.innerHTML = '';
+
+      categories.forEach((cat) => {
+        const sec = document.createElement('div');
+        sec.className = 'section';
+        sec.dataset.filter = cat.type;
+        sec.innerHTML = `<div class="section-title">${cat.label}</div>`;
+
+        const car = document.createElement('div');
+        car.className = 'carousel';
+
+        for (let i = 0; i < 10; i++) {
+          const item = catalog[i % catalog.length];
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <img src="${item.thumb}" alt="${item.title}" onclick="openDetails(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+            <div class="progress-bar"><div class="progress-fill" style="width: ${item.progress}%"></div></div>
+            <div class="card-options" onclick='openSheet(${JSON.stringify(item).replace(/"/g, '&quot;')})'>
+              <i data-lucide="more-vertical" size="16" color="white"></i>
+            </div>
+          `;
+          car.appendChild(card);
+        }
+        sec.appendChild(car);
+        container.appendChild(sec);
+      });
+      lucide.createIcons();
+    }
+
+    function openDetails(item) {
+      currentShow = item;
+      const view = document.getElementById('detail-view');
+      document.getElementById('detail-hero-img').src = item.banner;
+      document.getElementById('detail-title').innerText = item.title;
+
+      const epContainer = document.getElementById('episodes-container');
+      epContainer.innerHTML = '';
+
+      for (let i = 1; i <= 10; i++) {
+        epContainer.innerHTML += `
+          <div class="episode-item">
+            <div class="ep-header">
+              <div class="ep-thumb" onclick="playVideo()">
+                <img src="${item.thumb}" alt="${item.title}">
+                <div class="play-icon"><i data-lucide="play" color="white" fill="white"></i></div>
+              </div>
+              <div class="ep-info">
+                <div class="ep-title">${i}. Episódio ${i}</div>
+                <div class="ep-meta">25m</div>
+              </div>
+              <i data-lucide="download" size="20"></i>
+            </div>
+            <p class="ep-desc">Nesta parte da jornada de ${item.title}, novos segredos são revelados e a tensão aumenta entre os protagonistas.</p>
+          </div>
+        `;
+      }
+
+      view.style.display = 'block';
+      lucide.createIcons();
+    }
+
+    function closeDetails() {
+      document.getElementById('detail-view').style.display = 'none';
+    }
+
+    function openSheet(item) {
+      currentShow = item;
+      document.getElementById('sheet-title').innerText = item.title;
+      document.getElementById('overlay').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('bottom-sheet').classList.add('sheet-active');
+      }, 10);
+    }
+
+    function closeSheet() {
+      document.getElementById('bottom-sheet').classList.remove('sheet-active');
+      setTimeout(() => {
+        document.getElementById('overlay').style.display = 'none';
+      }, 300);
+    }
+
+    function openDetailsFromSheet() {
+      closeSheet();
+      openDetails(currentShow);
+    }
+
+    function setFilter(type, el) {
+      document.querySelectorAll('.filter').forEach(filter => filter.classList.remove('active'));
+      if (el) {
+        el.classList.add('active');
+      }
+
+      document.querySelectorAll('#home-content .section').forEach(section => {
+        if (type === 'inicio') {
+          section.style.display = 'block';
+        } else {
+          section.style.display = section.dataset.filter === type ? 'block' : 'none';
+        }
+      });
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+    }
+
+    function playVideo() {
+      const p = document.getElementById('global-player');
+      const v = document.getElementById('v-player');
+      v.src = "https://www.w3schools.com/html/mov_bbb.mp4";
+      p.style.display = 'block';
+      v.play();
+    }
+
+    function closePlayer() {
+      const p = document.getElementById('global-player');
+      const v = document.getElementById('v-player');
+      v.pause();
+      p.style.display = 'none';
+    }
+
+    function returnHome() {
+      document.getElementById('home-content').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    window.onload = () => lucide.createIcons();
+  </script>
+
+  <script>
+    (() => {
+      const defineIfMissing = (name, fn) => {
+        if (!window[name]) {
+          window[name] = fn;
+        }
+      };
+
+      window.moduleKeys = window.moduleKeys || [
+        { key: "pacotes", label: "Pacotes e Módulos" },
+        { key: "arv", label: "Só na ARV" },
+        { key: "mentalidade", label: "Documentarios de mentalidade" },
+        { key: "inicio", label: "Inicio" },
+        { key: "intermediarios", label: "Módulos intermediarios" }
+      ];
+
+      window.moduleEpisodeImages = window.moduleEpisodeImages || {
+        pacotes: [
+          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=640&q=80&sat=-20",
+          "https://images.unsplash.com/photo-1485217988980-11786ced9454?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=640&q=80"
+        ],
+        arv: [
+          "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1499364615650-ec38552f4f34?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1487014679447-9f8336841d58?auto=format&fit=crop&w=640&q=80"
+        ],
+        mentalidade: [
+          "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1496317899792-9d7dbcd928a1?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1457089328109-e5d9bd499191?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1454922915609-78549ad709bb?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=640&q=80&sat=-30",
+          "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1434626881859-194d67b2b86f?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=640&q=80"
+        ],
+        inicio: [
+          "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1521335629791-ce4aec67dd47?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=640&q=80&sat=-20",
+          "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=640&q=80&sat=-20",
+          "https://images.unsplash.com/photo-1454165205744-3b78555e5572?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=640&q=80"
+        ],
+        intermediarios: [
+          "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1485217988980-11786ced9454?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=640&q=80",
+          "https://images.unsplash.com/photo-1434626881859-194d67b2b86f?auto=format&fit=crop&w=640&q=80"
+        ]
+      };
+
+      defineIfMissing("expandCarousel", (baseArray, count) => {
+        return Array.from({ length: count }, (_, i) => baseArray[i % baseArray.length]);
+      });
+
+      window.moduleEpisodes = window.moduleEpisodes || window.moduleKeys.reduce((acc, module) => {
+        const episodeImages = window.moduleEpisodeImages[module.key] || window.moduleEpisodeImages.pacotes;
+        acc[module.key] = Array.from({ length: 10 }, (_, idx) => ({
+          titulo: `${module.label} — Episódio ${idx + 1}`,
+          img: episodeImages[idx % episodeImages.length]
+        }));
+        return acc;
+      }, {});
+
+      window.baseSeriesImgs = window.baseSeriesImgs || [
+        "imagens/1A367628-73EA-4CAD-86F7-F4ECCDB64FAF.png",
+        "imagens/5D3ECED7-4E97-4D34-8887-4AFAD2BD6710.png",
+        "imagens/8AC5165D-345E-4F63-B362-037D2E872DDD.png",
+        "imagens/77EFDD95-FCD6-452C-BA87-F4E031CE8200.png",
+        "imagens/32850CDC-312F-4B4E-9221-6824B8AFF888.png",
+        "imagens/609255D5-4846-4FE7-8915-81ECFAB46C46.png",
+        "imagens/D21AB934-FCDB-46BE-8D3E-1CA8448DE25D.png",
+        "imagens/B017F1C7-AA19-4FD6-8C79-50BE06315997.jpeg",
+        "imagens/434C7272-2212-4251-BF5C-9DC3CC9DB174.png",
+        "imagens/030D457A-25AB-48DD-84CF-9159D9F1C227.png"
+      ];
+
+      window.baseFilmesImgs = window.baseFilmesImgs || [
+        "imagens/23CBB367-FB29-4513-84BB-33AC781897B5.png",
+        "imagens/2F7A1AF2-135E-40AE-A704-B0AC61056D68.png",
+        "imagens/96E54436-1E31-4F39-8401-146C2C883E78.png",
+        "imagens/FD5482DA-7C0E-45D1-8441-E18D90C44301.png",
+        "imagens/1C53B792-6C51-425F-80FA-E78D7694A3D5.png",
+        "imagens/2067991B-F3F7-4CC6-9CCD-00B54075773D.png",
+        "imagens/476D7F40-F4C7-418C-AA88-0F0909975B40.png",
+        "imagens/A2986097-CA04-4DBD-B793-C7E77587B2FF.png",
+        "imagens/7CD60E4E-BB79-4329-A917-94B8DCF23B50.png",
+        "imagens/A6D116F5-BAB3-4DCD-B722-876B951A6560.png"
+      ];
+
+      window.baseAnimesImgs = window.baseAnimesImgs || [
+        "imagens/F48EB169-B8B0-40B5-9E87-1F9612536648.png",
+        "imagens/9F7EB726-EF62-4580-9353-4EFA06C0F162.png",
+        "imagens/33C7E6F9-CB03-4941-94E1-D4BD5DA5CB9B.png",
+        "imagens/540DA89E-5729-4793-AE54-EFDA193AB31C.png",
+        "imagens/0A6E959C-99D7-4F93-A23A-4746D0557834.png",
+        "imagens/EAAAA7C2-270E-4E55-9CDD-D5BB583C6FA3.png",
+        "imagens/72A4F491-9765-444F-A111-F35EA8DA761A.png",
+        "imagens/1E27736A-CEB5-4699-8E14-3BB0BAF4A195.png",
+        "imagens/FE3BA1F6-1225-4F92-B6B9-52F7D77D7A24.png",
+        "imagens/3675C1E5-9175-4AA9-A2BA-641C33F5BF4D.png"
+      ];
+
+      window.lifestyleCasalThumbs = window.lifestyleCasalThumbs || [
+        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1480525319788-2c6a0b7f10ce?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=640&q=80"
+      ];
+
+      window.luxuryCarsThumbs = window.luxuryCarsThumbs || [
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=640&q=80&sat=-20",
+        "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?auto=format&fit=crop&w=640&q=80&sat=-20"
+      ];
+
+      window.viagensPremiumThumbs = window.viagensPremiumThumbs || [
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=640&q=80",
+        "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=640&q=80"
+      ];
+
+      window.searchTagsList = window.searchTagsList || [
+        "Lifestyle de casais",
+        "Carros de luxo",
+        "Viagens exclusivas",
+        "Empreendedorismo",
+        "Lei da atração",
+        "Fitness premium",
+        "Mentorias ARV",
+        "Alta performance",
+        "Investimentos",
+        "Experiências de spa",
+        "Moda premium",
+        "Colecionáveis",
+        "Imersões ao vivo",
+        "Minimalismo",
+        "Tecnologia e gadgets"
+      ];
+
+      window.searchItemsCatalog = window.searchItemsCatalog || window.searchTagsList.reduce((acc, tag, idx) => {
+        acc[tag] = [
+          { titulo: `${tag} — Conteúdo 1`, img: window.baseSeriesImgs[idx % window.baseSeriesImgs.length] },
+          { titulo: `${tag} — Conteúdo 2`, img: window.baseFilmesImgs[idx % window.baseFilmesImgs.length] },
+          { titulo: `${tag} — Conteúdo 3`, img: window.baseAnimesImgs[idx % window.baseAnimesImgs.length] }
+        ];
+        return acc;
+      }, {});
+
+      window.imagensSeries = window.imagensSeries || window.expandCarousel(window.baseSeriesImgs, 10);
+      window.imagensFilmes = window.imagensFilmes || window.expandCarousel(window.baseFilmesImgs, 10);
+      window.imagensAnimes = window.imagensAnimes || window.expandCarousel(window.baseAnimesImgs, 10);
+
+      window.seriesCatalog = window.seriesCatalog || [
+        {
+          titulo: "Lifestyle de casais",
+          banner: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80",
+          episodios: Array.from({ length: 8 }).map((_, i) => ({
+            numero: i + 1,
+            titulo: `Episódio ${i + 1}`,
+            descricao: "Continue assistindo com momentos únicos a dois.",
+            thumb: window.lifestyleCasalThumbs[i % window.lifestyleCasalThumbs.length]
+          }))
+        },
+        {
+          titulo: "Carros de luxo",
+          banner: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80",
+          episodios: Array.from({ length: 7 }).map((_, i) => ({
+            numero: i + 1,
+            titulo: `Capítulo ${i + 1}`,
+            descricao: "Explore o universo premium sobre quatro rodas.",
+            thumb: window.luxuryCarsThumbs[i % window.luxuryCarsThumbs.length]
+          }))
+        },
+        {
+          titulo: "Viagens exclusivas",
+          banner: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+          episodios: Array.from({ length: 6 }).map((_, i) => ({
+            numero: i + 3,
+            titulo: `Episódio ${i + 3}`,
+            descricao: "Destinos escolhidos para relaxar e inspirar.",
+            thumb: window.viagensPremiumThumbs[i % window.viagensPremiumThumbs.length]
+          }))
+        }
+      ];
+
+      defineIfMissing("renderSearchTags", (filter = "") => {
+        const container = document.getElementById("searchTags");
+        if (!container) return;
+        const normalized = filter.toLowerCase();
+        const tags = window.searchTagsList.filter(tag => tag.toLowerCase().includes(normalized));
+        container.innerHTML = tags.map(tag => `
+          <button class="search-chip" type="button" onclick="selectSearchTag('${tag}')"><i data-lucide="bookmark"></i>${tag}</button>
+        `).join("");
+        lucide.createIcons();
+      });
+
+      defineIfMissing("renderSearchResults", (filter = "") => {
+        const container = document.getElementById("searchResults");
+        const carousel = document.getElementById("searchCarousel");
+        if (!container) return;
+        const normalized = filter.toLowerCase();
+        const matchedTags = window.searchTagsList.filter(tag => tag.toLowerCase().includes(normalized));
+        const results = matchedTags.flatMap(tag => window.searchItemsCatalog[tag] || []);
+        if (results.length === 0) {
+          container.innerHTML = "<p class=\"payment-info\">Nenhum item encontrado para este tema.</p>";
+          if (carousel) {
+            carousel.innerHTML = "";
+          }
+          return;
+        }
+        container.innerHTML = results.map(item => `
+          <div class="search-result" onclick="openPlayer()">
+            <img src="${item.img}" alt="${item.titulo}">
+            <div>
+              <h4>${item.titulo}</h4>
+              <p>Toque para visualizar os itens relacionados.</p>
+            </div>
+          </div>
+        `).join("");
+        if (carousel) {
+          carousel.innerHTML = results.map(item => `
+            <div class="search-card" onclick="openPlayer()">
+              <img src="${item.img}" alt="${item.titulo}">
+              <span>${item.titulo}</span>
+            </div>
+          `).join("");
+        }
+      });
+
+      defineIfMissing("deriveFirstName", (email) => {
+        const local = email.split("@")[0] || email;
+        const cleaned = local.replace(/[^a-zA-ZÀ-ÿ]+/g, " ").trim();
+        const surnames = ["silva", "souza", "oliveira", "santos", "neves", "pereira", "almeida", "lima", "costa", "martins", "rocha", "ferreira", "gomes", "rodrigues", "dias", "barbosa", "araujo"];
+        const lower = cleaned.toLowerCase().replace(/\s+/g, "");
+        let candidate = "";
+        surnames.forEach(sn => {
+          const idx = lower.indexOf(sn);
+          if (idx > 2 && (candidate === "" || idx < candidate.length)) {
+            candidate = lower.slice(0, idx);
+          }
+        });
+        const basis = candidate || cleaned.split(/\s+/)[0] || local;
+        return basis.charAt(0).toUpperCase() + basis.slice(1);
+      });
+
+      defineIfMissing("login", () => {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        if (!email || !password) return;
+        localStorage.setItem("arv_email", email);
+        localStorage.setItem("arv_pass", password);
+        window.start();
+      });
+
+      defineIfMissing("start", () => {
+        const email = localStorage.getItem("arv_email");
+        if (!email) {
+          window.show("login");
+          return;
+        }
+        const profileLabel = window.deriveFirstName(email);
+        window.show("home");
+        const welcome = document.getElementById("welcome");
+        if (welcome) welcome.innerText = profileLabel;
+        const profileName = document.getElementById("profileName");
+        if (profileName) profileName.innerText = profileLabel;
+        if (window.renderHome) window.renderHome();
+        if (window.renderClips) window.renderClips();
+        window.renderSearchTags();
+        window.renderSearchResults("");
+        window.setActiveNav("home");
+      });
+
+      defineIfMissing("logout", () => {
+        localStorage.clear();
+        location.reload();
+      });
+
+      defineIfMissing("renderClips", () => {
+        const clipsContent = document.getElementById("clipsContent");
+        if (!clipsContent) return;
+        clipsContent.innerHTML = "";
+
+        window.seriesCatalog.forEach(series => {
+          const section = document.createElement("div");
+          section.className = "section";
+          section.innerHTML = `
+            <div class="section-title">${series.titulo}</div>
+          `;
+
+          series.episodios.forEach(ep => {
+            const epEl = document.createElement("div");
+            epEl.className = "episode";
+            epEl.innerHTML = `
+              <img src="${ep.thumb}" alt="Thumb do ${ep.titulo}">
+              <div>
+                <h4>${series.titulo} — ${ep.titulo}</h4>
+                <p>${ep.descricao}</p>
+                <button class="ghost-btn small-ghost" style="margin-top:8px" onclick="openPlayerFromClip('${series.titulo}','${ep.titulo}');event.stopPropagation();">Continuar episódio</button>
+              </div>
+            `;
+            epEl.onclick = () => window.openPlayerFromClip(series.titulo, ep.titulo);
+            section.appendChild(epEl);
+          });
+
+          clipsContent.appendChild(section);
+        });
+      });
+
+      defineIfMissing("montarCarousel", (carouselElement, imagens, moduleKey) => {
+        carouselElement.innerHTML = "";
+        imagens.forEach((img) => {
+          carouselElement.innerHTML += `
+            <div class="card" onclick="openEpisodes('${moduleKey}')">
+              <img src="${img}" alt="Capa">
+              <span class="badge">Novo</span>
+            </div>
+          `;
+        });
+      });
+
+      defineIfMissing("filterContent", (type, el) => {
+        if (type === "all") {
+          window.goHome();
+        }
+        const showAll = type === "all" || type === "categorias" || type === "inicio";
+        document.querySelectorAll(".section").forEach(sec => {
+          sec.style.display = showAll || sec.dataset.type === type ? "block" : "none";
+        });
+        document.querySelectorAll(".filter").forEach(f => f.classList.remove("active"));
+        el.classList.add("active");
+        window.toggleBadgeFlash();
+      });
+
+      defineIfMissing("openSearch", () => {
+        const overlay = document.getElementById("searchOverlay");
+        const input = document.getElementById("searchInput");
+        if (!overlay) return;
+        overlay.style.display = "flex";
+        if (input && !input.value) {
+          input.value = "Lifestyle de casais";
+        }
+        window.renderSearchTags(input?.value || "");
+        window.renderSearchResults(input?.value || "");
+        setTimeout(() => input?.focus(), 120);
+      });
+
+      defineIfMissing("closeSearch", () => {
+        const overlay = document.getElementById("searchOverlay");
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+      });
+
+      defineIfMissing("filterSearchTags", (value) => {
+        window.renderSearchTags(value || "");
+        window.renderSearchResults(value || "");
+      });
+
+      defineIfMissing("selectSearchTag", (tag) => {
+        const input = document.getElementById("searchInput");
+        if (input) {
+          input.value = tag;
+        }
+        window.renderSearchTags(tag);
+        window.renderSearchResults(tag);
+      });
+
+      defineIfMissing("openEpisodes", (moduleKey = "pacotes") => {
+        const episodes = window.moduleEpisodes[moduleKey] || window.moduleEpisodes.pacotes;
+        const content = document.getElementById("content");
+        if (!content) return;
+        content.innerHTML = "<div class=\"section\"><div class=\"section-title\">Episódios</div></div>";
+        episodes.forEach((episode, idx) => {
+          content.innerHTML += `
+            <div class="episode" onclick="openPlayer()">
+              <img src="${episode.img}" alt="Thumb episódio ${idx + 1}">
+              <div>
+                <h4>${episode.titulo}</h4>
+                <p>Descrição do episódio ${idx + 1}</p>
+              </div>
+            </div>`;
+        });
+      });
+
+      defineIfMissing("openPlayerFromClip", (seriesTitle, episodeTitle) => {
+        const player = document.getElementById("player");
+        if (player) {
+          player.dataset.current = `${seriesTitle} — ${episodeTitle}`;
+        }
+        window.openPlayer();
+      });
+
+      defineIfMissing("openPlayer", () => {
+        const player = document.getElementById("player");
+        if (!player) return;
+        player.style.display = "block";
+        window.toggleNavigationVisibility(false);
+        window.toggleHomeFab(false);
+      });
+
+      defineIfMissing("closePlayer", (goStart) => {
+        const player = document.getElementById("player");
+        if (!player) return;
+        player.style.display = "none";
+        window.toggleNavigationVisibility(true);
+        if (goStart) {
+          window.goHome();
+        } else {
+          window.toggleHomeFab(true);
+        }
+      });
+
+      defineIfMissing("toggleHomeFab", (show) => {
+        const fab = document.getElementById("homeFab");
+        if (!fab) return;
+        fab.style.display = show ? "block" : "none";
+      });
+
+      defineIfMissing("toggleNavigationVisibility", (show) => {
+        const bottom = document.getElementById("bottom");
+        if (bottom) {
+          bottom.style.display = show ? "flex" : "none";
+        }
+        document.querySelectorAll(".badge").forEach(badge => {
+          badge.style.display = show ? "inline-flex" : "none";
+        });
+      });
+
+      defineIfMissing("setActiveNav", (target) => {
+        document.querySelectorAll(".nav-item").forEach(item => {
+          const isTarget = item.dataset.target === target;
+          item.classList.toggle("active", isTarget);
+          const icon = item.dataset.icon;
+          if (icon) {
+            const i = item.querySelector("i");
+            if (i) {
+              i.setAttribute("data-lucide", isTarget ? `${icon}-filled` : icon);
+            }
+          }
+        });
+        lucide.createIcons();
+      });
+
+      defineIfMissing("go", (id, el) => {
+        if (id === "clips") window.renderClips();
+        if (id === "home") window.renderHome();
+        window.show(id);
+        const target = el?.dataset?.target || id;
+        window.setActiveNav(target);
+        window.toggleBadgeFlash();
+      });
+
+      defineIfMissing("show", (id) => {
+        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+        const target = document.getElementById(id);
+        if (!target) return;
+        target.classList.add("active");
+        const showNav = id !== "login";
+        const bottom = document.getElementById("bottom");
+        if (bottom) {
+          bottom.style.display = showNav ? "flex" : "none";
+        }
+        const player = document.getElementById("player");
+        const isPlayerOpen = player && player.style.display === "block";
+        window.toggleHomeFab(showNav && !isPlayerOpen);
+      });
+
+      defineIfMissing("goHome", () => {
+        if (window.renderHome) window.renderHome();
+        const homeNav = document.getElementById("navHome");
+        if (homeNav) {
+          window.go("home", homeNav);
+        } else {
+          window.show("home");
+          window.setActiveNav("home");
+        }
+      });
+
+      defineIfMissing("returnHome", () => {
+        window.closePlayer(true);
+      });
+
+      defineIfMissing("returnHomeFromPlayer", () => {
+        window.closePlayer(true);
+      });
+
+      defineIfMissing("openPlanos", () => {
+        window.show("planos");
+        window.setActiveNav("perfil");
+        window.toggleBadgeFlash();
+      });
+
+      defineIfMissing("openTermos", () => {
+        window.show("termos");
+        window.setActiveNav("perfil");
+        window.toggleBadgeFlash();
+      });
+
+      defineIfMissing("returnToProfile", () => {
+        window.show("perfil");
+        window.setActiveNav("perfil");
+        window.toggleBadgeFlash();
+      });
+
+      window.selectedPlan = window.selectedPlan || "";
+
+      defineIfMissing("selectPlano", (nome) => {
+        window.selectedPlan = nome;
+        document.querySelectorAll(".plan-card").forEach(card => {
+          card.classList.toggle("selected", card.dataset.plan === nome);
+        });
+      });
+
+      window.paymentQrCode = window.paymentQrCode || "00020126580014br.gov.bcb.pix013632ee26a2-085a-4766-a7c4-58ecdd1d59745204000053039865802BR5925NEVESKELTON202305161115416009Sao Paulo610901227-20062240520daqr1375965046879887630493A7";
+
+      defineIfMissing("renderPaymentQr", () => {
+        const qrContainer = document.getElementById("paymentQr");
+        if (!qrContainer || typeof QRCode === "undefined") return;
+        qrContainer.innerHTML = "";
+        new QRCode(qrContainer, {
+          text: window.paymentQrCode,
+          width: 140,
+          height: 140,
+          colorDark: "#111",
+          colorLight: "#fff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      });
+
+      defineIfMissing("openPaymentModal", (method, plan) => {
+        const modal = document.getElementById("paymentModal");
+        const title = document.getElementById("paymentTitle");
+        const planLabel = document.getElementById("paymentPlan");
+        const info = document.getElementById("paymentInfo");
+        if (!modal || !title || !planLabel || !info) return;
+        title.textContent = `Pagamento via ${method}`;
+        planLabel.textContent = `Plano selecionado: ${plan}`;
+        info.textContent = `Use este QR Code para finalizar o pagamento em ${method}. Banco Mercado Pago • Agência 0001 • Conta 86456720223.`;
+        window.renderPaymentQr();
+        modal.style.display = "flex";
+      });
+
+      defineIfMissing("closePaymentModal", () => {
+        const modal = document.getElementById("paymentModal");
+        if (modal) {
+          modal.style.display = "none";
+        }
+      });
+
+      defineIfMissing("confirmPayment", () => {
+        window.closePaymentModal();
+        if (window.selectedPlan) {
+          alert(`Pagamento recebido para o plano ${window.selectedPlan}.`);
+        }
+      });
+
+      defineIfMissing("toggleBadgeFlash", () => {
+        const badges = document.querySelectorAll(".badge");
+        badges.forEach(badge => badge.classList.add("badge-hidden"));
+        setTimeout(() => badges.forEach(badge => badge.classList.remove("badge-hidden")), 220);
+      });
+
+      defineIfMissing("trocarFoto", () => {
+        const input = document.getElementById("uploadFoto");
+        if (input) input.click();
+      });
+
+      const uploadFoto = document.getElementById("uploadFoto");
+      if (uploadFoto && !uploadFoto.dataset.listenerAttached) {
+        uploadFoto.dataset.listenerAttached = "true";
+        uploadFoto.addEventListener("change", e => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            const avatar = document.getElementById("avatar");
+            const avatarMini = document.getElementById("avatarMini");
+            if (avatar) avatar.src = reader.result;
+            if (avatarMini) avatarMini.src = reader.result;
+            const avatarMiniTop = document.getElementById("avatarMiniTop");
+            if (avatarMiniTop) {
+              avatarMiniTop.src = reader.result;
+            }
+            localStorage.setItem("arv_avatar", reader.result);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      const savedAvatar = localStorage.getItem("arv_avatar");
+      if (savedAvatar) {
+        const avatar = document.getElementById("avatar");
+        const avatarMini = document.getElementById("avatarMini");
+        if (avatar) avatar.src = savedAvatar;
+        if (avatarMini) avatarMini.src = savedAvatar;
+        const avatarMiniTop = document.getElementById("avatarMiniTop");
+        if (avatarMiniTop) {
+          avatarMiniTop.src = savedAvatar;
+        }
+      }
+
+      const savedTheme = localStorage.getItem("arv_theme") || "dark";
+      if (window.setTheme) {
+        window.setTheme(savedTheme, true);
+      }
+
+      defineIfMissing("setTheme", (mode, skipSave) => {
+        const isLight = mode === "light";
+        const storedMode = isLight ? "light" : "dark";
+        const root = document.documentElement;
+        root.style.setProperty("--bg", isLight ? "#f4f4f5" : "#080808");
+        root.style.setProperty("--card", isLight ? "#ffffff" : "#141414");
+        root.style.setProperty("--soft", isLight ? "#e5e7eb" : "#1f1f1f");
+        root.style.setProperty("--text", isLight ? "#0f172a" : "#fff");
+        root.style.setProperty("--muted", isLight ? "#475569" : "#9ca3af");
+        root.style.setProperty("--red", "#e50914");
+        root.style.setProperty("--badge", isLight ? "#2563eb" : "#e50914");
+        root.style.setProperty("--gold", isLight ? "#b48a2b" : "#c7a45b");
+        root.style.setProperty("--nav-bg", isLight ? "linear-gradient(180deg,rgba(255,255,255,.9),#e5e7eb)" : "linear-gradient(180deg,rgba(12,12,12,.85),#000)");
+        root.style.setProperty("--nav-border", isLight ? "rgba(0,0,0,.08)" : "rgba(255,255,255,.05)");
+        root.style.setProperty("--nav-text", isLight ? "#475569" : "#a5a5a5");
+        root.style.setProperty("--nav-active", isLight ? "#0f172a" : "#fff");
+        document.body.style.background = isLight
+          ? "#f4f4f5"
+          : "#080808";
+
+        document.querySelectorAll(".theme-card").forEach(card => {
+          card.classList.toggle("active", card.dataset.mode === storedMode);
+        });
+
+        if (!skipSave) {
+          localStorage.setItem("arv_theme", storedMode);
+        }
+      });
+
+      if (window.lucide && lucide.createIcons) {
+        lucide.createIcons();
+      }
+
+      if (window.start) {
+        window.start();
+      }
+
+      document.querySelectorAll(".toggle").forEach(toggle => {
+        if (!toggle.dataset.listenerAttached) {
+          toggle.dataset.listenerAttached = "true";
+          toggle.addEventListener("click", () => {
+            toggle.classList.toggle("active");
+          });
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
