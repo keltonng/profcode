@@ -79,6 +79,10 @@
     .progress-bar{position:absolute;bottom:0;left:0;width:100%;height:3px;background:rgba(255,255,255,0.2);}
     .progress-fill{height:100%;background:var(--red);width:40%;}
     .top10-badge{position:absolute;top:0;right:0;background:var(--red);color:#fff;font-size:8px;font-weight:900;padding:2px 4px;border-bottom-left-radius:4px;}
+    .card-label{position:absolute;left:6px;bottom:6px;background:var(--red);color:#fff;font-size:9px;font-weight:900;padding:4px 6px;border-radius:4px;display:flex;flex-direction:column;gap:2px;text-transform:uppercase;letter-spacing:.2px;}
+    .card-label .label-secondary{background:#fff;color:#111;border-radius:2px;padding:2px 4px;font-size:9px;font-weight:900;text-transform:none;}
+    .card-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);}
+    .card-play i{background:rgba(0,0,0,0.6);border:2px solid #fff;border-radius:50%;padding:8px;}
     .card-options-btn{position:absolute;bottom:5px;right:5px;background:rgba(0,0,0,0.5);border-radius:50%;padding:4px;display:grid;place-items:center;}
 
     /* DETALHES / EPISÓDIOS */
@@ -398,43 +402,173 @@
 
   <script>
     const categories = [
-      { id: "inicio", title: "Continuar assistindo", type: "inicio" },
-      { id: "pacotes", title: "Pacotes e Módulos", type: "Modalidade" },
-      { id: "arv", title: "Só na ARV", type: "packs" },
-      { id: "mentalidade", title: "Documentários de mentalidade", type: "Modalidade" },
-      { id: "novidades", title: "Novidades da Semana", type: "novidades" },
-      { id: "minhalista", title: "Minha Lista", type: "minhalista" },
-      { id: "categorias", title: "Todas as Categorias", type: "categorias" }
+      { id: "inicio", title: "Continuar assistindo como Kelton", type: "inicio" },
+      { id: "jogos", title: "Jogos para celulares", type: "Modalidade" },
+      { id: "humor", title: "Séries de humor absurdo", type: "Modalidade" },
+      { id: "japoneses", title: "Programas de TV japoneses", type: "categorias" },
+      { id: "animes", title: "Animes baseados em mangás – ficção científica e fantasia", type: "categorias" },
+      { id: "escolhas", title: "Principais escolhas do dia para você", type: "novidades" },
+      { id: "ficcao", title: "Séries de ficção científica e fantasia", type: "categorias" },
+      { id: "novidades", title: "Novidades na Netflix", type: "novidades" },
+      { id: "sugestoes", title: "Sugestões que você vai adorar", type: "packs" },
+      { id: "pressa", title: "Com pressa? Aproveite um destes sucessos com menos de 30 minutos", type: "packs" },
+      { id: "favoritos", title: "Favoritos conhecidos", type: "minhalista" },
+      { id: "aclamadas", title: "Séries aclamadas pela crítica", type: "minhalista" }
     ];
 
     const catalog = [
       {
         id: 1,
         title: "Exploding Kittens",
-        img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400",
-        banner: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800",
-        progress: 40
+        img: "https://m.media-amazon.com/images/M/MV5BMjA1OTY0OTM2OV5BMl5BanBnXkFtZTgwNjAyOTU3NjM@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMjA1OTY0OTM2OV5BMl5BanBnXkFtZTgwNjAyOTU3NjM@._V1_.jpg",
+        progress: 40,
+        showPlay: true
       },
       {
         id: 2,
         title: "Stranger Things",
-        img: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=400",
-        banner: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=800",
-        progress: 80
+        img: "https://m.media-amazon.com/images/M/MV5BMDZkYmVhNjMtNWU4MC00MDQxLWE3MjYtZGJlZDE0N2FlZGI0XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMDZkYmVhNjMtNWU4MC00MDQxLWE3MjYtZGJlZDE0N2FlZGI0XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
+        progress: 80,
+        showPlay: true,
+        top10: true,
+        label: "Novos episódios"
       },
       {
         id: 3,
         title: "Record of Ragnarok",
-        img: "https://images.unsplash.com/photo-1541562232579-512a21360020?w=400",
-        banner: "https://images.unsplash.com/photo-1541562232579-512a21360020?w=800",
-        progress: 15
+        img: "https://m.media-amazon.com/images/M/MV5BNDhlZGEyM2ItY2E0MS00ZGE2LWIyYmEtY2E0ZGY3YzgzN2Y4XkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BNDhlZGEyM2ItY2E0MS00ZGE2LWIyYmEtY2E0ZGY3YzgzN2Y4XkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg",
+        progress: 15,
+        showPlay: true
       },
       {
         id: 4,
         title: "Elite ARV",
-        img: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=400",
-        banner: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=800",
+        img: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=800",
+        banner: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=1200",
         progress: 0
+      },
+      {
+        id: 5,
+        title: "Lucifer",
+        img: "https://m.media-amazon.com/images/M/MV5BMTY3NTY4NTA0NV5BMl5BanBnXkFtZTgwMTc3NTE1NzM@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMTY3NTY4NTA0NV5BMl5BanBnXkFtZTgwMTc3NTE1NzM@._V1_.jpg"
+      },
+      {
+        id: 6,
+        title: "Desencanto",
+        img: "https://m.media-amazon.com/images/M/MV5BNDY4MjVmMjctMTU1Yy00ZjM5LWJjZTMtM2ZlM2Q3M2FjYWRlXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BNDY4MjVmMjctMTU1Yy00ZjM5LWJjZTMtM2ZlM2Q3M2FjYWRlXkEyXkFqcGdeQXVyMjkwOTAyMDU@._V1_.jpg"
+      },
+      {
+        id: 7,
+        title: "Devil May Cry",
+        img: "https://m.media-amazon.com/images/M/MV5BMTk1OTcwNTk2MF5BMl5BanBnXkFtZTgwNzY3MjY1MzE@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMTk1OTcwNTk2MF5BMl5BanBnXkFtZTgwNzY3MjY1MzE@._V1_.jpg"
+      },
+      {
+        id: 8,
+        title: "The Good Doctor",
+        img: "https://m.media-amazon.com/images/M/MV5BODg4NWE3ZGEtY2U4MS00YjVjLWExYjAtYjI4YTM0YmRjM2UyXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BODg4NWE3ZGEtY2U4MS00YjVjLWExYjAtYjI4YTM0YmRjM2UyXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg",
+        label: "Novidade",
+        top10: true
+      },
+      {
+        id: 9,
+        title: "Pokémon Horizontes",
+        img: "https://m.media-amazon.com/images/M/MV5BZTJkNWQ4ZWItNDNhOS00MTk1LWE4NzgtNTdmOGFhNmRmZTA1XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BZTJkNWQ4ZWItNDNhOS00MTk1LWE4NzgtNTdmOGFhNmRmZTA1XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg"
+      },
+      {
+        id: 10,
+        title: "Shibouyugi",
+        img: "https://m.media-amazon.com/images/M/MV5BZjZjODQ5YjEtYWM2MS00YWU2LTg4OGEtYjZlZDAxYWM4Y2UwXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BZjZjODQ5YjEtYWM2MS00YWU2LTg4OGEtYjZlZDAxYWM4Y2UwXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg",
+        label: "Novo episódio",
+        labelSecondary: "Assista já"
+      },
+      {
+        id: 11,
+        title: "Red Dead Redemption",
+        img: "https://m.media-amazon.com/images/M/MV5BMjS3Mzc1MDUwNF5BMl5BanBnXkFtZTgwNDU5MTQ1MzI@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMjS3Mzc1MDUwNF5BMl5BanBnXkFtZTgwNDU5MTQ1MzI@._V1_.jpg",
+        top10: true
+      },
+      {
+        id: 12,
+        title: "Dead Cells",
+        img: "https://m.media-amazon.com/images/M/MV5BZDY0YzI0OTctYjVhYy00MTVhLWE0NTgtYzhmYmQzZWIwYmY3XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BZDY0YzI0OTctYjVhYy00MTVhLWE0NTgtYzhmYmQzZWIwYmY3XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg"
+      },
+      {
+        id: 13,
+        title: "Rick and Morty",
+        img: "https://m.media-amazon.com/images/M/MV5BZjZkN2M5ODgtMjQ2OC00ZDE5LWIxZTYtZWIyYjE0OWNlGU5BMl5BanBnXkFtZTgwNjAyOTU3NjM@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BZjZkN2M5ODgtMjQ2OC00ZDE5LWIxZTYtZWIyYjE0OWNlGU5BMl5BanBnXkFtZTgwNjAyOTU3NjM@._V1_.jpg",
+        label: "Novas temporadas"
+      },
+      {
+        id: 14,
+        title: "Solo Leveling",
+        img: "https://m.media-amazon.com/images/M/MV5BYjM0M2IxNmItZDU0OS00YjA0LTg5YTYtNGUxOWQ4MTEzNWM3XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BYjM0M2IxNmItZDU0OS00YjA0LTg5YTYtNGUxOWQ4MTEzNWM3XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg",
+        label: "Novo episódio",
+        labelSecondary: "Assista já"
+      },
+      {
+        id: 15,
+        title: "One Punch Man",
+        img: "https://m.media-amazon.com/images/M/MV5BMTU1ODY4NjUyN15BMl5BanBnXkFtZTgwNzQwMjE5NjE@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMTU1ODY4NjUyN15BMl5BanBnXkFtZTgwNzQwMjE5NjE@._V1_.jpg",
+        label: "Novo episódio",
+        labelSecondary: "Assista já"
+      },
+      {
+        id: 16,
+        title: "Jujutsu Kaisen",
+        img: "https://m.media-amazon.com/images/M/MV5BNTM3OTFjMTAtOWE0MS00NjJmLWI1MjItNjk1N2I1NzYyZDU2XkEyXkFqcGdeQXVyMTA3OTIzODQ1._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BNTM3OTFjMTAtOWE0MS00NjJmLWI1MjItNjk1N2I1NzYyZDU2XkEyXkFqcGdeQXVyMTA3OTIzODQ1._V1_.jpg"
+      },
+      {
+        id: 17,
+        title: "Frieren",
+        img: "https://m.media-amazon.com/images/M/MV5BZDk1YzY1OTQtN2MzNi00YjVmLWE4NzctOWFiM2M0YzQyMWQ3XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BZDk1YzY1OTQtN2MzNi00YjVmLWE4NzctOWFiM2M0YzQyMWQ3XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg"
+      },
+      {
+        id: 18,
+        title: "Brooklyn Nine-Nine",
+        img: "https://m.media-amazon.com/images/M/MV5BMTM5NjM1OTY1MV5BMl5BanBnXkFtZTgwNzQ1MzU2NzM@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMTM5NjM1OTY1MV5BMl5BanBnXkFtZTgwNzQ1MzU2NzM@._V1_.jpg"
+      },
+      {
+        id: 19,
+        title: "Jogador Nº 1",
+        img: "https://m.media-amazon.com/images/M/MV5BMTk2NTQxMjM2MF5BMl5BanBnXkFtZTgwMTg1NDA5NDM@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMTk2NTQxMjM2MF5BMl5BanBnXkFtZTgwMTg1NDA5NDM@._V1_.jpg",
+        label: "Novidade"
+      },
+      {
+        id: 20,
+        title: "Jurassic World",
+        img: "https://m.media-amazon.com/images/M/MV5BMjA1NDI0NjMxM15BMl5BanBnXkFtZTgwOTg2OTY1NzE@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMjA1NDI0NjMxM15BMl5BanBnXkFtZTgwOTg2OTY1NzE@._V1_.jpg",
+        top10: true
+      },
+      {
+        id: 21,
+        title: "Como Treinar o Seu Dragão",
+        img: "https://m.media-amazon.com/images/M/MV5BMTM3MTM2NDU2MV5BMl5BanBnXkFtZTcwMDE1ODIyNw@@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMTM3MTM2NDU2MV5BMl5BanBnXkFtZTcwMDE1ODIyNw@@._V1_.jpg"
+      },
+      {
+        id: 22,
+        title: "Breaking Bad",
+        img: "https://m.media-amazon.com/images/M/MV5BMjhiMzgxZTctNDc1Ni00OTIxLTlhMTYtZTA3ZWFkODRkNmE2XkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg",
+        banner: "https://m.media-amazon.com/images/M/MV5BMjhiMzgxZTctNDc1Ni00OTIxLTlhMTYtZTA3ZWFkODRkNmE2XkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg"
       }
     ];
 
@@ -469,15 +603,17 @@
         const carousel = document.createElement("div");
         carousel.className = "carousel";
 
-        for (let i = 0; i < 8; i++) {
-          const item = catalog[i % catalog.length];
+        for (let i = 0; i < 12; i++) {
+          const item = catalog[(cIdx + i) % catalog.length];
           const card = document.createElement("div");
           card.className = "card";
 
           card.innerHTML = `
-            ${i === 0 ? '<div class="top10-badge">TOP 10</div>' : ''}
+            ${(i === 0 || item.top10) ? '<div class="top10-badge">TOP 10</div>' : ''}
             <img src="${item.img}" alt="Capa" onclick='openDetails(${JSON.stringify(item)})'>
-            <div class="progress-bar"><div class="progress-fill" style="width:${item.progress}%"></div></div>
+            ${item.showPlay ? '<div class="card-play"><i data-lucide="play" fill="white" size="18" color="white"></i></div>' : ''}
+            ${typeof item.progress === 'number' ? `<div class="progress-bar"><div class="progress-fill" style="width:${item.progress}%"></div></div>` : ''}
+            ${item.label ? `<div class="card-label"><span>${item.label}</span>${item.labelSecondary ? `<span class="label-secondary">${item.labelSecondary}</span>` : ''}</div>` : ''}
             <div class="card-options-btn" onclick='openSheet(${JSON.stringify(item)}, event)'>
               <i data-lucide="more-vertical" size="16" color="white"></i>
             </div>
@@ -528,7 +664,7 @@
       const title = document.getElementById("detail-title");
       const epContainer = document.getElementById("episodes-container");
 
-      heroImg.src = item.banner;
+      heroImg.src = item.banner || item.img;
       title.textContent = item.title;
       epContainer.innerHTML = "";
 
