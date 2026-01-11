@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ARV | Streaming Premium</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg: #000000;
+      --card-bg: #121212;
+      --text: #ffffff;
+      --muted: #a3a3a3;
+      --red: #e50914;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --nav-bg: rgba(0, 0, 0, 0.95);
+      --border: rgba(255, 255, 255, 0.1);
+      --gold: #c7a45b;
+    }
+
+    .light-mode {
+      --bg: #f5f5f5; --card-bg: #ffffff; --text: #000000; --muted: #666666; --nav-bg: #ffffff; --border: #dddddd;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; transition: background 0.3s; }
+
+    /* TELAS */
+    .screen { display: none; min-height: 100vh; padding-bottom: 100px; }
+    .screen.active { display: block; }
+
+    /* HEADER */
+    .app-header { padding: 40px 20px 10px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg); z-index: 100; }
+    .app-title { font-size: 22px; font-weight: 900; }
+
+    /* FILTROS (CORES PEDIDAS) */
+    .top-nav { display: flex; gap: 15px; padding: 10px 20px; overflow-x: auto; scrollbar-width: none; }
+    .filter-tab { padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border); font-size: 13px; font-weight: 700; color: var(--muted); cursor: pointer; white-space: nowrap; transition: 0.3s; }
+    .filter-tab.active-inicio { color: var(--blue) !important; border-color: var(--blue) !important; background: rgba(59, 130, 246, 0.1); }
+    .filter-tab.active-novo { color: var(--green) !important; border-color: var(--green) !important; background: rgba(34, 197, 94, 0.1); }
+
+    /* CARROSSEL */
+    .section { padding: 20px 0 0 16px; }
+    .section-title { font-size: 17px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+    .carousel { display: flex; gap: 10px; overflow-x: auto; padding-right: 20px; scrollbar-width: none; }
+    .carousel::-webkit-scrollbar { display: none; }
+
+    .card { flex: 0 0 115px; position: relative; border-radius: 4px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+    .card:active { transform: scale(0.95); }
+    .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+    .card .progress-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: #555; }
+    .card .progress-fill { height: 100%; background: var(--red); }
+    .top10-badge { position: absolute; top: 0; right: 0; background: var(--red); color: white; font-size: 8px; font-weight: 900; padding: 2px 4px; border-bottom-left-radius: 4px; }
+
+    /* TELA DE DETALHES (EPISÓDIOS) */
+    .detail-view { position: fixed; inset: 0; background: var(--bg); z-index: 500; overflow-y: auto; display: none; }
+    .hero-banner { width: 100%; aspect-ratio: 16/9; position: relative; }
+    .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-close { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border-radius: 50%; padding: 8px; z-index: 10; }
+    
+    .episode-list { padding: 20px; }
+    .episode-item { margin-bottom: 25px; }
+    .ep-header { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+    .ep-thumb { width: 130px; aspect-ratio: 16/9; position: relative; border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+    .ep-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.2); }
+    .ep-info { flex: 1; }
+    .ep-title { font-size: 14px; font-weight: 800; }
+    .ep-desc { font-size: 12px; color: var(--muted); line-height: 1.4; margin-top: 5px; }
+
+    /* BOTTOM SHEET MENU */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; }
+    .bottom-sheet { position: fixed; bottom: 0; left: 0; width: 100%; background: #222; border-radius: 15px 15px 0 0; z-index: 1001; padding: 20px; transform: translateY(100%); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .sheet-active { transform: translateY(0); }
+    .sheet-option { display: flex; align-items: center; gap: 15px; padding: 15px 0; color: #eee; font-weight: 600; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+    /* NAV INFERIOR */
+    .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: var(--nav-bg); display: none; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 200; backdrop-filter: blur(10px); }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--muted); font-size: 10px; font-weight: 600; text-decoration: none; cursor: pointer; }
+    .nav-item.active { color: var(--text); }
+
+    /* PLANOS */
+    .plan-screen { padding: 20px; }
+    .plan-card { background: #181818; border-radius: 10px; padding: 20px; margin-bottom: 15px; border: 1px solid #333; }
+    .plan-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .plan-price { color: var(--gold); font-weight: 900; font-size: 18px; }
+    .btn-red { background: var(--red); color: white; border: none; padding: 12px; border-radius: 4px; width: 100%; font-weight: 800; margin-top: 15px; }
+
+    .btn-floating-inicio { position: fixed; bottom: 90px; right: 20px; background: var(--red); color: white; border: none; padding: 12px 25px; border-radius: 30px; font-weight: 900; z-index: 400; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-size: 14px; }
+
+    .simple-screen { padding: 24px 18px; display: flex; flex-direction: column; gap: 14px; }
+    .simple-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .simple-card h3 { font-size: 15px; margin-bottom: 6px; }
+    .simple-card p { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+    .profile-row { display: flex; align-items: center; gap: 12px; }
+    .profile-pic { width: 34px; height: 34px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); object-fit: cover; }
+  </style>
+</head>
+<body>
+
+  <!-- TELA LOGIN -->
+  <div id="screen-login" class="screen active" style="display: flex; align-items: center; justify-content: center; background: #000;">
+    <div style="text-align: center; width: 100%; padding: 40px;">
+      <h1 style="color: var(--red); font-size: 45px; font-weight: 900; margin-bottom: 10px; letter-spacing: -2px;">ARV</h1>
+      <p style="color: #666; margin-bottom: 40px; font-weight: 600;">Streaming Ilimitado</p>
+      <input type="text" id="login-user" placeholder="Quem é você?" style="width: 100%; padding: 18px; background: #222; border: none; border-radius: 8px; color: #fff; text-align: center; font-size: 16px; margin-bottom: 20px; font-weight: 600;">
+      <button onclick="handleLogin()" style="width: 100%; padding: 16px; background: var(--red); color: #fff; border: none; border-radius: 8px; font-weight: 800; font-size: 16px;">VAMOS LÁ</button>
+    </div>
+  </div>
+
+  <!-- TELA HOME -->
+  <div id="screen-home" class="screen">
+    <header class="app-header">
+      <div class="app-title">Para <span id="user-name">Usuário</span></div>
+      <div style="display: flex; gap: 20px;">
+        <i data-lucide="tv" size="24"></i>
+        <i data-lucide="search" size="24"></i>
+        <div onclick="toggleTheme()" style="width: 28px; height: 28px; background: var(--blue); border-radius: 4px;"></div>
+      </div>
+    </header>
+
+    <div class="top-nav">
+      <div class="filter-tab" id="tab-inicio" onclick="setTab('inicio')">Início</div>
+      <div class="filter-tab" id="tab-novo" onclick="setTab('novo')">Novidades</div>
+      <div class="filter-tab">Séries</div>
+      <div class="filter-tab">Filmes</div>
+      <div class="filter-tab">Minha Lista</div>
+    </div>
+
+    <div id="catalog-container">
+      <!-- 7 Carrosséis injetados aqui -->
+    </div>
+
+    <button class="btn-floating-inicio" onclick="location.reload()">Início</button>
+  </div>
+
+  <div id="screen-clips" class="screen">
+    <div class="simple-screen">
+      <h2>Módulos</h2>
+      <div class="simple-card">
+        <h3>Suas trilhas</h3>
+        <p>Continue os módulos e veja novas trilhas liberadas.</p>
+      </div>
+      <div class="simple-card">
+        <h3>Download offline</h3>
+        <p>Salve episódios para acessar sem internet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-alertas" class="screen">
+    <div class="simple-screen">
+      <h2>Alertas</h2>
+      <div class="simple-card">
+        <h3>Sem notificações</h3>
+        <p>Acompanhe atualizações e comunicados oficiais aqui.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-config" class="screen">
+    <div class="simple-screen">
+      <h2>Configurações</h2>
+      <div class="simple-card">
+        <h3>Qualidade de streaming</h3>
+        <p>Defina preferências para economizar dados.</p>
+      </div>
+      <div class="simple-card">
+        <h3>Notificações</h3>
+        <p>Escolha quando receber alertas da plataforma.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-perfil" class="screen">
+    <div class="simple-screen">
+      <h2>Meu Perfil</h2>
+      <div class="simple-card">
+        <div class="profile-row">
+          <img class="profile-pic" src="https://i.imgur.com/6VBx3io.jpg" alt="Avatar mini">
+          <div>
+            <h3 id="profile-name">Usuário</h3>
+            <p>Membro Premium</p>
+          </div>
+        </div>
+      </div>
+      <div class="simple-card">
+        <h3>Meus planos</h3>
+        <p>Visualize benefícios e renovações.</p>
+      </div>
+      <div class="simple-card">
+        <h3>Sair</h3>
+        <p>Encerrar sessão atual.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA DE PLANOS -->
+  <div id="screen-planos" class="screen plan-screen">
+    <h2 style="margin-bottom: 20px; font-weight: 900;">Escolha seu plano</h2>
+    <div class="plan-card">
+      <div class="plan-header">
+        <div><h3>Básico</h3><p style="color:#777; font-size: 12px;">HD, 1 tela</p></div>
+        <div class="plan-price">R$ 10/mês</div>
+      </div>
+      <button class="btn-red" onclick="alert('Redirecionando para pagamento...')">Selecionar</button>
+    </div>
+    <div class="plan-card" style="border-color: var(--gold);">
+      <div class="plan-header">
+        <div><h3>Premium Gold</h3><p style="color:#777; font-size: 12px;">4K + HDR, 4 telas</p></div>
+        <div class="plan-price">R$ 25/mês</div>
+      </div>
+      <button class="btn-red" style="background: var(--gold);" onclick="alert('Redirecionando para pagamento...')">Selecionar Gold</button>
+    </div>
+  </div>
+
+  <!-- TELA DETALHES -->
+  <div id="detail-view" class="detail-view">
+    <div class="hero-banner">
+      <div class="hero-close" onclick="closeDetails()"><i data-lucide="x" color="white"></i></div>
+      <img id="det-img" src="" alt="">
+    </div>
+    <div class="episode-list">
+      <h2 id="det-title" style="margin-bottom: 20px;"></h2>
+      <div style="background: #333; padding: 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 10px; margin-bottom: 25px; font-weight: 700; font-size: 14px;">
+        Temporada 1 <i data-lucide="chevron-down" size="16"></i>
+      </div>
+      <div id="ep-container"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM SHEET -->
+  <div id="overlay" class="overlay" onclick="closeSheet()"></div>
+  <div id="bottom-sheet" class="bottom-sheet">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+      <h3 id="sheet-title" style="font-weight: 800;">Título</h3>
+      <i data-lucide="x" onclick="closeSheet()"></i>
+    </div>
+    <div class="sheet-option" onclick="openDetailsFromSheet()"><i data-lucide="info"></i> Episódios e informações</div>
+    <div class="sheet-option"><i data-lucide="download"></i> Baixar episódio</div>
+    <div class="sheet-option"><i data-lucide="thumbs-up"></i> Gostei</div>
+    <div class="sheet-option"><i data-lucide="heart"></i> Amei!</div>
+    <div class="sheet-option"><i data-lucide="share-2"></i> Compartilhar</div>
+    <div class="sheet-option" style="color: var(--red);"><i data-lucide="trash-2"></i> Remover da fileira</div>
+  </div>
+
+  <!-- NAV BOTTOM -->
+  <nav class="bottom-nav" id="main-nav">
+    <div class="nav-item active" data-target="home" data-icon="home" onclick="go('home', this)"><i data-lucide="home"></i>Início</div>
+    <div class="nav-item" data-target="clips" data-icon="play-circle" onclick="go('clips', this)"><i data-lucide="play-circle"></i>Módulos</div>
+    <div class="nav-item" data-target="planos" data-icon="credit-card" onclick="go('planos', this)"><i data-lucide="credit-card"></i>Planos</div>
+    <div class="nav-item" data-target="config" data-icon="settings" onclick="go('config', this)"><i data-lucide="settings"></i>Config</div>
+    <div class="nav-item" data-target="perfil" onclick="go('perfil', this)"><i data-lucide="user"></i>Perfil</div>
+  </nav>
+
+  <script>
+    // BANCO DE DADOS DE SÉRIES (Expandido)
+    const seriesDB = [
+      { id: 1, title: "Exploding Kittens", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400", progress: 85 },
+      { id: 2, title: "Stranger Things", img: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=400", progress: 40 },
+      { id: 3, title: "Record of Ragnarok", img: "https://images.unsplash.com/photo-1541562232579-512a21360020?w=400", progress: 10 },
+      { id: 4, title: "The Witcher", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400", progress: 60 },
+      { id: 5, title: "Arcane", img: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=400", progress: 95 },
+      { id: 6, title: "Elite ARV", img: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400", progress: 0 },
+      { id: 7, title: "Dark", img: "https://images.unsplash.com/photo-1505633573513-f44043b27585?w=400", progress: 30 },
+      { id: 8, title: "Cobra Kai", img: "https://images.unsplash.com/photo-1552072805-2a9039d00e57?w=400", progress: 50 },
+      { id: 9, title: "One Piece", img: "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?w=400", progress: 100 },
+      { id: 10, title: "The Crown", img: "https://images.unsplash.com/photo-1519373344801-14c1f9539c9c?w=400", progress: 20 },
+      { id: 11, title: "Black Mirror", img: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400", progress: 0 },
+      { id: 12, title: "The Last of Us", img: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=400", progress: 45 }
+    ];
+
+    const carouselTitles = [
+      "Continuar assistindo",
+      "Séries Premiadas",
+      "Originais ARV",
+      "Em Alta no Brasil",
+      "Anime e Games",
+      "Documentários Impactantes",
+      "Filmes de Ação Frenética"
+    ];
+
+    let currentItem = null;
+
+    function handleLogin() {
+      const user = document.getElementById('login-user').value || "Kelton";
+      document.getElementById('user-name').innerText = user;
+      document.getElementById('profile-name').innerText = user;
+      document.getElementById('screen-login').classList.remove('active');
+      showScreen('home');
+      document.getElementById('main-nav').style.display = 'flex';
+      renderCatalog();
+      setActiveNav('home');
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const screen = document.getElementById(`screen-${id}`);
+      if (screen) {
+        screen.classList.add('active');
+      }
+    }
+
+    function setActiveNav(target) {
+      document.querySelectorAll('#main-nav .nav-item').forEach(item => {
+        const isActive = item.dataset.target === target;
+        item.classList.toggle('active', isActive);
+        const icon = item.dataset.icon;
+        if (icon) {
+          const iconEl = item.querySelector('i');
+          if (iconEl) {
+            iconEl.setAttribute('data-lucide', isActive ? `${icon}-filled` : icon);
+          }
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function go(target, el) {
+      showScreen(target);
+      if (target === 'home') {
+        renderCatalog();
+      }
+      setActiveNav(target);
+    }
+
+    function renderCatalog() {
+      const container = document.getElementById('catalog-container');
+      container.innerHTML = '';
+      
+      carouselTitles.forEach((title, cIdx) => {
+        const sec = document.createElement('div');
+        sec.className = 'section';
+        sec.innerHTML = `<div class="section-title">${title}</div>`;
+        
+        const car = document.createElement('div');
+        car.className = 'carousel';
+        
+        for(let i=0; i<10; i++) {
+          const item = seriesDB[(cIdx + i) % seriesDB.length];
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            ${i === 0 ? '<div class="top10-badge">TOP 10</div>' : ''}
+            <img src="${item.img}" onclick='openDetails(${JSON.stringify(item)})'>
+            <div class="progress-bar"><div class="progress-fill" style="width: ${item.progress}%"></div></div>
+            <div style="position:absolute; bottom:5px; right:5px" onclick='openSheet(${JSON.stringify(item)})'>
+              <i data-lucide="more-vertical" size="18" color="white"></i>
+            </div>
+          `;
+          car.appendChild(card);
+        }
+        sec.appendChild(car);
+        container.appendChild(sec);
+      });
+      lucide.createIcons();
+    }
+
+    function openDetails(item) {
+      currentItem = item;
+      document.getElementById('det-img').src = item.img;
+      document.getElementById('det-title').innerText = item.title;
+      
+      const epCont = document.getElementById('ep-container');
+      epCont.innerHTML = '';
+      
+      for(let i=1; i<=10; i++) {
+        epCont.innerHTML += `
+          <div class="episode-item">
+            <div class="ep-header">
+              <div class="ep-thumb" onclick="alert('Iniciando Player...')">
+                <img src="${item.img}">
+                <div class="play-overlay"><i data-lucide="play" fill="white" size="20"></i></div>
+              </div>
+              <div class="ep-info">
+                <div class="ep-title">${i}. Episódio ${i}</div>
+                <div style="font-size:11px; color:#777">24 min</div>
+              </div>
+              <i data-lucide="download" size="20"></i>
+            </div>
+            <p class="ep-desc">Neste capítulo emocionante de ${item.title}, novos mistérios surgem enquanto o destino de todos os envolvidos fica por um fio.</p>
+          </div>
+        `;
+      }
+      document.getElementById('detail-view').style.display = 'block';
+      lucide.createIcons();
+    }
+
+    function closeDetails() { document.getElementById('detail-view').style.display = 'none'; }
+
+    function openSheet(item) {
+      currentItem = item;
+      document.getElementById('sheet-title').innerText = item.title;
+      document.getElementById('overlay').style.display = 'block';
+      setTimeout(() => document.getElementById('bottom-sheet').classList.add('sheet-active'), 10);
+      lucide.createIcons();
+    }
+
+    function closeSheet() {
+      document.getElementById('bottom-sheet').classList.remove('sheet-active');
+      setTimeout(() => document.getElementById('overlay').style.display = 'none', 300);
+    }
+
+    function openDetailsFromSheet() { closeSheet(); openDetails(currentItem); }
+
+    function setTab(type) {
+      document.getElementById('tab-inicio').className = 'filter-tab';
+      document.getElementById('tab-novo').className = 'filter-tab';
+      if(type === 'inicio') document.getElementById('tab-inicio').classList.add('active-inicio');
+      else document.getElementById('tab-novo').classList.add('active-novo');
+    }
+
+    function toggleTheme() { document.body.classList.toggle('light-mode'); }
+
+    window.onload = () => lucide.createIcons();
+  </script>
+</body>
+</html>
