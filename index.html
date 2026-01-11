@@ -1,11 +1,365 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ARV | Netflix Premium 100% Fiel</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{
+      --bg:#000000;
+      --card:#141414;
+      --soft:#1f1f1f;
+      --text:#fff;
+      --muted:#9ca3af;
+      --red:#e50914;
+      --badge:#e50914;
+      --gold:#c7a45b;
+      --nav-bg:linear-gradient(180deg,rgba(12,12,12,.85),#000);
+      --nav-border:rgba(255,255,255,.05);
+      --nav-text:#a5a5a5;
+      --nav-active:#fff;
+      --blue:#3b82f6;
+      --green:#22c55e;
+      --border:rgba(255,255,255,.1);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif;}
+    body{background:var(--bg);color:var(--text);padding-bottom:90px;min-height:100vh;overflow-x:hidden;transition:.3s;}
+
+    /* TELAS */
+    .screen{display:none;min-height:100vh;animation:fadeIn .3s ease;}
+    .screen.active{display:block;}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+    /* LOGIN */
+    .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#000;}
+    .login-box{width:100%;max-width:360px;background:var(--card);border-radius:18px;padding:30px;box-shadow:0 12px 40px rgba(0,0,0,.45);border:1px solid var(--soft);text-align:center;}
+    .login-box h1{margin-bottom:18px;font-weight:900;color:var(--red);font-size:32px;}
+    .login-box input{width:100%;padding:14px;margin-bottom:12px;background:#000;border:1px solid #333;border-radius:10px;color:#fff;}
+    .login-box button{width:100%;padding:14px;background:var(--red);border:none;border-radius:10px;color:#fff;font-weight:800;cursor:pointer;}
+
+    /* HEADER */
+    .app-header{padding:20px 16px 6px;display:flex;align-items:center;justify-content:space-between;}
+    .app-title{font-size:24px;font-weight:900;color:var(--red);}
+    .header-actions{display:flex;align-items:center;gap:12px;}
+    .icon-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;cursor:pointer;}
+
+    /* FILTROS */
+    .filters-container{padding:10px 16px;overflow-x:auto;scrollbar-width:none;}
+    .filters-container::-webkit-scrollbar{display:none;}
+    .filters-row{display:flex;gap:10px;white-space:nowrap;}
+    .filter{padding:8px 16px;border:1px solid transparent;border-radius:20px;font-size:13px;cursor:pointer;color:var(--muted);transition:.25s;background:var(--soft);font-weight:700;}
+    .filter.active{border-color:var(--red);color:var(--red);}
+
+    /* HERO */
+    .hero{position:relative;margin:10px 16px 18px;border-radius:16px;overflow:hidden;background:#111;height:250px;}
+    .hero img{width:100%;height:100%;object-fit:cover;opacity:.7;}
+    .hero-info{position:absolute;left:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;}
+    .hero-title{font-size:26px;font-weight:900;}
+    .primary-btn,.ghost-btn{border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;}
+    .primary-btn{background:#fff;color:#000;}
+    .ghost-btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.18);}
+    .small-ghost{padding:8px 12px;font-size:12px;}
+
+    /* CARDS */
+    .section{padding:22px 0 16px 16px;}
+    .section-title{font-size:17px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+    .section-title::before{content:"";width:3px;height:18px;background:var(--red);border-radius:10px;}
+    .carousel{display:flex;gap:10px;overflow-x:auto;padding-right:20px;scrollbar-width:none;}
+    .carousel::-webkit-scrollbar{display:none;}
+
+    .card{flex:0 0 115px;position:relative;border-radius:4px;overflow:hidden;cursor:pointer;transition:transform .2s ease;background:var(--soft);aspect-ratio:2/3;}
+    .card:hover{transform:scale(1.05);}
+    .card img{width:100%;height:100%;object-fit:cover;display:block;}
+    .progress-bar{position:absolute;bottom:0;left:0;width:100%;height:3px;background:rgba(255,255,255,0.2);}
+    .progress-fill{height:100%;background:var(--red);width:40%;}
+    .top10-badge{position:absolute;top:0;right:0;background:var(--red);color:#fff;font-size:8px;font-weight:900;padding:2px 4px;border-bottom-left-radius:4px;}
+    .card-options-btn{position:absolute;bottom:5px;right:5px;background:rgba(0,0,0,0.5);border-radius:50%;padding:4px;display:grid;place-items:center;}
+
+    /* DETALHES / EPISÓDIOS */
+    .detail-view{position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;display:none;padding-bottom:50px;}
+    .hero-banner{width:100%;aspect-ratio:16/9;position:relative;}
+    .hero-banner img{width:100%;height:100%;object-fit:cover;}
+    .hero-close{position:absolute;top:20px;right:20px;background:rgba(0,0,0,0.6);border-radius:50%;padding:8px;z-index:10;}
+    .hero-play{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);background:rgba(0,0,0,0.5);border:2px solid #fff;border-radius:50%;padding:15px;}
+
+    .episode-list-container{padding:20px;}
+    .season-selector{display:flex;align-items:center;gap:8px;font-weight:800;margin-bottom:20px;background:#262626;padding:8px 12px;border-radius:4px;width:fit-content;}
+
+    .episode-item{margin-bottom:25px;}
+    .ep-main{display:flex;align-items:center;gap:15px;margin-bottom:10px;}
+    .ep-thumb{width:130px;aspect-ratio:16/9;position:relative;border-radius:4px;overflow:hidden;flex-shrink:0;}
+    .ep-thumb img{width:100%;height:100%;object-fit:cover;}
+    .ep-play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.2);}
+    .ep-info{flex:1;}
+    .ep-title{font-size:14px;font-weight:800;margin-bottom:2px;}
+    .ep-meta{font-size:12px;color:var(--muted);}
+    .ep-desc{font-size:13px;color:var(--muted);line-height:1.4;}
+
+    /* BOTTOM SHEET */
+    .arv-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:none;}
+    .arv-bottom-sheet{position:fixed;bottom:0;left:0;width:100%;background:#222;border-radius:15px 15px 0 0;z-index:2001;padding:20px;transform:translateY(100%);transition:.3s;}
+    .arv-sheet-active{transform:translateY(0);}
+    .arv-sheet-option{display:flex;align-items:center;gap:15px;padding:15px 0;color:#eee;font-weight:600;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+
+    /* NAVEGAÇÃO INFERIOR */
+    .bottom{position:fixed;bottom:0;left:0;width:100%;height:74px;background:var(--nav-bg);backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;z-index:999;border-top:1px solid var(--nav-border);}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--nav-text);cursor:pointer;font-weight:600;}
+    .nav-item.active{color:var(--nav-active);}
+    .profile-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35);}
+
+    /* PERFIL */
+    .profile{padding:30px;}
+    .profile-header{display:flex;gap:16px;align-items:center;}
+    .profile-header img{width:90px;height:90px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;cursor:pointer;}
+    .profile-header h2{margin-bottom:4px;}
+    .profile-btn{margin-top:14px;padding:16px;background:var(--card);border-radius:14px;cursor:pointer;color:var(--text);border:1px solid var(--soft);}
+
+    /* ALERTAS/TERMOS */
+    .clips-header{padding:18px 16px 0;display:flex;flex-direction:column;gap:6px;}
+    .clips-header h1{font-size:22px;font-weight:900;}
+    .clips-sub{color:var(--muted);font-size:13px;line-height:1.4;}
+    .episode{display:flex;gap:14px;background:var(--card);padding:12px;border-radius:14px;margin:10px 16px;cursor:pointer;border:1px solid rgba(255,255,255,.04);}
+
+    /* PLANOS */
+    .plan-card{display:flex;flex-direction:column;gap:6px;background:var(--card);padding:20px;border-radius:18px;border:1px solid var(--soft);transition:border-color .2s ease,box-shadow .2s ease;margin:15px 0;position:relative;}
+    .plan-card.selected{border-color:var(--gold);box-shadow:0 20px 40px rgba(0,0,0,.35);}
+    .plan-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+    .plan-price{font-size:20px;font-weight:900;color:var(--gold);text-align:right;}
+    .plan-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:800;}
+    .payments-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+    .pay-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:700;color:var(--text);cursor:pointer;}
+    .pay-chip i{width:16px;height:16px;}
+    .plan-section-title{display:flex;align-items:center;gap:10px;margin:10px 0 4px 0;font-weight:800;color:var(--muted);}
+    .plan-section-title i{width:18px;height:18px;}
+
+    .payment-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:1001;padding:24px;}
+    .payment-card{width:100%;max-width:420px;background:var(--card);border-radius:18px;padding:18px;border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 40px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:12px;}
+    .payment-head{display:flex;align-items:center;justify-content:space-between;}
+    .payment-title{font-weight:900;font-size:18px;}
+    .payment-qr{width:180px;height:180px;border-radius:16px;background:rgba(255,255,255,.08);display:grid;place-items:center;align-self:center;border:1px solid rgba(255,255,255,.12);}
+    .payment-qr canvas{width:140px;height:140px;}
+    .payment-info{font-size:12px;color:var(--muted);line-height:1.4;}
+
+    /* PLAYER */
+    #player{position:fixed;inset:0;background:#000;display:none;z-index:9999;}
+    #player video{width:100%;height:100%;}
+    .player-close{position:absolute;top:20px;right:20px;z-index:10000;color:white;cursor:pointer;}
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+
+  <!-- TELA HOME -->
+  <div id="screen-home" class="screen active">
+    <header class="app-header">
+      <div class="app-title">Para Kelton</div>
+      <div class="header-icons">
+        <i data-lucide="download"></i>
+        <i data-lucide="search"></i>
+      </div>
+    </header>
+
+    <!-- FILTROS UNIFICADOS -->
+    <div class="filter-scroll">
+      <div class="filters-row">
+        <button class="filter-tab" id="f-inicio" onclick="applyFilter('inicio')">Início</button>
+        <button class="filter-tab" onclick="applyFilter('modalidade')">Modalidade</button>
+        <button class="filter-tab" onclick="applyFilter('packs')">Packs</button>
+        <button class="filter-tab" onclick="applyFilter('categorias')">Categorias</button>
+        <button class="filter-tab" id="f-novo" onclick="applyFilter('novo')">Novidades</button>
+        <button class="filter-tab" onclick="applyFilter('minha-lista')">Minha Lista</button>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-card">
+        <img src="https://images8.alphacoders.com/135/1352353.jpeg" alt="Kung Fu Panda 4">
+        <div class="hero-overlay">
+          <div class="hero-tag">Top 6 em filmes para crianças hoje</div>
+          <div class="hero-btns">
+            <button class="btn-play"><i data-lucide="play" fill="black"></i> Assistir</button>
+            <button class="btn-list"><i data-lucide="plus"></i> Minha lista</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATALOGO -->
+    <div id="catalog-container"></div>
+
+    <button class="btn-floating-inicio" onclick="location.reload()">Início</button>
+  </div>
+
+  <!-- TELA DETALHES -->
+  <div id="detail-view" class="detail-view">
+    <div class="hero-banner">
+      <div class="hero-close" onclick="closeDetails()"><i data-lucide="x" color="white"></i></div>
+      <img id="det-banner" src="" alt="">
+    </div>
+    <div class="episode-list-container">
+      <h2 id="det-title" style="margin-bottom: 20px;">Título</h2>
+      <div class="season-selector">Temporada 1 <i data-lucide="chevron-down" size="16"></i></div>
+      <div id="ep-list-content"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM SHEET -->
+  <div id="overlay" class="overlay" onclick="closeSheet()"></div>
+  <div id="bottom-sheet" class="bottom-sheet">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+      <h3 id="sheet-title" style="font-weight: 800;">Título</h3>
+      <i data-lucide="x" onclick="closeSheet()"></i>
+    </div>
+    <div class="sheet-option" onclick="openDetailsFromSheet()"><i data-lucide="info"></i> Episódios e informações</div>
+    <div class="sheet-option"><i data-lucide="download"></i> Baixar episódio</div>
+    <div class="sheet-option"><i data-lucide="thumbs-up"></i> Gostei</div>
+    <div class="sheet-option"><i data-lucide="heart"></i> Amei!</div>
+    <div class="sheet-option" style="color: var(--red);"><i data-lucide="trash-2"></i> Remover da fileira</div>
+  </div>
+
+  <!-- NAV BOTTOM -->
+  <nav class="bottom-nav">
+    <div class="nav-item active"><i data-lucide="home"></i>Início</div>
+    <div class="nav-item"><i data-lucide="play-square"></i>Clipes</div>
+    <div class="nav-item">
+      <img src="https://occ-0-395-325.1.nflxso.net/dnm/api/v6/K6ndS2ZRRm2nw-ohxgu7BupSj4E/AAAABXpxA8Yf3f_g6W790P93pS6L0T0mFz_h6Y5_P-nI_F3f9H7f8L_R_R.png" style="width:24px; border-radius:3px;">
+      Minha Netflix
+    </div>
+  </nav>
+
+  <script>
+    // Banco de Dados com as séries dos seus prints
+    const seriesList = [
+      { title: "Exploding Kittens", img: "https://m.media-amazon.com/images/M/MV5BMjA1OTY0OTM2OV5BMl5BanBnXkFtZTgwNjAyOTU3NjM@._V1_.jpg", progress: 40 },
+      { title: "Stranger Things", img: "https://m.media-amazon.com/images/M/MV5BMDZkYmVhNjMtNWU4MC00MDQxLWE3MjYtZGJlZDE0N2FlZGI0XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg", label: "Novos episódios", top10: true },
+      { title: "Record of Ragnarok", img: "https://m.media-amazon.com/images/M/MV5BNDhlZGEyM2ItY2E0MS00ZGE2LWIyYmEtY2E0ZGY3YzgzN2Y4XkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg", progress: 15 },
+      { title: "Red Dead Redemption", img: "https://m.media-amazon.com/images/M/MV5BMjS3Mzc1MDUwNF5BMl5BanBnXkFtZTgwNDU5MTQ1MzI@._V1_.jpg", top10: true },
+      { title: "Dead Cells", img: "https://m.media-amazon.com/images/M/MV5BZDY0YzI0OTctYjVhYy00MTVhLWE0NTgtYzhmYmQzZWIwYmY3XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg", label: "Novidade" },
+      { title: "One Piece", img: "https://m.media-amazon.com/images/M/MV5BMmIwZWYxY2ItN2ZiZC00NTg3LWIxKw@@._V1_.jpg", label: "Assista já" },
+      { title: "Rick and Morty", img: "https://m.media-amazon.com/images/M/MV5BZjZkN2M5ODgtMjQ2OC00ZDE5LWIxZTYtZWIyYjE0OWNlGU5BMl5BanBnXkFtZTgwNjAyOTU3NjM@._V1_.jpg", label: "Novas temporadas" },
+      { title: "Breaking Bad", img: "https://m.media-amazon.com/images/M/MV5BMjhiMzgxZTctNDc1Ni00OTIxLTlhMTYtZTA3ZWFkODRkNmE2XkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg" },
+      { title: "The Good Doctor", img: "https://m.media-amazon.com/images/M/MV5BODg4NWE3ZGEtY2U4MS00YjVjLWExYjAtYjI4YTM0YmRjM2UyXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg", label: "Novidade" },
+      { title: "Demon Slayer", img: "https://m.media-amazon.com/images/M/MV5BZjZkN2M5ODgtMjQ2OC00ZDE5LWIxZTYtZWIyYjE0OWNlGU5BMl5BanBnXkFtZTgwNjAyOTU3NjM@._V1_.jpg" }
+    ];
+
+    const sections = [
+      "Continuar assistindo como Kelton",
+      "Jogos para celulares",
+      "Séries de humor absurdo",
+      "Programas de TV japoneses",
+      "Animes baseados em mangás",
+      "Principais escolhas do dia",
+      "Séries aclamadas pela crítica"
+    ];
+
+    let selectedItem = null;
+
+    function renderCatalog() {
+      const container = document.getElementById('catalog-container');
+      container.innerHTML = '';
+
+      sections.forEach((title, sIdx) => {
+        const sec = document.createElement('div');
+        sec.className = 'section';
+        sec.innerHTML = `<div class="section-title">${title} <i data-lucide="chevron-right" size="18"></i></div>`;
+        
+        const car = document.createElement('div');
+        car.className = 'carousel';
+
+        // GERA 18 CARDS POR CARROSSEL (COMO PEDIDO)
+        for(let i=0; i<18; i++) {
+          const item = seriesList[(sIdx + i) % seriesList.length];
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            ${item.top10 ? '<div class="top10">TOP 10</div>' : ''}
+            <img src="${item.img}" onclick='openDetails(${JSON.stringify(item)})'>
+            ${item.progress ? `<div class="card-progress"><div class="card-progress-fill" style="width:${item.progress}%"></div></div>` : ''}
+            ${item.label ? `<div class="card-label-red">${item.label}</div>` : ''}
+            <div class="card-actions" onclick='openSheet(${JSON.stringify(item)}, event)'>
+              <i data-lucide="more-vertical" size="16" color="white"></i>
+            </div>
+          `;
+          car.appendChild(card);
+        }
+        sec.appendChild(car);
+        container.appendChild(sec);
+      });
+      lucide.createIcons();
+    }
+
+    function applyFilter(type) {
+      const fInicio = document.getElementById('f-inicio');
+      const fNovo = document.getElementById('f-novo');
+      
+      // Reseta cores
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active', 'active-blue', 'active-green'));
+      
+      if(type === 'inicio') {
+        fInicio.classList.add('active-blue');
+      } else if(type === 'novo') {
+        fNovo.classList.add('active-green');
+      } else {
+        event.target.classList.add('active');
+      }
+      // Simulação de filtragem
+      console.log("Filtrando por:", type);
+    }
+
+    function openDetails(item) {
+      selectedItem = item;
+      document.getElementById('det-banner').src = item.img;
+      document.getElementById('det-title').innerText = item.title;
+      
+      const epCont = document.getElementById('ep-list-content');
+      epCont.innerHTML = '';
+      
+      for(let i=1; i<=10; i++) {
+        epCont.innerHTML += `
+          <div class="episode-item">
+            <div class="ep-row">
+              <div class="ep-thumb">
+                <img src="${item.img}">
+                <div class="ep-play-overlay"><i data-lucide="play" fill="white" size="20"></i></div>
+              </div>
+              <div class="ep-info">
+                <div class="ep-title">${i}. Episódio ${i}</div>
+                <div style="font-size:11px; color:#777">24 min</div>
+              </div>
+              <i data-lucide="download" size="22"></i>
+            </div>
+            <p class="ep-desc">Nesta parte emocionante da jornada de ${item.title}, novos desafios surgem e as escolhas feitas mudarão tudo para sempre.</p>
+          </div>
+        `;
+      }
+      document.getElementById('detail-view').style.display = 'block';
+      lucide.createIcons();
+    }
+
+    function closeDetails() { document.getElementById('detail-view').style.display = 'none'; }
+
+    function openSheet(item, e) {
+      e.stopPropagation();
+      selectedItem = item;
+      document.getElementById('sheet-title').innerText = item.title;
+      document.getElementById('overlay').style.display = 'block';
+      setTimeout(() => document.getElementById('bottom-sheet').classList.add('sheet-active'), 10);
+      lucide.createIcons();
+    }
+
+    function closeSheet() {
+      document.getElementById('bottom-sheet').classList.remove('sheet-active');
+      setTimeout(() => document.getElementById('overlay').style.display = 'none', 300);
+    }
+
+    function openDetailsFromSheet() { closeSheet(); openDetails(selectedItem); }
+
+    window.onload = renderCatalog;
+  </script>
 </body>
 </html>
