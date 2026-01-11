@@ -666,11 +666,11 @@
       defineIfMissing("start", () => {
         const email = localStorage.getItem("arv_email");
         if (!email) {
-          window.show("login");
+          window.show("screen-login");
           return;
         }
         const profileLabel = window.deriveFirstName(email);
-        window.show("home");
+        window.show("screen-home");
         const welcome = document.getElementById("welcome");
         if (welcome) welcome.innerText = profileLabel;
         const profileName = document.getElementById("profileName");
@@ -863,11 +863,16 @@
       });
 
       defineIfMissing("show", (id) => {
+        const resolvedId = id === "login"
+          ? "screen-login"
+          : id === "home"
+            ? "screen-home"
+            : id;
         document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-        const target = document.getElementById(id);
+        const target = document.getElementById(resolvedId);
         if (!target) return;
         target.classList.add("active");
-        const showNav = id !== "login";
+        const showNav = resolvedId !== "screen-login";
         const bottom = document.getElementById("bottom");
         if (bottom) {
           bottom.style.display = showNav ? "flex" : "none";
