@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ARV | Premium</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root{
+      --bg:#080808;
+      --card:#141414;
+      --soft:#1f1f1f;
+      --text:#fff;
+      --muted:#9ca3af;
+      --red:#e50914;
+      --badge:#e50914;
+      --nav-bg:linear-gradient(180deg,rgba(12,12,12,.85),#000);
+      --nav-border:rgba(255,255,255,.05);
+      --nav-text:#a5a5a5;
+      --nav-active:#fff;
+      --border:rgba(255,255,255,.08);
+    }
+
+    .light-mode{
+      --bg:#f4f4f5;
+      --card:#ffffff;
+      --soft:#e5e7eb;
+      --text:#0f172a;
+      --muted:#475569;
+      --badge:#2563eb;
+      --nav-bg:linear-gradient(180deg,rgba(255,255,255,.9),#e5e7eb);
+      --nav-border:rgba(0,0,0,.08);
+      --nav-text:#475569;
+      --nav-active:#0f172a;
+      --border:rgba(0,0,0,.08);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif;-webkit-tap-highlight-color:transparent;}
+    body{background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;padding-bottom:90px;transition:.3s;}
+
+    .screen{display:none;min-height:100vh;animation:fadeIn .3s ease;}
+    .screen.active{display:block;}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+    .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#000;}
+    .login-box{width:100%;max-width:360px;background:var(--card);border-radius:18px;padding:30px;box-shadow:0 12px 40px rgba(0,0,0,.45);border:1px solid var(--soft);text-align:center;}
+    .login-box h1{text-align:center;margin-bottom:18px;font-weight:900;letter-spacing:.5px;color:var(--red);font-size:32px;}
+    .login-box input{width:100%;padding:14px;margin-bottom:12px;background:#000;border:1px solid #333;border-radius:10px;color:#fff;text-align:center;font-size:16px;}
+    .login-box button{width:100%;padding:14px;background:var(--red);border:none;border-radius:10px;color:#fff;font-weight:800;cursor:pointer;letter-spacing:.3px;}
+
+    .app-header{padding:20px 16px 6px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:100;}
+    .app-title{font-size:22px;font-weight:900;letter-spacing:.2px;color:var(--text);}
+    .header-actions{display:flex;align-items:center;gap:12px;color:var(--text);}
+    .icon-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;cursor:pointer;}
+
+    .filters{display:flex;gap:12px;margin:14px 16px 8px;flex-wrap:wrap;}
+    .filter{padding:8px 16px;border:1px solid transparent;border-radius:20px;font-size:13px;cursor:pointer;color:var(--muted);transition:.25s;background:var(--soft);font-weight:700;white-space:nowrap;}
+    .filter.active{border-color:var(--red);color:var(--red);}
+
+    .section{padding:22px 0 16px 16px;}
+    .section-title{font-size:18px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+    .section-title::before{content:"";width:3px;height:18px;background:var(--red);border-radius:10px;}
+
+    .carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-right:16px;scroll-behavior:smooth;}
+    .carousel::-webkit-scrollbar{display:none;}
+
+    .card{width:140px;flex:0 0 140px;aspect-ratio:2/3;border-radius:12px;overflow:hidden;position:relative;cursor:pointer;transition:transform .3s ease,box-shadow .25s ease;scroll-snap-align:start;background:var(--soft);}
+    .card:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(0,0,0,.55);}
+    .card img{width:100%;height:100%;object-fit:cover;display:block;}
+    .card-info{position:absolute;bottom:0;width:100%;padding:8px;background:linear-gradient(transparent,rgba(0,0,0,.9));font-size:10px;font-weight:700;}
+    .progress-bar{position:absolute;bottom:0;left:0;width:100%;height:3px;background:rgba(255,255,255,.2);}
+    .progress-fill{height:100%;background:var(--red);}
+    .card-options{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);border-radius:8px;padding:4px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);}
+
+    .detail-view{position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;display:none;padding-bottom:50px;}
+    .hero-banner{width:100%;aspect-ratio:16/9;position:relative;}
+    .hero-banner img{width:100%;height:100%;object-fit:cover;}
+    .hero-close{position:absolute;top:20px;right:20px;background:rgba(0,0,0,.6);border-radius:50%;padding:8px;border:1px solid rgba(255,255,255,.2);}
+
+    .episode-list{padding:20px;}
+    .season-selector{display:flex;align-items:center;gap:8px;font-weight:800;margin-bottom:20px;background:var(--soft);padding:8px 12px;border-radius:8px;width:fit-content;}
+
+    .episode-item{margin-bottom:25px;background:var(--card);padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.06);}
+    .ep-header{display:flex;align-items:center;gap:15px;margin-bottom:10px;}
+    .ep-thumb{width:130px;aspect-ratio:16/9;position:relative;border-radius:8px;overflow:hidden;flex-shrink:0;}
+    .ep-thumb img{width:100%;height:100%;object-fit:cover;}
+    .ep-thumb .play-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);}
+    .ep-info{flex:1;}
+    .ep-title{font-size:14px;font-weight:800;margin-bottom:2px;}
+    .ep-meta{font-size:12px;color:var(--muted);}
+    .ep-desc{font-size:13px;color:var(--muted);line-height:1.4;}
+
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:none;}
+    .bottom-sheet{position:fixed;bottom:0;left:0;width:100%;background:var(--card);border-radius:16px 16px 0 0;z-index:1001;padding:20px;transform:translateY(100%);transition:.3s;border-top:1px solid rgba(255,255,255,.08);}
+    .sheet-active{transform:translateY(0);}
+    .sheet-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+    .sheet-header h3{font-size:18px;font-weight:800;}
+    .sheet-option{display:flex;align-items:center;gap:15px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;}
+    .sheet-option span{font-size:15px;font-weight:600;}
+
+    .bottom{position:fixed;bottom:0;left:0;width:100%;height:74px;background:var(--nav-bg);backdrop-filter:blur(10px);display:none;justify-content:space-around;align-items:center;z-index:200;border-top:1px solid var(--nav-border);}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--nav-text);cursor:pointer;transition:.25s;font-weight:600;}
+    .nav-item i{width:22px;height:22px;stroke-width:2;opacity:.85;stroke:currentColor;}
+    .nav-item.active{color:var(--nav-active);transform:scale(1.05);}
+    .nav-item.active i{opacity:1;stroke:var(--nav-active);}
+    .profile-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35);}
+
+    #global-player{position:fixed;inset:0;background:#000;z-index:2000;display:none;}
+    #global-player video{width:100%;height:100%;object-fit:contain;}
+    .player-back{position:absolute;top:20px;left:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:12px;padding:8px 12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;z-index:3000;}
+
+    .btn-inicio-red{position:fixed;right:16px;bottom:90px;background:var(--red);color:#fff;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;z-index:150;box-shadow:0 20px 40px rgba(0,0,0,.45);display:none;}
+
+    .simple-screen{padding:26px 18px;display:flex;flex-direction:column;gap:14px;}
+    .simple-card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:14px;}
+    .simple-card h3{font-size:16px;margin-bottom:4px;}
+    .simple-card p{font-size:13px;color:var(--muted);line-height:1.4;}
+  </style>
+</head>
+<body>
+  <div id="screen-login" class="screen active">
+    <div class="login">
+      <div class="login-box">
+        <h1>Entrar no ARV</h1>
+        <input type="text" id="login-name" placeholder="Quem está assistindo?">
+        <button onclick="doLogin()">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-home" class="screen">
+    <header class="app-header">
+      <div class="app-title">Para <span id="user-display">Kelton</span></div>
+      <div class="header-actions">
+        <div class="icon-btn"><i data-lucide="download"></i></div>
+        <div class="icon-btn"><i data-lucide="search"></i></div>
+        <div class="icon-btn" onclick="toggleTheme()"><i data-lucide="sun-moon"></i></div>
+      </div>
+    </header>
+
+    <div class="filters">
+      <div class="filter active" data-filter="inicio" onclick="setFilter('inicio', this)">Início</div>
+      <div class="filter" data-filter="novo" onclick="setFilter('novo', this)">Novidades</div>
+      <div class="filter" data-filter="series" onclick="setFilter('series', this)">Séries</div>
+      <div class="filter" data-filter="filmes" onclick="setFilter('filmes', this)">Filmes</div>
+    </div>
+
+    <div id="home-content"></div>
+
+    <button id="home-fab" class="btn-inicio-red" onclick="returnHome()">Início</button>
+  </div>
+
+  <div id="screen-clips" class="screen">
+    <div class="simple-screen">
+      <h2>Módulos</h2>
+      <div class="simple-card">
+        <h3>Continuar aprendizado</h3>
+        <p>Retome os módulos onde parou e acompanhe as novidades lançadas.</p>
+      </div>
+      <div class="simple-card">
+        <h3>Favoritos</h3>
+        <p>Salve aulas e séries para assistir mais tarde.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-alertas" class="screen">
+    <div class="simple-screen">
+      <h2>Alertas</h2>
+      <div class="simple-card">
+        <h3>Nenhuma atualização nova</h3>
+        <p>Fique de olho em avisos e atualizações importantes da plataforma.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-config" class="screen">
+    <div class="simple-screen">
+      <h2>Configurações</h2>
+      <div class="simple-card">
+        <h3>Preferências de reprodução</h3>
+        <p>Escolha qualidade automática, Wi-Fi apenas e legendas.</p>
+      </div>
+      <div class="simple-card">
+        <h3>Conta</h3>
+        <p>Gerencie senha, email e dispositivos conectados.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-perfil" class="screen">
+    <div class="simple-screen">
+      <h2>Meu Perfil</h2>
+      <div class="simple-card" style="display:flex;align-items:center;gap:12px;">
+        <img class="profile-pic" id="avatarMini" src="https://i.imgur.com/6VBx3io.jpg" alt="Avatar mini">
+        <div>
+          <h3 id="profileName">Kelton</h3>
+          <p>Membro Premium</p>
+        </div>
+      </div>
+      <div class="simple-card">
+        <h3>Gerenciar plano</h3>
+        <p>Escolha o melhor plano para sua experiência.</p>
+      </div>
+      <div class="simple-card">
+        <h3>Sair</h3>
+        <p>Encerrar sessão atual neste dispositivo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="detail-view" class="detail-view">
+    <div class="hero-banner">
+      <img id="detail-hero-img" src="" alt="">
+      <div class="hero-close" onclick="closeDetails()"><i data-lucide="x" color="white"></i></div>
+    </div>
+
+    <div class="episode-list">
+      <h2 id="detail-title" style="font-size: 24px; margin-bottom: 10px;"></h2>
+
+      <div class="season-selector">
+        Temporada 1 <i data-lucide="chevron-down" size="18"></i>
+      </div>
+
+      <div id="episodes-container"></div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay" onclick="closeSheet()"></div>
+  <div id="bottom-sheet" class="bottom-sheet">
+    <div class="sheet-header">
+      <h3 id="sheet-title">Título</h3>
+      <div onclick="closeSheet()"><i data-lucide="x" color="white"></i></div>
+    </div>
+    <div class="sheet-option" onclick="openDetailsFromSheet()">
+      <i data-lucide="info"></i>
+      <span>Episódios e informações</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="download"></i>
+      <span>Baixar episódio</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="thumbs-down"></i>
+      <span>Não é para mim</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="thumbs-up"></i>
+      <span>Gostei</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="heart"></i>
+      <span>Amei!</span>
+    </div>
+    <div class="sheet-option">
+      <i data-lucide="x-circle"></i>
+      <span>Remover da fileira</span>
+    </div>
+  </div>
+
+  <nav class="bottom" id="bot-nav">
+    <div class="nav-item active" data-target="home" data-icon="home" onclick="go('home', this)">
+      <i data-lucide="home"></i>
+      <span>Início</span>
+    </div>
+    <div class="nav-item" data-target="clips" data-icon="play-square" onclick="go('clips', this)">
+      <i data-lucide="play-square"></i>
+      <span>Módulos</span>
+    </div>
+    <div class="nav-item" data-target="alertas" data-icon="bell" onclick="go('alertas', this)">
+      <i data-lucide="bell"></i>
+      <span>Alertas</span>
+    </div>
+    <div class="nav-item" data-target="config" data-icon="settings" onclick="go('config', this)">
+      <i data-lucide="settings"></i>
+      <span>Config</span>
+    </div>
+    <div class="nav-item" data-target="perfil" onclick="go('perfil', this)">
+      <img class="profile-pic" src="https://i.imgur.com/6VBx3io.jpg" alt="Avatar mini">
+      <span>Meu Perfil</span>
+    </div>
+  </nav>
+
+  <div id="global-player">
+    <button class="player-back" onclick="closePlayer()"><i data-lucide="arrow-left"></i>Voltar</button>
+    <video id="v-player" controls></video>
+  </div>
+
+  <script>
+    const catalog = [
+      { id: 1, title: "Exploding Kittens", thumb: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400", banner: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800", progress: 40 },
+      { id: 2, title: "Stranger Things", thumb: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=400", banner: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=800", progress: 80 },
+      { id: 3, title: "Record of Ragnarok", thumb: "https://images.unsplash.com/photo-1541562232579-512a21360020?w=400", banner: "https://images.unsplash.com/photo-1541562232579-512a21360020?w=800", progress: 10 },
+      { id: 4, title: "Elite ARV", thumb: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=400", banner: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=800", progress: 0 },
+      { id: 5, title: "The Witcher", thumb: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400", banner: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800", progress: 50 }
+    ];
+
+    const categories = [
+      { label: "Continuar assistindo como Kelton", type: "inicio" },
+      { label: "Jogos para celulares", type: "novo" },
+      { label: "Séries premiadas", type: "series" },
+      { label: "Só na ARV", type: "series" },
+      { label: "Ação", type: "filmes" },
+      { label: "Documentários", type: "filmes" },
+      { label: "Minha Lista", type: "inicio" }
+    ];
+
+    let currentShow = null;
+
+    function doLogin() {
+      const name = document.getElementById('login-name').value || "Kelton";
+      document.getElementById('user-display').innerText = name;
+      document.getElementById('profileName').innerText = name;
+      document.getElementById('screen-login').classList.remove('active');
+      showScreen('home');
+      document.getElementById('bot-nav').style.display = 'flex';
+      document.getElementById('home-fab').style.display = 'block';
+      renderHome();
+      setActiveNav('home');
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+      const screen = document.getElementById(`screen-${id}`);
+      if (screen) {
+        screen.classList.add('active');
+      }
+      const bottomNav = document.getElementById('bot-nav');
+      if (bottomNav) {
+        bottomNav.style.display = id === 'login' ? 'none' : 'flex';
+      }
+    }
+
+    function setActiveNav(target) {
+      document.querySelectorAll('#bot-nav .nav-item').forEach(item => {
+        const isActive = item.dataset.target === target;
+        item.classList.toggle('active', isActive);
+        const icon = item.dataset.icon;
+        if (icon) {
+          const iconEl = item.querySelector('i');
+          if (iconEl) {
+            iconEl.setAttribute('data-lucide', isActive ? `${icon}-filled` : icon);
+          }
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function go(target, el) {
+      showScreen(target);
+      if (target === 'home') {
+        renderHome();
+      }
+      setActiveNav(target);
+    }
+
+    function renderHome() {
+      const container = document.getElementById('home-content');
+      container.innerHTML = '';
+
+      categories.forEach((cat) => {
+        const sec = document.createElement('div');
+        sec.className = 'section';
+        sec.dataset.filter = cat.type;
+        sec.innerHTML = `<div class="section-title">${cat.label}</div>`;
+
+        const car = document.createElement('div');
+        car.className = 'carousel';
+
+        for (let i = 0; i < 10; i++) {
+          const item = catalog[i % catalog.length];
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <img src="${item.thumb}" alt="${item.title}" onclick="openDetails(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+            <div class="progress-bar"><div class="progress-fill" style="width: ${item.progress}%"></div></div>
+            <div class="card-options" onclick='openSheet(${JSON.stringify(item).replace(/"/g, '&quot;')})'>
+              <i data-lucide="more-vertical" size="16" color="white"></i>
+            </div>
+          `;
+          car.appendChild(card);
+        }
+        sec.appendChild(car);
+        container.appendChild(sec);
+      });
+      lucide.createIcons();
+    }
+
+    function openDetails(item) {
+      currentShow = item;
+      const view = document.getElementById('detail-view');
+      document.getElementById('detail-hero-img').src = item.banner;
+      document.getElementById('detail-title').innerText = item.title;
+
+      const epContainer = document.getElementById('episodes-container');
+      epContainer.innerHTML = '';
+
+      for (let i = 1; i <= 10; i++) {
+        epContainer.innerHTML += `
+          <div class="episode-item">
+            <div class="ep-header">
+              <div class="ep-thumb" onclick="playVideo()">
+                <img src="${item.thumb}" alt="${item.title}">
+                <div class="play-icon"><i data-lucide="play" color="white" fill="white"></i></div>
+              </div>
+              <div class="ep-info">
+                <div class="ep-title">${i}. Episódio ${i}</div>
+                <div class="ep-meta">25m</div>
+              </div>
+              <i data-lucide="download" size="20"></i>
+            </div>
+            <p class="ep-desc">Nesta parte da jornada de ${item.title}, novos segredos são revelados e a tensão aumenta entre os protagonistas.</p>
+          </div>
+        `;
+      }
+
+      view.style.display = 'block';
+      lucide.createIcons();
+    }
+
+    function closeDetails() {
+      document.getElementById('detail-view').style.display = 'none';
+    }
+
+    function openSheet(item) {
+      currentShow = item;
+      document.getElementById('sheet-title').innerText = item.title;
+      document.getElementById('overlay').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('bottom-sheet').classList.add('sheet-active');
+      }, 10);
+    }
+
+    function closeSheet() {
+      document.getElementById('bottom-sheet').classList.remove('sheet-active');
+      setTimeout(() => {
+        document.getElementById('overlay').style.display = 'none';
+      }, 300);
+    }
+
+    function openDetailsFromSheet() {
+      closeSheet();
+      openDetails(currentShow);
+    }
+
+    function setFilter(type, el) {
+      document.querySelectorAll('.filter').forEach(filter => filter.classList.remove('active'));
+      if (el) {
+        el.classList.add('active');
+      }
+
+      document.querySelectorAll('#home-content .section').forEach(section => {
+        if (type === 'inicio') {
+          section.style.display = 'block';
+        } else {
+          section.style.display = section.dataset.filter === type ? 'block' : 'none';
+        }
+      });
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+    }
+
+    function playVideo() {
+      const p = document.getElementById('global-player');
+      const v = document.getElementById('v-player');
+      v.src = "https://www.w3schools.com/html/mov_bbb.mp4";
+      p.style.display = 'block';
+      v.play();
+    }
+
+    function closePlayer() {
+      const p = document.getElementById('global-player');
+      const v = document.getElementById('v-player');
+      v.pause();
+      p.style.display = 'none';
+    }
+
+    function returnHome() {
+      document.getElementById('home-content').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    window.onload = () => lucide.createIcons();
+  </script>
+</body>
+</html>
