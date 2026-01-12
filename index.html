@@ -568,6 +568,18 @@
       ]
     };
 
+    const generateRandomId = () => `cat-${Math.random().toString(36).slice(2, 10)}`;
+
+    const randomizedCatalogByCategory = Object.fromEntries(
+      Object.entries(catalogByCategory).map(([key, items]) => ([
+        key,
+        items.map(item => ({
+          ...item,
+          id: generateRandomId()
+        }))
+      ]))
+    );
+
     let selectedItem = null;
     let currentEpisodeKey = null;
 
@@ -596,7 +608,7 @@
         section.innerHTML = `<div class="section-title">${cat.title}</div>`;
         const carousel = document.createElement("div");
         carousel.className = "carousel";
-        const items = catalogByCategory[cat.id] || catalogByCategory.inicio;
+        const items = randomizedCatalogByCategory[cat.id] || randomizedCatalogByCategory.inicio;
         for (let i = 0; i < 12; i++) {
           const item = items[(cIdx + i) % items.length];
           const card = document.createElement("div");
