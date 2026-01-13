@@ -602,31 +602,54 @@
     let selectedItem = null;
     let currentEpisodeKey = null;
 
-    const formatDisplayName = (email) => {
-      const rawUser = email.split('@')[0] || '';
-      const sanitized = rawUser.replace(/[._-]+/g, ' ');
-      const withSpacing = sanitized.replace(/([a-z])([A-Z])/g, '$1 $2');
-      const cleaned = withSpacing.replace(/[^a-zA-ZÀ-ÿ]+/g, ' ').trim();
-      if (!cleaned) return 'Visitante';
-      const [firstName] = cleaned.split(/\s+/);
-      return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-    };
-
-    function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      if (!email || !password) return;
-      const displayName = formatDisplayName(email);
-      categories[0].title = `Continuar assistindo como ${displayName}`;
-      document.getElementById("welcome").innerText = displayName;
-      document.getElementById("profileName").innerText = displayName;
-      document.getElementById("login").classList.remove("active");
-      showScreen("home");
-      document.getElementById("bottom-nav").style.display = "flex";
-      renderHome();
+    /* ===== LOGIN ===== */
+    function deriveFirstName(email){
+      const local=email.split("@")[0]||email;
+      const cleaned=local.replace(/[^a-zA-ZÀ-ÿ]+/g," ").trim();
+      const surnames=["silva","souza","oliveira","santos","neves","pereira","almeida","lima","costa","martins","rocha","ferreira","gomes","rodrigues","dias","barbosa","araujo"];
+      const lower=cleaned.toLowerCase().replace(/\s+/g,"");
+      let candidate="";
+      surnames.forEach(sn=>{
+        const idx=lower.indexOf(sn);
+        if(idx>2 && (candidate==="" || idx<candidate.length)){
+          candidate=lower.slice(0,idx);
+        }
+      });
+      const basis=candidate||cleaned.split(/\s+/)[0]||local;
+      return basis.charAt(0).toUpperCase()+basis.slice(1);
     }
 
-    function logout() { location.reload(); }
+    function login(){
+      const email=document.getElementById("email").value.trim();
+      const password=document.getElementById("password").value.trim();
+      if(!email || !password) return;
+      localStorage.setItem("arv_email",email);
+      localStorage.setItem("arv_pass",password);
+      start();
+    }
+
+    function start(){
+      const email=localStorage.getItem("arv_email");
+      if(!email){
+        show("login");
+        return;
+      }
+      const profileLabel=deriveFirstName(email);
+      categories[0].title = `Continuar assistindo como ${profileLabel}`;
+      show("home");
+      document.getElementById("welcome").innerText=profileLabel;
+      document.getElementById("profileName").innerText=profileLabel;
+      renderHome();
+      renderClips();
+      renderSearchTags();
+      renderSearchResults("");
+      setActiveNav("home");
+    }
+
+    function logout(){
+      localStorage.clear();
+      location.reload();
+    }
 
     function shuffleArray(list) {
       return [...list].sort(() => Math.random() - 0.5);
@@ -802,6 +825,21 @@
       }
     }
 
+    function show(id) {
+      showScreen(id);
+      document.getElementById("bottom-nav").style.display = id === "login" ? "none" : "flex";
+    }
+
+    function setActiveNav(target) {
+      document.querySelectorAll(".nav-item").forEach(n => {
+        n.classList.toggle("active", n.dataset.target === target);
+      });
+    }
+
+    function renderClips() {}
+    function renderSearchTags() {}
+    function renderSearchResults() {}
+
     function showScreen(id, el) {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       document.getElementById(id).classList.add("active");
@@ -856,6 +894,7 @@
     function returnToProfile() { showScreen("perfil"); }
     function closeSeriesPlayer() { document.getElementById("series-player-modal").style.display = "none"; }
 
+    start();
     lucide.createIcons();
   </script>
 </body>
