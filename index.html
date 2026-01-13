@@ -1,11 +1,925 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARV | Plataforma Premium</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#000000;
+      --card:#141414;
+      --soft:#1f1f1f;
+      --text:#fff;
+      --muted:#9ca3af;
+      --red:#e50914;
+      --badge:#e50914;
+      --gold:#c7a45b;
+      --nav-bg:linear-gradient(180deg,rgba(12,12,12,.85),#000);
+      --nav-border:rgba(255,255,255,.05);
+      --nav-text:#a5a5a5;
+      --nav-active:#fff;
+      --blue:#3b82f6;
+      --green:#22c55e;
+      --border:rgba(255,255,255,.1);
+    }
+    body.light{
+      --bg:#f5f5f6;
+      --card:#ffffff;
+      --soft:#f1f1f1;
+      --text:#111827;
+      --muted:#6b7280;
+      --red:#e50914;
+      --badge:#e50914;
+      --gold:#c7a45b;
+      --nav-bg:linear-gradient(180deg,rgba(255,255,255,.85),#f5f5f6);
+      --nav-border:rgba(0,0,0,.08);
+      --nav-text:#6b7280;
+      --nav-active:#111827;
+      --blue:#2563eb;
+      --green:#16a34a;
+      --border:rgba(0,0,0,.08);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif;}
+    body{background:var(--bg);color:var(--text);padding-bottom:90px;min-height:100vh;overflow-x:hidden;transition:.3s;}
+
+    /* TELAS */
+    .screen{display:none;min-height:100vh;animation:fadeIn .3s ease;}
+    .screen.active{display:block;}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+    /* LOGIN */
+    .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#000;}
+    .login-box{width:100%;max-width:360px;background:var(--card);border-radius:18px;padding:30px;box-shadow:0 12px 40px rgba(0,0,0,.45);border:1px solid var(--soft);text-align:center;}
+    .login-box h1{margin-bottom:18px;font-weight:900;color:var(--red);font-size:32px;}
+    .login-box input{width:100%;padding:14px;margin-bottom:12px;background:#000;border:1px solid #333;border-radius:10px;color:#fff;}
+    .login-box button{width:100%;padding:14px;background:var(--red);border:none;border-radius:10px;color:#fff;font-weight:800;cursor:pointer;}
+
+    /* HEADER */
+    .app-header{padding:20px 16px 6px;display:flex;align-items:center;justify-content:space-between;}
+    .app-title{font-size:24px;font-weight:900;color:var(--red);}
+    .header-actions{display:flex;align-items:center;gap:12px;}
+    .icon-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;cursor:pointer;}
+
+    /* PESQUISA */
+    .search-bar{padding:0 16px 10px;display:none;}
+    .search-bar.is-open{display:block;}
+    .search-input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);font-weight:600;}
+    .search-input::placeholder{color:var(--muted);}
+
+    /* FILTROS */
+    .filters-container{padding:10px 16px;overflow-x:auto;scrollbar-width:none;}
+    .filters-container::-webkit-scrollbar{display:none;}
+    .filters-row{display:flex;gap:10px;white-space:nowrap;}
+    .filter{padding:8px 16px;border:1px solid transparent;border-radius:20px;font-size:13px;cursor:pointer;color:var(--muted);transition:.25s;background:var(--soft);font-weight:700;}
+    .filter.active{border-color:var(--red);color:var(--red);}
+
+    /* HERO */
+    .hero{position:relative;margin:10px 16px 18px;border-radius:16px;overflow:hidden;background:#111;height:250px;}
+    .hero img{width:100%;height:100%;object-fit:cover;opacity:.7;}
+    .hero-info{position:absolute;left:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;}
+    .hero-title{font-size:26px;font-weight:900;}
+    .primary-btn,.ghost-btn{border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;}
+    .primary-btn{background:#fff;color:#000;}
+    .ghost-btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.18);}
+    .small-ghost{padding:8px 12px;font-size:12px;}
+
+    /* CARDS */
+    .section{padding:22px 0 16px 16px;}
+    .section-title{font-size:17px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+    .section-title::before{content:"";width:3px;height:18px;background:var(--red);border-radius:10px;}
+    .carousel{display:flex;gap:10px;overflow-x:auto;padding-right:20px;scrollbar-width:none;}
+    .carousel::-webkit-scrollbar{display:none;}
+
+    .card{flex:0 0 115px;position:relative;border-radius:4px;overflow:hidden;cursor:pointer;transition:transform .2s ease;background:var(--soft);aspect-ratio:2/3;}
+    .card:hover{transform:scale(1.05);}
+    .card img{width:100%;height:100%;object-fit:cover;display:block;}
+    .card-placeholder{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(160deg,rgba(255,255,255,.04),rgba(255,255,255,.12));color:var(--text);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:8px;text-align:center;}
+    .progress-bar{position:absolute;bottom:0;left:0;width:100%;height:3px;background:rgba(255,255,255,0.2);}
+    .progress-fill{height:100%;background:var(--red);width:40%;}
+    .top10-badge{position:absolute;top:0;right:0;background:var(--red);color:#fff;font-size:8px;font-weight:900;padding:2px 4px;border-bottom-left-radius:4px;}
+    .card-label{position:absolute;left:6px;bottom:6px;background:var(--red);color:#fff;font-size:9px;font-weight:900;padding:4px 6px;border-radius:4px;display:flex;flex-direction:column;gap:2px;text-transform:uppercase;letter-spacing:.2px;}
+    .card-label .label-secondary{background:#fff;color:#111;border-radius:2px;padding:2px 4px;font-size:9px;font-weight:900;text-transform:none;}
+    .card-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);}
+    .card-play i{background:rgba(0,0,0,0.6);border:2px solid #fff;border-radius:50%;padding:8px;}
+    .card-options-btn{position:absolute;bottom:5px;right:5px;background:rgba(0,0,0,0.5);border-radius:50%;padding:4px;display:grid;place-items:center;}
+
+    /* DETALHES / EPISÓDIOS */
+    .detail-view{position:fixed;inset:0;background:var(--bg);z-index:1100;overflow-y:auto;display:none;padding-bottom:50px;}
+    .hero-banner{width:100%;aspect-ratio:16/9;position:relative;}
+    .hero-banner img{width:100%;height:100%;object-fit:cover;}
+    .hero-close{position:absolute;top:20px;right:20px;background:rgba(0,0,0,0.6);border-radius:50%;padding:8px;z-index:10;}
+    .hero-play{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);background:rgba(0,0,0,0.5);border:2px solid #fff;border-radius:50%;padding:15px;}
+
+    .episode-list-container{padding:20px;}
+    .season-selector{display:flex;align-items:center;gap:8px;font-weight:800;margin-bottom:20px;background:#262626;padding:8px 12px;border-radius:4px;width:fit-content;}
+
+    .episode-item{margin-bottom:25px;}
+    .ep-main{display:flex;align-items:center;gap:15px;margin-bottom:10px;}
+    .ep-thumb{width:130px;aspect-ratio:16/9;position:relative;border-radius:4px;overflow:hidden;flex-shrink:0;}
+    .ep-thumb img{width:100%;height:100%;object-fit:cover;}
+    .ep-thumb .ep-placeholder{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.2));color:var(--text);font-size:22px;}
+    .ep-play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.2);}
+    .ep-info{flex:1;}
+    .ep-title{font-size:14px;font-weight:800;margin-bottom:2px;}
+    .ep-meta{font-size:12px;color:var(--muted);}
+    .ep-desc{font-size:13px;color:var(--muted);line-height:1.4;}
+    .ep-actions{display:flex;align-items:center;gap:10px;}
+    .ep-download{border:none;border-radius:10px;padding:8px 10px;background:rgba(255,255,255,.1);color:var(--text);font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;}
+
+    /* BOTTOM SHEET */
+    .arv-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:none;}
+    .arv-bottom-sheet{position:fixed;bottom:0;left:0;width:100%;background:#222;border-radius:15px 15px 0 0;z-index:2001;padding:20px;transform:translateY(100%);transition:.3s;}
+    .arv-sheet-active{transform:translateY(0);}
+    .arv-sheet-option{display:flex;align-items:center;gap:15px;padding:15px 0;color:#eee;font-weight:600;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+
+    /* NAVEGAÇÃO INFERIOR */
+    .bottom{position:fixed;bottom:0;left:0;width:100%;height:74px;background:var(--nav-bg);backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;z-index:999;border-top:1px solid var(--nav-border);}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--nav-text);cursor:pointer;font-weight:600;}
+    .nav-item.active{color:var(--nav-active);}
+    .profile-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35);background:var(--soft);}
+
+    /* BOTÃO INÍCIO */
+    .home-fab{
+      position:fixed;
+      right:16px;
+      bottom:90px;
+      background:var(--red);
+      color:#fff;
+      border:none;
+      border-radius:999px;
+      padding:10px 16px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 12px 24px rgba(0,0,0,0.4);
+      z-index:1000;
+    }
+    .home-fab span{font-size:13px;}
+
+    /* PERFIL */
+    .profile{padding:30px;}
+    .profile-header{display:flex;gap:16px;align-items:center;}
+    .profile-header img{width:90px;height:90px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;cursor:pointer;background:var(--soft);}
+    .profile-header h2{margin-bottom:4px;}
+    .profile-btn{margin-top:14px;padding:16px;background:var(--card);border-radius:14px;cursor:pointer;color:var(--text);border:1px solid var(--soft);}
+
+    /* ALERTAS/TERMOS */
+    .clips-header{padding:18px 16px 0;display:flex;flex-direction:column;gap:6px;}
+    .clips-header h1{font-size:22px;font-weight:900;}
+    .clips-sub{color:var(--muted);font-size:13px;line-height:1.4;}
+    .episode{display:flex;gap:14px;background:var(--card);padding:12px;border-radius:14px;margin:10px 16px;cursor:pointer;border:1px solid rgba(255,255,255,.04);}
+    .series-episode{display:flex;gap:12px;background:#111;padding:10px;border-radius:10px;cursor:pointer;margin:10px 16px;}
+    .series-episode img{width:140px;border-radius:8px;}
+    .series-modal{display:none;position:fixed;inset:0;background:black;justify-content:center;align-items:center;z-index:10000;flex-direction:column;gap:16px;}
+    .series-modal video{width:min(960px, 90vw);max-height:80vh;}
+
+    /* PLANOS */
+    .plan-card{display:flex;flex-direction:column;gap:6px;background:var(--card);padding:20px;border-radius:18px;border:1px solid var(--soft);transition:border-color .2s ease,box-shadow .2s ease;margin:15px 0;position:relative;}
+    .plan-card.selected{border-color:var(--gold);box-shadow:0 20px 40px rgba(0,0,0,.35);}
+    .plan-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+    .plan-price{font-size:20px;font-weight:900;color:var(--gold);text-align:right;}
+    .plan-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:800;}
+    .payments-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+    .pay-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:700;color:var(--text);cursor:pointer;}
+    .pay-chip i{width:16px;height:16px;}
+    .plan-section-title{display:flex;align-items:center;gap:10px;margin:10px 0 4px 0;font-weight:800;color:var(--muted);}
+    .plan-section-title i{width:18px;height:18px;}
+
+    .payment-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:1001;padding:24px;}
+    .payment-card{width:100%;max-width:420px;background:var(--card);border-radius:18px;padding:18px;border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 40px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:12px;}
+    .payment-head{display:flex;align-items:center;justify-content:space-between;}
+    .payment-title{font-weight:900;font-size:18px;}
+    .payment-qr{width:180px;height:180px;border-radius:16px;background:rgba(255,255,255,.08);display:grid;place-items:center;align-self:center;border:1px solid rgba(255,255,255,.12);}
+    .payment-qr canvas{width:140px;height:140px;}
+    .payment-info{font-size:12px;color:var(--muted);line-height:1.4;}
+
+    /* PLAYER */
+    #player{position:fixed;inset:0;background:#000;display:none;z-index:9999;}
+    #player video{width:100%;height:100%;}
+    .player-close{position:absolute;top:20px;right:20px;z-index:10000;color:white;cursor:pointer;}
+  </style>
 </head>
+
 <body>
-    <h1>Prof Ajax</h1>
+  <button id="homeFab" class="home-fab" onclick="returnHome()">
+    <span>Início</span>
+  </button>
+  <!-- LOGIN -->
+  <div id="login" class="screen active">
+    <div class="login">
+      <div class="login-box">
+        <h1>ARV</h1>
+        <input id="email" type="email" placeholder="Email" value="usuario@arv.com">
+        <input id="password" type="password" placeholder="Senha" value="123456">
+        <button onclick="login()">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="home" class="screen">
+    <div class="app-header">
+      <div>
+        <div class="app-title">Para <span id="welcome"></span></div>
+        <small style="color:var(--muted);font-weight:600;">Modulo</small>
+      </div>
+      <div class="header-actions">
+        <div class="icon-btn" id="themeToggle" onclick="toggleTheme()"><i data-lucide="sun"></i></div>
+        <div class="icon-btn" id="searchToggle" onclick="toggleSearchBar()"><i data-lucide="search"></i></div>
+        <div class="icon-btn"><i data-lucide="download"></i></div>
+      </div>
+    </div>
+
+    <div class="search-bar" id="searchBar">
+      <input id="globalSearch" class="search-input" type="search" placeholder="Pesquisar episódios e títulos" oninput="filterCatalogBySearch()">
+    </div>
+
+    <!-- FILTROS -->
+    <div class="filters-container">
+      <div class="filters-row">
+        <div class="filter active" onclick="filterContent('inicio',this)">Início</div>
+        <div class="filter" onclick="filterContent('Modalidade',this)">Modalidade</div>
+        <div class="filter" onclick="filterContent('packs',this)">Packs</div>
+        <div class="filter" onclick="filterContent('categorias',this)">Categorias</div>
+        <div class="filter" onclick="filterContent('novidades',this)">Novidades</div>
+        <div class="filter" onclick="filterContent('minhalista',this)">Minha Lista</div>
+      </div>
+    </div>
+
+    <div id="main-content">
+      <div class="hero">
+        <img src="imagens/continuar assistindo/01EBFB7A-B8A8-456E-8B95-A9267B1F51C9.png" alt="Destaque">
+        <div class="hero-info">
+          <div class="hero-title">Metodo ARV</div>
+          <button class="primary-btn" onclick="openPlayer(selectedItem)">Assistir</button>
+        </div>
+      </div>
+
+      <div id="sections-container"></div>
+      <div id="series-mentalidade-section"></div>
+    </div>
+  </div>
+
+  <!-- ALERTAS -->
+  <div id="alertas" class="screen">
+    <div class="clips-header">
+      <h1>Alertas</h1>
+      <p class="clips-sub">Confira novidades e avisos importantes.</p>
+    </div>
+    <div class="section">
+      <div class="episode" style="margin:0 16px;cursor:default;">
+        <div>
+          <h4>Nenhum alerta novo</h4>
+          <p>Você verá notificações e comunicados aqui.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFIL -->
+  <div id="perfil" class="screen">
+    <div class="profile">
+      <div class="profile-header">
+        <img id="avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Avatar" onclick="trocarFoto()">
+        <div>
+          <h2 id="profileName"></h2>
+          <p>Membro Premium</p>
+        </div>
+      </div>
+
+      <div class="profile-btn" onclick="trocarFoto()">Editar foto de perfil</div>
+      <div class="profile-btn" onclick="openPlanos()">Plano Premium</div>
+      <div class="profile-btn" onclick="openTermos()">Termos de Uso</div>
+      <div class="profile-btn" onclick="logout()">Sair</div>
+    </div>
+  </div>
+
+  <!-- PLANOS -->
+  <div id="planos" class="screen">
+    <div class="clips-header">
+      <h1>Planos</h1>
+      <p class="clips-sub">Escolha entre Básico, Médio ou Anual.</p>
+    </div>
+    <div class="section" style="padding-right:16px;">
+      <div class="plan-card" data-plan="Básico" onclick="selectPlano('Básico')">
+        <div class="plan-header">
+          <div>
+            <h4>Plano Básico</h4>
+            <p style="color:var(--muted);">Qualidade HD, um dispositivo por vez.</p>
+          </div>
+          <div class="plan-price">R$ 10 / mês</div>
+        </div>
+        <div class="plan-chip">Essencial</div>
+        <div class="payments-row">
+          <button class="pay-chip" onclick="openPaymentModal('Crédito', 'Básico');event.stopPropagation();"><i data-lucide="credit-card"></i>Crédito</button>
+          <button class="pay-chip" onclick="openPaymentModal('Débito', 'Básico');event.stopPropagation();"><i data-lucide="credit-card"></i>Débito</button>
+          <button class="pay-chip" onclick="openPaymentModal('Pix', 'Básico');event.stopPropagation();"><i data-lucide="smartphone"></i>Pix</button>
+          <button class="pay-chip" onclick="openPaymentModal('Boleto', 'Básico');event.stopPropagation();"><i data-lucide="barcode"></i>Boleto</button>
+        </div>
+        <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Básico');event.stopPropagation();">Selecionar</button>
+      </div>
+      <div class="plan-card" data-plan="Médio" onclick="selectPlano('Médio')">
+        <div class="plan-header">
+          <div>
+            <h4>Plano Médio</h4>
+            <p style="color:var(--muted);">Full HD, dois dispositivos simultâneos.</p>
+          </div>
+          <div class="plan-price">R$ 25 / mês</div>
+        </div>
+        <div class="plan-chip">Mais escolhido</div>
+        <div class="payments-row">
+          <button class="pay-chip" onclick="openPaymentModal('Crédito', 'Médio');event.stopPropagation();"><i data-lucide="credit-card"></i>Crédito</button>
+          <button class="pay-chip" onclick="openPaymentModal('Débito', 'Médio');event.stopPropagation();"><i data-lucide="credit-card"></i>Débito</button>
+          <button class="pay-chip" onclick="openPaymentModal('Pix', 'Médio');event.stopPropagation();"><i data-lucide="smartphone"></i>Pix</button>
+          <button class="pay-chip" onclick="openPaymentModal('Boleto', 'Médio');event.stopPropagation();"><i data-lucide="barcode"></i>Boleto</button>
+        </div>
+        <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Médio');event.stopPropagation();">Selecionar</button>
+      </div>
+      <div class="plan-card" data-plan="Anual" onclick="selectPlano('Anual')">
+        <div class="plan-header">
+          <div>
+            <h4>Plano Anual</h4>
+            <p style="color:var(--muted);">4K + HDR, acesso completo por 12 meses.</p>
+          </div>
+          <div class="plan-price">R$ 240 / ano</div>
+        </div>
+        <div class="plan-chip">Economize 20%</div>
+        <div class="payments-row">
+          <button class="pay-chip" onclick="openPaymentModal('Crédito', 'Anual');event.stopPropagation();"><i data-lucide="credit-card"></i>Crédito</button>
+          <button class="pay-chip" onclick="openPaymentModal('Débito', 'Anual');event.stopPropagation();"><i data-lucide="credit-card"></i>Débito</button>
+          <button class="pay-chip" onclick="openPaymentModal('Pix', 'Anual');event.stopPropagation();"><i data-lucide="smartphone"></i>Pix</button>
+          <button class="pay-chip" onclick="openPaymentModal('Boleto', 'Anual');event.stopPropagation();"><i data-lucide="barcode"></i>Boleto</button>
+        </div>
+        <button class="ghost-btn small-ghost" style="margin-left:auto;" onclick="selectPlano('Anual');event.stopPropagation();">Selecionar</button>
+      </div>
+      <div class="plan-section-title"><i data-lucide="wallet"></i>Formas de pagamento aceitas</div>
+      <p style="margin:0 0 6px 0;color:var(--muted);">Pix instantâneo, cartão de crédito, cartão de débito e boleto estão disponíveis para todas as assinaturas.</p>
+      <button class="ghost-btn" style="margin:16px 0 0 0;" onclick="returnToProfile()">← Voltar ao perfil</button>
+    </div>
+  </div>
+
+  <!-- TERMOS -->
+  <div id="termos" class="screen">
+    <div class="clips-header">
+      <h1>Termos de Uso</h1>
+      <p class="clips-sub">Leia os principais pontos antes de continuar.</p>
+    </div>
+    <div class="section" style="padding-right:16px;">
+      <div class="episode" style="cursor:default;">
+        <div>
+          <h4>Privacidade</h4>
+          <p>Seus dados são utilizados apenas para personalização e login.</p>
+        </div>
+      </div>
+      <div class="episode" style="cursor:default;">
+        <div>
+          <h4>Uso responsável</h4>
+          <p>Evite compartilhar sua conta e respeite direitos autorais do conteúdo.</p>
+        </div>
+      </div>
+      <div class="episode" style="cursor:default;">
+        <div>
+          <h4>Suporte</h4>
+          <p>Em caso de dúvidas ou problemas, contate o suporte pela área de perfil.</p>
+        </div>
+      </div>
+      <button class="ghost-btn" style="margin:16px 0 0 0;" onclick="returnToProfile()">← Voltar ao perfil</button>
+    </div>
+  </div>
+
+  <!-- PLAYER -->
+  <div id="player">
+    <div class="player-close" onclick="closePlayer()"><i data-lucide="x" size="32"></i></div>
+    <video id="v-vid" controls src="https://www.w3schools.com/html/mov_bbb.mp4"></video>
+  </div>
+
+  <div id="series-player-modal" class="series-modal">
+    <video id="series-player" controls></video>
+    <button class="ghost-btn" onclick="closeSeriesPlayer()">Fechar</button>
+  </div>
+
+  <!-- DETALHES / EPISÓDIOS -->
+  <div id="detail-view" class="detail-view">
+    <div class="hero-banner">
+      <img id="detail-hero-img" src="imagens/continuar assistindo/1A367628-73EA-4CAD-86F7-F4ECCDB64FAF.png" alt="">
+      <div class="hero-close" onclick="closeDetails()"><i data-lucide="x" color="white"></i></div>
+      <div class="hero-play" onclick="openPlayer(selectedItem, 'ep-1')"><i data-lucide="play" color="white" fill="white" size="32"></i></div>
+    </div>
+
+    <div class="episode-list-container">
+      <h2 id="detail-title" style="font-size:24px;margin-bottom:10px;"></h2>
+      <div class="search-bar" style="padding:0 0 16px;">
+        <input id="episodeSearch" class="search-input" type="search" placeholder="Pesquisar episódios" oninput="filterEpisodes()">
+      </div>
+      <div class="season-selector">
+        Temporada 1 <i data-lucide="chevron-down" size="18"></i>
+      </div>
+      <div id="episodes-container"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM SHEET -->
+  <div id="arv-overlay" class="arv-overlay" onclick="closeSheet()"></div>
+  <div id="arv-bottom-sheet" class="arv-bottom-sheet">
+    <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
+      <h3 id="arv-sheet-title" style="font-weight:800;">Título</h3>
+      <i data-lucide="x" onclick="closeSheet()"></i>
+    </div>
+    <div class="arv-sheet-option" onclick="openDetailsFromSheet()"><i data-lucide="info"></i> Episódios e informações</div>
+    <div class="arv-sheet-option"><i data-lucide="download"></i> Baixar episódio</div>
+    <div class="arv-sheet-option"><i data-lucide="thumbs-up"></i> Gostei</div>
+    <div class="arv-sheet-option"><i data-lucide="heart"></i> Amei!</div>
+    <div class="arv-sheet-option" style="color:var(--red);"><i data-lucide="trash-2"></i> Remover da fileira</div>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="bottom" id="bottom-nav" style="display:none">
+    <div class="nav-item active" data-target="home" onclick="showScreen('home', this)"><i data-lucide="home"></i><span>Início</span></div>
+    <div class="nav-item" data-target="alertas" onclick="showScreen('alertas', this)"><i data-lucide="bell"></i><span>Alertas</span></div>
+    <div class="nav-item" data-target="perfil" onclick="showScreen('perfil', this)">
+      <img class="profile-pic" id="avatarMini" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Avatar mini">
+      <span>Meu Perfil</span>
+    </div>
+  </div>
+
+  <!-- MODAL PAGAMENTO -->
+  <div id="paymentModal" class="payment-modal" onclick="closePaymentModal()">
+    <div class="payment-card" onclick="event.stopPropagation()">
+      <div class="payment-head">
+        <div>
+          <div class="payment-title" id="paymentTitle">Pagamento via Pix</div>
+          <div class="payment-info" id="paymentPlan">Plano selecionado: Básico</div>
+        </div>
+        <button class="ghost-btn small-ghost" onclick="closePaymentModal()">Fechar</button>
+      </div>
+      <div class="payment-qr" id="paymentQr"></div>
+      <div class="payment-info" id="paymentInfo">
+        Use este QR Code para finalizar o pagamento. Banco Mercado Pago • Agência 0001 • Conta 86456720223.
+      </div>
+      <button class="primary-btn" onclick="confirmPayment()">Já paguei</button>
+    </div>
+  </div>
+
+  <input type="file" id="uploadFoto" accept="image/*" hidden>
+
+  <script>
+    const emptyAvatar = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+    const categories = [
+      { id: "inicio", title: "Continuar assistindo", type: "inicio" },
+      { id: "jogos", title: "Jogos para celulares", type: "Modalidade" },
+      { id: "humor", title: "Séries de humor absurdo", type: "Modalidade" },
+      { id: "japoneses", title: "Programas de TV japoneses", type: "categorias" },
+      { id: "animes", title: "Animes baseados em mangás", type: "categorias" },
+      { id: "escolhas", title: "Escolhas do dia para você", type: "novidades" },
+      { id: "ficcao", title: "Ficção científica e fantasia", type: "categorias" },
+      { id: "novidades", title: "Novidades na Netflix", type: "novidades" },
+      { id: "sugestoes", title: "Sugestões que você vai adorar", type: "packs" },
+      { id: "pressa", title: "Com pressa? Sucessos em menos de 30min", type: "packs" },
+      { id: "favoritos", title: "Favoritos conhecidos", type: "minhalista" },
+      { id: "aclamadas", title: "Séries aclamadas pela crítica", type: "minhalista" }
+    ];
+
+    const catalogByCategory = {
+      inicio: [
+        { id: "cont-01", title: "Exploding Kittens", img: "imagens/continuar assistindo/B017F1C7-AA19-4FD6-8C79-50BE06315997.jpeg", progress: 40, label: "Temporada nova" },
+        { id: "cont-02", title: "Stranger Things", img: "imagens/continuar assistindo/030D457A-25AB-48DD-84CF-9159D9F1C227.png", progress: 80, top10: true, label: "Novos episódios" },
+        { id: "cont-03", title: "Record of Ragnarok", img: "imagens/continuar assistindo/609255D5-4846-4FE7-8915-81ECFAB46C46.png", progress: 15 },
+        { id: "cont-04", title: "Elite ARV", img: "imagens/continuar assistindo/8AC5165D-345E-4F63-B362-037D2E872DDD.png", top10: true, label: "Novo episódio", labelSecondary: "Assista já" },
+        { id: "cont-05", title: "Lucifer", img: "imagens/continuar assistindo/5D3ECED7-4E97-4D34-8887-4AFAD2BD6710.png" },
+        { id: "cont-06", title: "Desencanto", img: "imagens/continuar assistindo/1A367628-73EA-4CAD-86F7-F4ECCDB64FAF.png" },
+        { id: "cont-07", title: "Devil May Cry", img: "imagens/continuar assistindo/32850CDC-312F-4B4E-9221-6824B8AFF888.png" },
+        { id: "cont-08", title: "Solo Leveling", img: "imagens/continuar assistindo/434C7272-2212-4251-BF5C-9DC3CC9DB174.png", label: "Novo episódio", labelSecondary: "Assista já" }
+      ],
+      jogos: [
+        { id: "jogos-01", title: "Asphalt Rush", img: "https://picsum.photos/seed/arv-jogos-01/300/450" },
+        { id: "jogos-02", title: "Galaxy Raiders", img: "https://picsum.photos/seed/arv-jogos-02/300/450" },
+        { id: "jogos-03", title: "Puzzle Blitz", img: "https://picsum.photos/seed/arv-jogos-03/300/450" },
+        { id: "jogos-04", title: "Shadow Runner", img: "https://picsum.photos/seed/arv-jogos-04/300/450" },
+        { id: "jogos-05", title: "Tower Quest", img: "https://picsum.photos/seed/arv-jogos-05/300/450" },
+        { id: "jogos-06", title: "Neon Drift", img: "https://picsum.photos/seed/arv-jogos-06/300/450" },
+        { id: "jogos-07", title: "Arena Fighters", img: "https://picsum.photos/seed/arv-jogos-07/300/450" },
+        { id: "jogos-08", title: "Pixel Clash", img: "https://picsum.photos/seed/arv-jogos-08/300/450" }
+      ],
+      humor: [
+        { id: "humor-01", title: "Risos sem noção", img: "" },
+        { id: "humor-02", title: "Piadas do além", img: "" },
+        { id: "humor-03", title: "Gargalhadas 3AM", img: "" },
+        { id: "humor-04", title: "Humor sem freio", img: "" },
+        { id: "humor-05", title: "Sketchs urbanos", img: "" },
+        { id: "humor-06", title: "Quase stand-up", img: "" },
+        { id: "humor-07", title: "Improviso total", img: "" },
+        { id: "humor-08", title: "Sátira relâmpago", img: "" }
+      ],
+      japoneses: [
+        { id: "jpn-01", title: "Noite de variedades", img: "" },
+        { id: "jpn-02", title: "Sabores do Japão", img: "" },
+        { id: "jpn-03", title: "Batalha dos talentos", img: "" },
+        { id: "jpn-04", title: "Quiz nipônico", img: "" },
+        { id: "jpn-05", title: "Viagem pelo Japão", img: "" },
+        { id: "jpn-06", title: "Palco de Ídolos", img: "" },
+        { id: "jpn-07", title: "Oficinas criativas", img: "" },
+        { id: "jpn-08", title: "No ar em Tóquio", img: "" }
+      ],
+      animes: [
+        { id: "anime-01", title: "Lâmina Carmesim", img: "https://picsum.photos/seed/arv-anime-01/300/450" },
+        { id: "anime-02", title: "Reino de Aço", img: "https://picsum.photos/seed/arv-anime-02/300/450" },
+        { id: "anime-03", title: "Cidade dos Yokais", img: "https://picsum.photos/seed/arv-anime-03/300/450" },
+        { id: "anime-04", title: "Tormenta Azul", img: "https://picsum.photos/seed/arv-anime-04/300/450" },
+        { id: "anime-05", title: "Horizonte Neo", img: "https://picsum.photos/seed/arv-anime-05/300/450" },
+        { id: "anime-06", title: "Guardião da Luz", img: "https://picsum.photos/seed/arv-anime-06/300/450" },
+        { id: "anime-07", title: "Chronos 7", img: "https://picsum.photos/seed/arv-anime-07/300/450" },
+        { id: "anime-08", title: "Estrelas do Norte", img: "https://picsum.photos/seed/arv-anime-08/300/450" }
+      ],
+      escolhas: [
+        { id: "escolhas-01", title: "Noite perfeita", img: "https://picsum.photos/seed/arv-escolhas-01/300/450" },
+        { id: "escolhas-02", title: "Destaques do dia", img: "https://picsum.photos/seed/arv-escolhas-02/300/450" },
+        { id: "escolhas-03", title: "Top escolhas", img: "https://picsum.photos/seed/arv-escolhas-03/300/450" },
+        { id: "escolhas-04", title: "Seleção especial", img: "https://picsum.photos/seed/arv-escolhas-04/300/450" },
+        { id: "escolhas-05", title: "Imperdíveis", img: "https://picsum.photos/seed/arv-escolhas-05/300/450" },
+        { id: "escolhas-06", title: "Momentos únicos", img: "https://picsum.photos/seed/arv-escolhas-06/300/450" },
+        { id: "escolhas-07", title: "Nova vibe", img: "https://picsum.photos/seed/arv-escolhas-07/300/450" },
+        { id: "escolhas-08", title: "Só para hoje", img: "https://picsum.photos/seed/arv-escolhas-08/300/450" }
+      ],
+      ficcao: [
+        { id: "ficcao-01", title: "Colônia Lunar", img: "https://picsum.photos/seed/arv-ficcao-01/300/450" },
+        { id: "ficcao-02", title: "Expedição Alfa", img: "https://picsum.photos/seed/arv-ficcao-02/300/450" },
+        { id: "ficcao-03", title: "Horizonte Galáctico", img: "https://picsum.photos/seed/arv-ficcao-03/300/450" },
+        { id: "ficcao-04", title: "Planeta Oculto", img: "https://picsum.photos/seed/arv-ficcao-04/300/450" },
+        { id: "ficcao-05", title: "Reinos do Vazio", img: "https://picsum.photos/seed/arv-ficcao-05/300/450" },
+        { id: "ficcao-06", title: "Hiperespaço", img: "https://picsum.photos/seed/arv-ficcao-06/300/450" },
+        { id: "ficcao-07", title: "Códigos do Amanhã", img: "https://picsum.photos/seed/arv-ficcao-07/300/450" },
+        { id: "ficcao-08", title: "Terra 2.0", img: "https://picsum.photos/seed/arv-ficcao-08/300/450" }
+      ],
+      novidades: [
+        { id: "nov-01", title: "Chegou hoje", img: "https://picsum.photos/seed/arv-nov-01/300/450" },
+        { id: "nov-02", title: "Estreia mundial", img: "https://picsum.photos/seed/arv-nov-02/300/450" },
+        { id: "nov-03", title: "Premiere ARV", img: "https://picsum.photos/seed/arv-nov-03/300/450" },
+        { id: "nov-04", title: "Recém-lançado", img: "https://picsum.photos/seed/arv-nov-04/300/450" },
+        { id: "nov-05", title: "Inédito", img: "https://picsum.photos/seed/arv-nov-05/300/450" },
+        { id: "nov-06", title: "Novíssimo", img: "https://picsum.photos/seed/arv-nov-06/300/450" },
+        { id: "nov-07", title: "Hoje na tela", img: "https://picsum.photos/seed/arv-nov-07/300/450" },
+        { id: "nov-08", title: "Clássico revisto", img: "https://picsum.photos/seed/arv-nov-08/300/450" }
+      ],
+      sugestoes: [
+        { id: "sug-01", title: "Para maratonar", img: "https://picsum.photos/seed/arv-sug-01/300/450" },
+        { id: "sug-02", title: "Você vai amar", img: "https://picsum.photos/seed/arv-sug-02/300/450" },
+        { id: "sug-03", title: "Top da semana", img: "https://picsum.photos/seed/arv-sug-03/300/450" },
+        { id: "sug-04", title: "Favoritos ARV", img: "https://picsum.photos/seed/arv-sug-04/300/450" },
+        { id: "sug-05", title: "Seleção premium", img: "https://picsum.photos/seed/arv-sug-05/300/450" },
+        { id: "sug-06", title: "Dicas certeiras", img: "https://picsum.photos/seed/arv-sug-06/300/450" },
+        { id: "sug-07", title: "Para relaxar", img: "https://picsum.photos/seed/arv-sug-07/300/450" },
+        { id: "sug-08", title: "Bons momentos", img: "https://picsum.photos/seed/arv-sug-08/300/450" }
+      ],
+      pressa: [
+        { id: "pressa-01", title: "Maratona rápida", img: "https://picsum.photos/seed/arv-pressa-01/300/450" },
+        { id: "pressa-02", title: "30 min", img: "https://picsum.photos/seed/arv-pressa-02/300/450" },
+        { id: "pressa-03", title: "Flash stories", img: "https://picsum.photos/seed/arv-pressa-03/300/450" },
+        { id: "pressa-04", title: "Curto e bom", img: "https://picsum.photos/seed/arv-pressa-04/300/450" },
+        { id: "pressa-05", title: "Série express", img: "https://picsum.photos/seed/arv-pressa-05/300/450" },
+        { id: "pressa-06", title: "Sessão rápida", img: "https://picsum.photos/seed/arv-pressa-06/300/450" },
+        { id: "pressa-07", title: "Mini hits", img: "https://picsum.photos/seed/arv-pressa-07/300/450" },
+        { id: "pressa-08", title: "Episódios curtos", img: "https://picsum.photos/seed/arv-pressa-08/300/450" }
+      ],
+      favoritos: [
+        { id: "fav-01", title: "Clássico ARV", img: "https://picsum.photos/seed/arv-fav-01/300/450" },
+        { id: "fav-02", title: "Hits de sempre", img: "https://picsum.photos/seed/arv-fav-02/300/450" },
+        { id: "fav-03", title: "Do coração", img: "https://picsum.photos/seed/arv-fav-03/300/450" },
+        { id: "fav-04", title: "Rever de novo", img: "https://picsum.photos/seed/arv-fav-04/300/450" },
+        { id: "fav-05", title: "Favorito eterno", img: "https://picsum.photos/seed/arv-fav-05/300/450" },
+        { id: "fav-06", title: "Aqueles", img: "https://picsum.photos/seed/arv-fav-06/300/450" },
+        { id: "fav-07", title: "Top nostalgia", img: "https://picsum.photos/seed/arv-fav-07/300/450" },
+        { id: "fav-08", title: "Feitos para você", img: "https://picsum.photos/seed/arv-fav-08/300/450" }
+      ],
+      aclamadas: [
+        { id: "aclam-01", title: "Premiado", img: "https://picsum.photos/seed/arv-aclam-01/300/450" },
+        { id: "aclam-02", title: "Crítica ama", img: "https://picsum.photos/seed/arv-aclam-02/300/450" },
+        { id: "aclam-03", title: "Nota máxima", img: "https://picsum.photos/seed/arv-aclam-03/300/450" },
+        { id: "aclam-04", title: "Cenas brilhantes", img: "https://picsum.photos/seed/arv-aclam-04/300/450" },
+        { id: "aclam-05", title: "Destaque anual", img: "https://picsum.photos/seed/arv-aclam-05/300/450" },
+        { id: "aclam-06", title: "Obra-prima", img: "https://picsum.photos/seed/arv-aclam-06/300/450" },
+        { id: "aclam-07", title: "Vencedor", img: "https://picsum.photos/seed/arv-aclam-07/300/450" },
+        { id: "aclam-08", title: "Melhor do ano", img: "https://picsum.photos/seed/arv-aclam-08/300/450" }
+      ]
+    };
+
+    const generateRandomId = () => `cat-${Math.random().toString(36).slice(2, 10)}`;
+
+    const randomizedCatalogByCategory = Object.fromEntries(
+      Object.entries(catalogByCategory).map(([key, items]) => ([
+        key,
+        items.map(item => ({
+          ...item,
+          id: generateRandomId()
+        }))
+      ]))
+    );
+
+    let selectedItem = null;
+    let currentEpisodeKey = null;
+
+    /* ===== LOGIN ===== */
+    function deriveFirstName(email){
+      const local=email.split("@")[0]||email;
+      const cleaned=local.replace(/[^a-zA-ZÀ-ÿ]+/g," ").trim();
+      const surnames=["silva","souza","oliveira","santos","neves","pereira","almeida","lima","costa","martins","rocha","ferreira","gomes","rodrigues","dias","barbosa","araujo"];
+      const lower=cleaned.toLowerCase().replace(/\s+/g,"");
+      let candidate="";
+      surnames.forEach(sn=>{
+        const idx=lower.indexOf(sn);
+        if(idx>2 && (candidate==="" || idx<candidate.length)){
+          candidate=lower.slice(0,idx);
+        }
+      });
+      const basis=candidate||cleaned.split(/\s+/)[0]||local;
+      return basis.charAt(0).toUpperCase()+basis.slice(1);
+    }
+
+    function login(){
+      const email=document.getElementById("email").value.trim();
+      const password=document.getElementById("password").value.trim();
+      if(!email || !password) return;
+      localStorage.setItem("arv_email",email);
+      localStorage.setItem("arv_pass",password);
+      start();
+    }
+
+    function start(){
+      const email=localStorage.getItem("arv_email");
+      if(!email){
+        show("login");
+        return;
+      }
+      const profileLabel=deriveFirstName(email);
+      categories[0].title = `Continuar assistindo como ${profileLabel}`;
+      show("home");
+      document.getElementById("welcome").innerText=profileLabel;
+      document.getElementById("profileName").innerText=profileLabel;
+      renderHome();
+      renderClips();
+      renderSearchTags();
+      renderSearchResults("");
+      setActiveNav("home");
+    }
+
+    function logout(){
+      localStorage.clear();
+      location.reload();
+    }
+
+    function shuffleArray(list) {
+      return [...list].sort(() => Math.random() - 0.5);
+    }
+
+    function renderHome() {
+      const container = document.getElementById("sections-container");
+      container.innerHTML = "";
+      categories.forEach((cat) => {
+        const section = document.createElement("div");
+        section.className = "section";
+        section.dataset.type = cat.type;
+        section.innerHTML = `<div class="section-title">${cat.title}</div>`;
+        const carousel = document.createElement("div");
+        carousel.className = "carousel";
+        const items = randomizedCatalogByCategory[cat.id] || randomizedCatalogByCategory.inicio;
+        const shuffledItems = shuffleArray(items);
+        shuffledItems.forEach((item, i) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.dataset.title = item.title.toLowerCase();
+          const media = item.img
+            ? `<img src="${item.img}" alt="Capa" onclick='openDetails(${JSON.stringify(item)})'>`
+            : `<div class="card-placeholder" onclick='openDetails(${JSON.stringify(item)})'>Sem imagem</div>`;
+          card.innerHTML = `
+            ${(i === 0 || item.top10) ? '<div class="top10-badge">TOP 10</div>' : ''}
+            ${media}
+            ${typeof item.progress === 'number' ? `<div class="progress-bar"><div class="progress-fill" style="width:${item.progress}%"></div></div>` : ''}
+            ${item.label ? `<div class="card-label"><span>${item.label}</span>${item.labelSecondary ? `<span class="label-secondary">${item.labelSecondary}</span>` : ''}</div>` : ''}
+            <div class="card-options-btn" onclick='openSheet(${JSON.stringify(item)}, event)'>
+              <i data-lucide="more-vertical" size="16" color="white"></i>
+            </div>
+          `;
+          carousel.appendChild(card);
+        });
+        section.appendChild(carousel);
+        container.appendChild(section);
+      });
+      lucide.createIcons();
+    }
+
+    function openDetails(item) {
+      selectedItem = item;
+      const detailView = document.getElementById("detail-view");
+      document.getElementById("detail-hero-img").src = item.img || "imagens/continuar assistindo/1A367628-73EA-4CAD-86F7-F4ECCDB64FAF.png";
+      document.getElementById("detail-title").textContent = item.title;
+      const epContainer = document.getElementById("episodes-container");
+      epContainer.innerHTML = "";
+
+      for (let i = 1; i <= 10; i++) {
+        const epId = `ep-${i}`;
+        const storageKey = `episodeProgress-${item.id}-${epId}`;
+        const savedProgress = localStorage.getItem(storageKey) || 0;
+        const epThumb = `https://picsum.photos/seed/arv-ep-${item.id}-${epId}/300/169`;
+
+        epContainer.innerHTML += `
+          <div class="episode-item" data-episode-title="episódio ${i}">
+            <div class="ep-main">
+              <div class="ep-thumb" onclick="openPlayer('${item.id}', '${epId}')">
+                <img src="${epThumb}" alt="Episódio ${i}">
+                <div class="ep-play-overlay"><i data-lucide="play" fill="white" size="24"></i></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${savedProgress}%"></div></div>
+              </div>
+              <div class="ep-info">
+                <div class="ep-title">${i}. Episódio ${i}</div>
+                <div class="ep-meta">24 min</div>
+              </div>
+              <div class="ep-actions">
+                <button class="ep-download" onclick="downloadEpisode('${item.title}', '${epId}');event.stopPropagation();">
+                  <i data-lucide="download" size="16" color="#fff"></i>
+                  Baixar
+                </button>
+              </div>
+            </div>
+            <p class="ep-desc">Nesta parte emocionante da jornada de ${item.title}, novos segredos são revelados e cada decisão conta para o futuro.</p>
+          </div>
+        `;
+      }
+      document.getElementById("episodeSearch").value = "";
+      detailView.style.display = "block";
+      lucide.createIcons();
+    }
+
+    function closeDetails() { document.getElementById("detail-view").style.display = "none"; }
+
+    function openPlayer(itemId, episodeId) {
+      currentEpisodeKey = `episodeProgress-${itemId}-${episodeId}`;
+      document.getElementById("player").style.display = "block";
+      const video = document.getElementById("v-vid");
+      video.play();
+
+      video.ontimeupdate = () => {
+        if (!video.duration) return;
+        const progress = Math.round((video.currentTime / video.duration) * 100);
+        localStorage.setItem(currentEpisodeKey, progress);
+      };
+    }
+
+    function closePlayer() {
+      document.getElementById("player").style.display = "none";
+      document.getElementById("v-vid").pause();
+    }
+
+    function openSheet(item, e) {
+      e.stopPropagation();
+      selectedItem = item;
+      document.getElementById("arv-sheet-title").innerText = item.title;
+      document.getElementById("arv-overlay").style.display = "block";
+      setTimeout(() => document.getElementById("arv-bottom-sheet").classList.add("arv-sheet-active"), 10);
+      lucide.createIcons();
+    }
+
+    function closeSheet() {
+      document.getElementById("arv-bottom-sheet").classList.remove("arv-sheet-active");
+      setTimeout(() => document.getElementById("arv-overlay").style.display = "none", 300);
+    }
+
+    function openDetailsFromSheet() {
+      if (!selectedItem) return;
+      closeSheet();
+      openDetails(selectedItem);
+    }
+
+    function filterContent(type, el) {
+      document.querySelectorAll(".section").forEach(sec => {
+        sec.style.display = (type === 'inicio' || sec.dataset.type === type) ? "block" : "none";
+      });
+      document.querySelectorAll(".filter").forEach(f => f.classList.remove("active"));
+      el.classList.add("active");
+    }
+
+    function filterCatalogBySearch() {
+      const query = document.getElementById("globalSearch").value.trim().toLowerCase();
+      document.querySelectorAll(".section").forEach(section => {
+        let matches = 0;
+        section.querySelectorAll(".card").forEach(card => {
+          const title = card.dataset.title || "";
+          const show = !query || title.includes(query);
+          card.style.display = show ? "block" : "none";
+          if (show) matches += 1;
+        });
+        section.style.display = matches > 0 ? "block" : "none";
+      });
+    }
+
+    function filterEpisodes() {
+      const query = document.getElementById("episodeSearch").value.trim().toLowerCase();
+      document.querySelectorAll(".episode-item").forEach(item => {
+        const title = item.dataset.episodeTitle || "";
+        item.style.display = !query || title.includes(query) ? "block" : "none";
+      });
+    }
+
+    function downloadEpisode(seriesTitle, episodeId) {
+      alert(`Download iniciado: ${seriesTitle} (${episodeId})`);
+    }
+
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle("light");
+      document.getElementById("themeToggle").innerHTML = isLight ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+    }
+
+    function toggleSearchBar() {
+      const searchBar = document.getElementById("searchBar");
+      const input = document.getElementById("globalSearch");
+      searchBar.classList.toggle("is-open");
+      if (searchBar.classList.contains("is-open")) {
+        input.focus();
+      } else {
+        input.value = "";
+        filterCatalogBySearch();
+      }
+    }
+
+    function show(id) {
+      showScreen(id);
+      document.getElementById("bottom-nav").style.display = id === "login" ? "none" : "flex";
+    }
+
+    function setActiveNav(target) {
+      document.querySelectorAll(".nav-item").forEach(n => {
+        n.classList.toggle("active", n.dataset.target === target);
+      });
+    }
+
+    function renderClips() {}
+    function renderSearchTags() {}
+    function renderSearchResults() {}
+
+    function showScreen(id, el) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+      if (el) el.classList.add("active");
+    }
+
+    function selectPlano(nome) {
+      document.querySelectorAll(".plan-card").forEach(card => card.classList.toggle("selected", card.dataset.plan === nome));
+    }
+
+    function openPaymentModal(method, plan) {
+      document.getElementById("paymentTitle").textContent = `Pagamento via ${method}`;
+      document.getElementById("paymentPlan").textContent = `Plano: ${plan}`;
+      document.getElementById("paymentModal").style.display = "flex";
+      const qrContainer = document.getElementById("paymentQr");
+      const paymentInfo = document.getElementById("paymentInfo");
+      qrContainer.innerHTML = "";
+
+      if (method === 'Pix') {
+        new QRCode(qrContainer, { text: "pix-arv-pay-key-123", width: 140, height: 140 });
+        paymentInfo.textContent = "Use este QR Code para finalizar o pagamento. Banco Mercado Pago • Agência 0001 • Conta 86456720223.";
+      } else if (method === 'Boleto') {
+        qrContainer.innerHTML = '<i data-lucide="barcode" size="64"></i>';
+        paymentInfo.textContent = "Seu boleto será gerado automaticamente após a confirmação. Prazo de compensação: até 2 dias úteis.";
+      } else {
+        qrContainer.innerHTML = '<i data-lucide="credit-card" size="64"></i>';
+        paymentInfo.textContent = "Finalize informando os dados do cartão no checkout seguro (crédito ou débito).";
+      }
+      lucide.createIcons();
+    }
+
+    function closePaymentModal() { document.getElementById("paymentModal").style.display = "none"; }
+    function confirmPayment() { closePaymentModal(); alert("Pagamento confirmado!"); }
+    function trocarFoto() { document.getElementById("uploadFoto").click(); }
+    document.getElementById("uploadFoto").addEventListener("change", e => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.getElementById("avatar").src = reader.result;
+        document.getElementById("avatarMini").src = reader.result;
+      };
+      if (!e.target.files[0]) {
+        document.getElementById("avatar").src = emptyAvatar;
+        document.getElementById("avatarMini").src = emptyAvatar;
+        return;
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    });
+
+    function openPlanos() { showScreen("planos"); }
+    function openTermos() { showScreen("termos"); }
+    function returnToProfile() { showScreen("perfil"); }
+    function returnHome() {
+      showScreen("home");
+      setActiveNav("home");
+    }
+    function closeSeriesPlayer() { document.getElementById("series-player-modal").style.display = "none"; }
+
+    start();
+    lucide.createIcons();
+  </script>
 </body>
 </html>
