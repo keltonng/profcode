@@ -755,10 +755,23 @@
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
     ];
 
-    const episodeVideosByItem = {
-      // Adicione aqui 10 vídeos por ID, sempre URLs únicas.
-      // "cont-01": ["https://meus-videos.com/video1.mp4", "https://meus-videos.com/video2.mp4", ...]
+    const episodeFolderByItem = {
+      "cont-08": "solo-leveling"
     };
+
+    const buildEpisodeVideosByItem = () => {
+      const allItems = Object.values(catalogByCategory).flat();
+      return Object.fromEntries(allItems.map((item) => {
+        const folder = episodeFolderByItem[item.id] || item.id;
+        const videos = Array.from({ length: episodeCount }, (_, index) => {
+          const episodeNumber = String(index + 1).padStart(2, "0");
+          return `videos/${folder}/ep${episodeNumber}.mp4`;
+        });
+        return [item.id, videos];
+      }));
+    };
+
+    const episodeVideosByItem = buildEpisodeVideosByItem();
 
     const episodeMapByItem = {};
 
@@ -772,24 +785,15 @@
       const allItems = Object.values(catalogByCategory).flat();
       const totalEpisodesNeeded = allItems.length * episodeCount;
       const expandedVideoPool = createUniqueEpisodePool(totalEpisodesNeeded * 2);
-      const usedVideos = new Set();
       let poolIndex = 0;
 
       allItems.forEach(item => {
-        const customVideos = episodeVideosByItem[item.id] || [];
-        const uniqueCustomVideos = [...new Set(customVideos)].filter(Boolean).filter((url) => {
-          if (usedVideos.has(url)) return false;
-          usedVideos.add(url);
-          return true;
-        });
-
-        const episodes = [...uniqueCustomVideos];
+        const customVideos = (episodeVideosByItem[item.id] || []).filter(Boolean);
+        const episodes = [...customVideos];
 
         while (episodes.length < episodeCount && poolIndex < expandedVideoPool.length) {
           const candidate = expandedVideoPool[poolIndex];
           poolIndex += 1;
-          if (usedVideos.has(candidate)) continue;
-          usedVideos.add(candidate);
           episodes.push(candidate);
         }
 
