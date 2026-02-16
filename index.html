@@ -1,11 +1,676 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ARV | Plataforma Premium</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg: #000000;
+      --card: #121212;
+      --soft: #1a1a1a;
+      --text: #ffffff;
+      --muted: #a3a3a3;
+      --red: #e50914;
+      --gold: #d4af37;
+      --border: rgba(255, 255, 255, 0.1);
+      --nav-bg: rgba(0, 0, 0, 0.95);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Montserrat", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      transition: 0.3s;
+      padding-bottom: 85px;
+    }
+
+    button,
+    input,
+    .card,
+    .filter,
+    .nav-item {
+      outline: none;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .app-header {
+      padding: 45px 16px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .app-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--red);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .filters-scroll {
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 10px 16px;
+    }
+
+    .filters-scroll::-webkit-scrollbar,
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filters-row {
+      display: flex;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .filter {
+      padding: 8px 20px;
+      border-radius: 20px;
+      background: #262626;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: 0.2s;
+      user-select: none;
+    }
+
+    .filter.active {
+      background: transparent;
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .section {
+      padding: 25px 0 0 16px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 3px;
+      height: 18px;
+      background: var(--red);
+      border-radius: 2px;
+    }
+
+    .carousel {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-right: 20px;
+      scrollbar-width: none;
+    }
+
+    .card {
+      flex: 0 0 120px;
+      position: relative;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--soft);
+      aspect-ratio: 2 / 3;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .top10 {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: var(--red);
+      color: #fff;
+      font-size: 8px;
+      font-weight: 900;
+      padding: 2px 5px;
+      border-bottom-left-radius: 4px;
+      z-index: 2;
+    }
+
+    .card-label-box {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 5px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+      text-align: center;
+      min-height: 28px;
+    }
+
+    .label-red {
+      background: var(--red);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 4px;
+      border-radius: 2px;
+      display: inline-block;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .label-white {
+      background: #fff;
+      color: #000;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 4px;
+      border-radius: 2px;
+      display: block;
+      width: fit-content;
+      margin: 0 auto;
+    }
+
+    .card-options {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 50%;
+      padding: 3px;
+      z-index: 2;
+    }
+
+    .detail-view {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 2000;
+      overflow-y: auto;
+      display: none;
+      padding-bottom: 80px;
+    }
+
+    .det-hero {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      position: relative;
+    }
+
+    .det-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .det-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .ep-item {
+      padding: 15px 20px;
+      border-bottom: 1px solid #1a1a1a;
+      cursor: pointer;
+    }
+
+    .ep-main {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .ep-thumb {
+      width: 120px;
+      aspect-ratio: 16 / 9;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .ep-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .ep-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    .ep-info {
+      flex: 1;
+    }
+
+    .ep-title {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .ep-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-top: 5px;
+    }
+
+    .floating-home {
+      position: fixed;
+      bottom: 95px;
+      right: 20px;
+      background: var(--red);
+      color: #fff;
+      padding: 12px 25px;
+      border-radius: 30px;
+      font-weight: 900;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      border: none;
+      cursor: pointer;
+    }
+
+    .login-box {
+      width: 90%;
+      max-width: 360px;
+      background: #141414;
+      border-radius: 18px;
+      padding: 40px;
+      text-align: center;
+      border: 1px solid #333;
+    }
+
+    .login-box h1 {
+      color: var(--red);
+      font-weight: 900;
+      font-size: 40px;
+      margin-bottom: 30px;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: #222;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 75px;
+      background: var(--nav-bg);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      z-index: 500;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #777;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      color: #fff;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 110px;
+      transform: translateX(-50%);
+      background: #242424;
+      border: 1px solid #3f3f3f;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      z-index: 2500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <div id="screen-login" class="screen active">
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+      <div class="login-box">
+        <h1>ARV</h1>
+        <input type="text" id="login-user" placeholder="Quem está assistindo?" />
+        <button id="login-btn" style="width: 100%; padding: 15px; background: var(--red); color: #fff; border: none; border-radius: 8px; font-weight: 800; cursor: pointer;">ENTRAR</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-home" class="screen">
+    <header class="app-header">
+      <div class="app-title">Para <span id="user-display">Kelton</span></div>
+      <div class="header-right">
+        <i data-lucide="download" color="white" size="24"></i>
+        <i data-lucide="search" color="white" size="24"></i>
+      </div>
+    </header>
+
+    <div class="filters-scroll">
+      <div class="filters-row" id="filters-row"></div>
+    </div>
+
+    <div id="catalog-container"></div>
+
+    <button class="floating-home" id="floating-home-btn">Início</button>
+  </div>
+
+  <div id="detail-view" class="detail-view">
+    <div class="det-hero">
+      <div class="det-close" id="det-close-btn"><i data-lucide="x" color="white"></i></div>
+      <img id="det-banner" src="" alt="Banner do conteúdo" />
+    </div>
+    <div id="episodes-content"></div>
+  </div>
+
+  <nav class="bottom-nav" id="main-nav" style="display: none;">
+    <div class="nav-item active" data-nav="home"><i data-lucide="home"></i>Início</div>
+    <div class="nav-item" data-nav="modulos"><i data-lucide="play-square"></i>Módulos</div>
+    <div class="nav-item" data-nav="alertas"><i data-lucide="bell"></i>Alertas</div>
+    <div class="nav-item" data-nav="perfil"><i data-lucide="user"></i>Meu Perfil</div>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const filters = ["Início", "Modalidade", "Packs", "Categorias", "Novidades", "Minha Lista"];
+
+    const database = [
+      {
+        category: "Pacotes Lifestyle",
+        items: [
+          { id: "life1", title: "Motivação e Foco", img: "https://picsum.photos/seed/mot/300/450", top10: true, type: "Packs" },
+          { id: "life2", title: "Filmes e Séries", img: "https://picsum.photos/seed/film/300/450", label: "Novo Episódio", label2: "Assista Já", type: "Novidades" },
+          { id: "life3", title: "Mansões de Luxo", img: "https://picsum.photos/seed/lux/300/450", type: "Modalidade" }
+        ]
+      },
+      {
+        category: "Documentários",
+        items: [
+          { id: "doc1", title: "Pai Rico Pai Pobre", img: "https://picsum.photos/seed/rich/300/450", top10: true, type: "Categorias" },
+          { id: "doc2", title: "O Poder do Subconsciente", img: "https://picsum.photos/seed/mind/300/450", type: "Modalidade" },
+          { id: "doc3", title: "O Poder do Hábito", img: "https://picsum.photos/seed/hab/300/450", type: "Minha Lista" }
+        ]
+      },
+      {
+        category: "Desenvolvimento Pessoal",
+        items: [
+          { id: "dp1", title: "Liberdade Pessoal", img: "https://picsum.photos/seed/lib/300/450", top10: true, type: "Categorias" },
+          { id: "dp2", title: "Investimentos", img: "https://picsum.photos/seed/inv/300/450", type: "Packs" },
+          { id: "dp3", title: "Ambientes de Alta Frequência", img: "https://picsum.photos/seed/amb/300/450", type: "Novidades" }
+        ]
+      },
+      {
+        category: "Lugares",
+        items: [
+          { id: "lg1", title: "Rio de Janeiro", img: "https://picsum.photos/seed/rio/300/450", top10: true, type: "Novidades" },
+          { id: "lg2", title: "Itália - Lago de Como", img: "https://picsum.photos/seed/ita/300/450", type: "Categorias" },
+          { id: "lg3", title: "Ilha Secreta", img: "https://picsum.photos/seed/isl/300/450", type: "Modalidade" }
+        ]
+      },
+      {
+        category: "Pack Feminino",
+        items: [
+          { id: "fm1", title: "Autoridade Imponente", img: "https://picsum.photos/seed/fem1/300/450", top10: true, type: "Packs" },
+          { id: "fm2", title: "Independente", img: "https://picsum.photos/seed/fem2/300/450", type: "Minha Lista" },
+          { id: "fm3", title: "Beleza que Comanda", img: "https://picsum.photos/seed/fem3/300/450", type: "Modalidade" }
+        ]
+      }
+    ];
+
+    let activeFilter = "Início";
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function setupFilters() {
+      const row = document.getElementById("filters-row");
+      row.innerHTML = "";
+      filters.forEach((name) => {
+        const btn = document.createElement("button");
+        btn.className = `filter ${name === activeFilter ? "active" : ""}`;
+        btn.textContent = name;
+        btn.type = "button";
+        btn.addEventListener("click", () => {
+          activeFilter = name;
+          setupFilters();
+          renderHome();
+        });
+        row.appendChild(btn);
+      });
+    }
+
+    function sectionHasFilterMatch(section) {
+      if (activeFilter === "Início") {
+        return true;
+      }
+
+      return section.items.some((item) => item.type === activeFilter);
+    }
+
+    function renderHome() {
+      const container = document.getElementById("catalog-container");
+      container.innerHTML = "";
+
+      const visibleSections = database.filter(sectionHasFilterMatch);
+
+      if (visibleSections.length === 0) {
+        container.innerHTML = '<p style="padding: 30px 16px; color: var(--muted);">Nenhum conteúdo disponível para este filtro.</p>';
+        return;
+      }
+
+      visibleSections.forEach((section) => {
+        const sectionDiv = document.createElement("div");
+        sectionDiv.className = "section";
+        sectionDiv.innerHTML = `<div class="section-title">${section.category}</div>`;
+
+        const carousel = document.createElement("div");
+        carousel.className = "carousel";
+
+        for (let i = 0; i < 18; i += 1) {
+          const item = section.items[i % section.items.length];
+          if (activeFilter !== "Início" && item.type !== activeFilter) {
+            continue;
+          }
+
+          const card = document.createElement("div");
+          card.className = "card";
+          card.setAttribute("role", "button");
+          card.setAttribute("aria-label", `Abrir conteúdo ${item.title}`);
+          card.addEventListener("click", () => openDetails(item));
+          card.innerHTML = `
+            <img src="${item.img}" alt="${item.title}" loading="lazy">
+            ${item.top10 && i === 0 ? '<div class="top10">TOP 10</div>' : ""}
+            <div class="card-label-box">
+              ${item.label ? `<div class="label-red">${item.label}</div>` : ""}
+              ${item.label2 ? `<div class="label-white">${item.label2}</div>` : ""}
+            </div>
+            <div class="card-options"><i data-lucide="more-vertical" size="14" color="white"></i></div>
+          `;
+          carousel.appendChild(card);
+        }
+
+        if (!carousel.children.length) {
+          return;
+        }
+
+        sectionDiv.appendChild(carousel);
+        container.appendChild(sectionDiv);
+      });
+
+      lucide.createIcons();
+    }
+
+    function openDetails(item) {
+      document.getElementById("det-banner").src = item.img;
+      const content = document.getElementById("episodes-content");
+      content.innerHTML = `
+        <h2 style="padding: 20px 20px 5px; font-size: 24px;">${item.title}</h2>
+        <p style="padding: 0 20px 20px; color: var(--gold); font-weight: 800; font-size: 13px;">Série Exclusiva ARV</p>
+        <div style="background: #262626; padding: 10px; margin: 0 20px 25px; border-radius: 4px; display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px;">
+          Temporada 1 <i data-lucide="chevron-down" size="16"></i>
+        </div>
+      `;
+
+      for (let i = 1; i <= 10; i += 1) {
+        content.innerHTML += `
+          <div class="ep-item" data-episode="${i}">
+            <div class="ep-main">
+              <div class="ep-thumb">
+                <img src="${item.img}" alt="Miniatura episódio ${i}" loading="lazy">
+                <div class="ep-play"><i data-lucide="play" fill="white" size="24"></i></div>
+              </div>
+              <div class="ep-info">
+                <div class="ep-title">${i}. Episódio ${i}</div>
+                <div style="font-size:12px; color:#777">24 min</div>
+              </div>
+              <i data-lucide="download" color="white" size="20"></i>
+            </div>
+            <p class="ep-desc">Nesta aula do módulo ${item.title}, exploramos técnicas avançadas e o mindset necessário para dominar este mercado.</p>
+          </div>
+        `;
+      }
+
+      content.querySelectorAll(".ep-item").forEach((episodeNode) => {
+        episodeNode.addEventListener("click", () => {
+          const episodeNumber = episodeNode.getAttribute("data-episode");
+          showToast(`Iniciando episódio ${episodeNumber}...`);
+        });
+      });
+
+      document.getElementById("detail-view").style.display = "block";
+      lucide.createIcons();
+    }
+
+    function closeDetails() {
+      document.getElementById("detail-view").style.display = "none";
+    }
+
+    function handleLogin() {
+      const userInput = document.getElementById("login-user");
+      const user = userInput.value.trim() || "Kelton";
+      document.getElementById("user-display").innerText = user;
+      document.getElementById("screen-login").classList.remove("active");
+      document.getElementById("screen-home").classList.add("active");
+      document.getElementById("main-nav").style.display = "flex";
+      setupFilters();
+      renderHome();
+    }
+
+    function setupNav() {
+      document.querySelectorAll(".nav-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          document.querySelectorAll(".nav-item").forEach((entry) => entry.classList.remove("active"));
+          item.classList.add("active");
+          showToast(`Seção ${item.dataset.nav} aberta`);
+        });
+      });
+    }
+
+    document.getElementById("login-btn").addEventListener("click", handleLogin);
+    document.getElementById("login-user").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        handleLogin();
+      }
+    });
+
+    document.getElementById("floating-home-btn").addEventListener("click", () => {
+      activeFilter = "Início";
+      setupFilters();
+      closeDetails();
+      renderHome();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    document.getElementById("det-close-btn").addEventListener("click", closeDetails);
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeDetails();
+      }
+    });
+
+    window.onload = () => {
+      setupNav();
+      lucide.createIcons();
+    };
+  </script>
 </body>
 </html>
