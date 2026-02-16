@@ -1,11 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARV | Plataforma Premium</title>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <h1>Prof Ajax</h1>
+
+  <script>
+    const catalogByCategory = {
+      inicio: [{ id: "cont-01", title: "Exploding Kittens" }],
+      jogos: [{ id: "jogos-01", title: "Asphalt Rush" }]
+    };
+
+    const episodeVideosByItem = {
+      "cont-01": ["videos/cont-01/ep1.mp4", "videos/cont-01/ep2.mp4"],
+      "jogos-01": ["videos/jogos-01/ep1.mp4"]
+    };
+
+    const episodeMapByItem = {};
+
+    // 🔹 FUNÇÃO CORRIGIDA PARA GERAR EPISÓDIOS
+    const buildEpisodeMap = () => {
+      const allItems = Object.values(catalogByCategory).flat();
+
+      allItems.forEach(item => {
+        // Pega só os vídeos que você colocou manualmente
+        const videos = episodeVideosByItem[item.id] || [];
+
+        // Cria o mapa de episódios apenas com os vídeos reais
+        episodeMapByItem[item.id] = videos.map((url, index) => ({
+          id: `ep-${index + 1}`,
+          title: `Episódio ${index + 1}`,
+          url: url
+        }));
+      });
+    };
+
+    // 🟢 Chama a função para montar a lista de episódios correta
+    buildEpisodeMap();
+
+    function start() {
+      return true;
+    }
+
+    function syncSettingsUI() {
+      return true;
+    }
+
+    const lucide = {
+      createIcons() {
+        return true;
+      }
+    };
+
+    buildEpisodeMap();
+    start();
+    syncSettingsUI();
+    lucide.createIcons();
+  </script>
 </body>
 </html>
