@@ -1,11 +1,138 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARV | Plataforma Premium</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root{--bg:#000;--card:#141414;--soft:#1f1f1f;--text:#fff;--muted:#9ca3af;--red:#e50914;--gold:#c7a45b;--nav-bg:linear-gradient(180deg,rgba(12,12,12,.85),#000);--nav-border:rgba(255,255,255,.05);--nav-text:#a5a5a5;--nav-active:#fff;--blue:#3b82f6;--border:rgba(255,255,255,.1)}
+    body.light{--bg:#f5f5f6;--card:#fff;--soft:#f1f1f1;--text:#111827;--muted:#6b7280;--nav-bg:linear-gradient(180deg,rgba(255,255,255,.85),#f5f5f6);--nav-border:rgba(0,0,0,.08);--nav-text:#6b7280;--nav-active:#111827;--blue:#2563eb;--border:rgba(0,0,0,.08)}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif}body{background:var(--bg);color:var(--text);padding-bottom:90px;min-height:100vh;overflow-x:hidden;transition:.3s}
+    .screen{display:none;min-height:100vh;animation:fadeIn .3s ease}.screen.active{display:block}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#000}.login-box{width:100%;max-width:360px;background:var(--card);border-radius:18px;padding:30px;box-shadow:0 12px 40px rgba(0,0,0,.45);border:1px solid var(--soft);text-align:center}.login-box h1{margin-bottom:18px;font-weight:900;color:var(--red);font-size:32px}.login-box input{width:100%;padding:14px;margin-bottom:12px;background:#000;border:1px solid #333;border-radius:10px;color:#fff}.login-box button{width:100%;padding:14px;background:var(--red);border:none;border-radius:10px;color:#fff;font-weight:800;cursor:pointer}
+    .app-header{padding:20px 16px 6px;display:flex;align-items:center;justify-content:space-between}.app-title{font-size:24px;font-weight:900;color:var(--red)}.header-actions{display:flex;align-items:center;gap:12px}.icon-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;cursor:pointer}
+    .search-bar{padding:0 16px 10px;display:none}.search-bar.is-open{display:block}.search-input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);font-weight:600}.search-input::placeholder{color:var(--muted)}
+    .filters-container{padding:10px 16px;overflow-x:auto;scrollbar-width:none}.filters-container::-webkit-scrollbar{display:none}.filters-row{display:flex;gap:10px;white-space:nowrap}.filter{padding:8px 16px;border:1px solid transparent;border-radius:20px;font-size:13px;cursor:pointer;color:var(--muted);transition:.25s;background:var(--soft);font-weight:700}.filter.active{border-color:var(--red);color:var(--red)}
+    .hero{position:relative;margin:10px 16px 18px;border-radius:16px;overflow:hidden;background:#111;height:250px}.hero img{width:100%;height:100%;object-fit:cover;opacity:.7}.hero-info{position:absolute;left:20px;bottom:20px;display:flex;flex-direction:column;gap:8px}.hero-title{font-size:26px;font-weight:900}
+    .primary-btn,.ghost-btn{border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px}.primary-btn{background:#fff;color:#000}.ghost-btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.18)}.small-ghost{padding:8px 12px;font-size:12px}
+    .section{padding:22px 0 16px 16px}.section-title{font-size:17px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:10px}.section-title::before{content:"";width:3px;height:18px;background:var(--red);border-radius:10px}.carousel{display:flex;gap:10px;overflow-x:auto;padding-right:20px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+    .card{flex:0 0 115px;position:relative;border-radius:4px;overflow:hidden;cursor:pointer;transition:transform .2s ease;background:var(--soft);aspect-ratio:2/3}.card:hover{transform:scale(1.05)}.card img{width:100%;height:100%;object-fit:cover;display:block}.card-placeholder{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(160deg,rgba(255,255,255,.04),rgba(255,255,255,.12));color:var(--text);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:8px;text-align:center}
+    .progress-bar{position:absolute;bottom:0;left:0;width:100%;height:3px;background:rgba(255,255,255,0.2)}.progress-fill{height:100%;background:var(--red);width:40%}.top10-badge{position:absolute;top:0;right:0;background:var(--red);color:#fff;font-size:8px;font-weight:900;padding:2px 4px;border-bottom-left-radius:4px}.card-options-btn{position:absolute;bottom:5px;right:5px;background:rgba(0,0,0,.5);border-radius:50%;padding:4px;display:grid;place-items:center}
+    .detail-view{position:fixed;inset:0;background:var(--bg);z-index:1100;overflow-y:auto;display:none;padding-bottom:50px}.hero-banner{width:100%;aspect-ratio:16/9;position:relative}.hero-banner img{width:100%;height:100%;object-fit:cover}.hero-close{position:absolute;top:20px;right:20px;background:rgba(0,0,0,.6);border-radius:50%;padding:8px;z-index:10}.hero-play{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);background:rgba(0,0,0,.5);border:2px solid #fff;border-radius:50%;padding:15px}
+    .episode-list-container{padding:20px}.season-selector{display:flex;align-items:center;gap:8px;font-weight:800;margin-bottom:20px;background:#262626;padding:8px 12px;border-radius:4px;width:fit-content}.episode-item{margin-bottom:25px}.ep-main{display:flex;align-items:center;gap:15px;margin-bottom:10px}.ep-thumb{width:130px;aspect-ratio:16/9;position:relative;border-radius:4px;overflow:hidden;flex-shrink:0}.ep-thumb img{width:100%;height:100%;object-fit:cover}.ep-play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.2)}.ep-info{flex:1}.ep-title{font-size:14px;font-weight:800;margin-bottom:2px}.ep-meta{font-size:12px;color:var(--muted)}.ep-desc{font-size:13px;color:var(--muted);line-height:1.4}
+    .bottom{position:fixed;bottom:0;left:0;width:100%;height:74px;background:var(--nav-bg);backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;z-index:999;border-top:1px solid var(--nav-border)}.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--nav-text);cursor:pointer;font-weight:600}.nav-item.active{color:var(--nav-active)}
+    .profile-pic{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35);background:var(--soft)}.home-fab{position:fixed;right:18px;bottom:96px;padding:12px 16px;border:none;border-radius:999px;background:var(--red);color:#fff;font-weight:800;box-shadow:0 12px 24px rgba(0,0,0,.35);cursor:pointer;display:flex;align-items:center;gap:8px;z-index:1000}
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <div id="login" class="screen active"><div class="login"><div class="login-box"><h1>ARV</h1><input id="email" type="email" placeholder="Email" value="usuario@arv.com"><input id="password" type="password" placeholder="Senha" value="123456"><button onclick="login()">Entrar</button></div></div></div>
+
+  <div id="home" class="screen">
+    <div class="app-header"><div><div class="app-title">Para <span id="welcome"></span></div><small style="color:var(--muted);font-weight:600;">Modulo</small></div><div class="header-actions"><div class="icon-btn" id="themeToggle" onclick="toggleTheme()"><i data-lucide="sun"></i></div><div class="icon-btn" id="searchToggle" onclick="toggleSearchBar()"><i data-lucide="search"></i></div><div class="icon-btn"><i data-lucide="download"></i></div></div></div>
+    <div class="search-bar" id="searchBar"><input id="globalSearch" class="search-input" type="search" placeholder="Pesquisar episódios e títulos" oninput="filterCatalogBySearch()"></div>
+    <div class="filters-container"><div class="filters-row"><div class="filter active" onclick="filterContent('inicio',this)">Início</div><div class="filter" onclick="filterContent('Modalidade',this)">Modalidade</div><div class="filter" onclick="filterContent('packs',this)">Packs</div><div class="filter" onclick="filterContent('categorias',this)">Categorias</div><div class="filter" onclick="filterContent('novidades',this)">Novidades</div><div class="filter" onclick="filterContent('minhalista',this)">Minha Lista</div></div></div>
+    <div id="main-content"><div class="hero"><img src="imagens/lifestyle/01EBFB7A-B8A8-456E-8B95-A9267B1F51C9.png" alt="Destaque"><div class="hero-info"><div class="hero-title">Metodo ARV</div><button class="primary-btn" onclick="openPlayer(selectedItem?.id, 'ep-1')">Assistir</button></div></div><div id="sections-container"></div></div>
+    <button id="homeFab" class="home-fab" onclick="returnHome()"><span>Início</span></button>
+  </div>
+
+  <div id="alertas" class="screen"><div class="section"><div class="section-title">Alertas</div><div class="card-placeholder">Nenhum alerta novo</div></div></div>
+  <div id="perfil" class="screen"><div class="section"><div class="section-title">Perfil</div></div></div>
+
+  <div id="player"><video id="v-vid" controls></video></div>
+  <div id="detail-view" class="detail-view"><div class="hero-banner"><img id="detail-hero-img" alt=""><div class="hero-close" onclick="closeDetails()"><i data-lucide="x" color="white"></i></div></div><div class="episode-list-container"><h2 id="detail-title"></h2><div id="episodes-container"></div></div></div>
+
+  <div class="bottom" id="bottom-nav" style="display:none">
+    <div class="nav-item active" data-target="home" onclick="goHomeAndScroll(this)"><i data-lucide="home"></i><span>Início</span></div>
+    <div class="nav-item" data-target="alertas" onclick="showScreen('alertas', this)"><i data-lucide="bell"></i><span>Alertas</span></div>
+    <div class="nav-item" data-target="perfil" onclick="showScreen('perfil', this)"><img class="profile-pic" id="avatarMini" alt="Avatar mini"><span>Meu Perfil</span></div>
+  </div>
+
+  <script>
+    const settingsStorageKey = "arv_settings";
+    const categories = [
+      { id: "inicio", title: "Continuar assistindo", type: "inicio" },
+      { id: "jogos", title: "Pacotes Lifestyle", type: "Modalidade" }
+    ];
+    const catalogByCategory = {
+      inicio: [{ id: "cont-01", title: "Exploding Kittens", img: "imagens/lifestyle/1A367628-73EA-4CAD-86F7-F4ECCDB64FAF.png", progress: 40 }],
+      jogos: [{ id: "jogos-01", title: "Asphalt Rush", img: "imagens/lifestyle/1FBDB744-36A8-492F-A025-5B007EFDA360.png" }]
+    };
+
+    const episodeCount = 10;
+    const episodeVideoPool = [];
+    const episodeVideosByItem = {
+      "cont-01": ["videos/cont-01/ep1.mp4"],
+      "jogos-01": ["videos/pacote-lifestyle/aeronaves/aero1.mp4"]
+    };
+    const episodeMapByItem = {};
+
+    const createUniqueEpisodePool = (count) => {
+      if (!episodeVideoPool.length) return [];
+      return Array.from({ length: count }, (_, index) => {
+        const baseUrl = episodeVideoPool[index % episodeVideoPool.length];
+        const suffix = `arv=${index + 1}`;
+        return baseUrl.includes("?") ? `${baseUrl}&${suffix}` : `${baseUrl}?${suffix}`;
+      });
+    };
+
+    const buildEpisodeMap = () => {
+      const allItems = Object.values(catalogByCategory).flat();
+      const totalEpisodesNeeded = allItems.length * episodeCount;
+      const expandedVideoPool = createUniqueEpisodePool(totalEpisodesNeeded * 2);
+      let poolIndex = 0;
+      allItems.forEach(item => {
+        const customVideos = (episodeVideosByItem[item.id] || []).filter(Boolean);
+        const episodes = [...customVideos];
+        while (episodes.length < episodeCount && poolIndex < expandedVideoPool.length) {
+          episodes.push(expandedVideoPool[poolIndex]);
+          poolIndex += 1;
+        }
+        episodeMapByItem[item.id] = episodes.slice(0, episodeCount).map((url, index) => ({ id: `ep-${index + 1}`, title: `Episódio ${index + 1}`, url }));
+      });
+    };
+
+    const getEpisodesForItem = (itemId) => episodeMapByItem[itemId] || [];
+    let selectedItem = null;
+
+    function deriveFirstName(email){const local=email.split("@")[0]||email;return local.charAt(0).toUpperCase()+local.slice(1)}
+    function login(){const email=document.getElementById("email").value.trim();const password=document.getElementById("password").value.trim();if(!email||!password)return;localStorage.setItem("arv_email",email);localStorage.setItem("arv_pass",password);start();}
+    function start(){const email=localStorage.getItem("arv_email");if(!email){show("login");return;}const profileLabel=deriveFirstName(email);categories[0].title=`Continuar assistindo como ${profileLabel}`;show("home");document.getElementById("welcome").innerText=profileLabel;renderHome();setActiveNav("home");}
+    function renderHome(){const container=document.getElementById("sections-container");container.innerHTML="";categories.forEach((cat)=>{const section=document.createElement("div");section.className="section";section.dataset.type=cat.type;section.innerHTML=`<div class="section-title">${cat.title}</div>`;const carousel=document.createElement("div");carousel.className="carousel";(catalogByCategory[cat.id]||[]).forEach((item)=>{const card=document.createElement("div");card.className="card";card.dataset.title=item.title.toLowerCase();card.innerHTML=`<img src="${item.img}" alt="Capa" onclick='openDetails(${JSON.stringify(item)})'>`;carousel.appendChild(card);});section.appendChild(carousel);container.appendChild(section);});lucide.createIcons();}
+    function openDetails(item){selectedItem=item;const detailView=document.getElementById("detail-view");document.getElementById("detail-hero-img").src=item.img||"";document.getElementById("detail-title").textContent=item.title;const epContainer=document.getElementById("episodes-container");epContainer.innerHTML="";getEpisodesForItem(item.id).forEach((episode,i)=>{epContainer.innerHTML+=`<div class="episode-item"><div class="ep-title">${i+1}. ${episode.title}</div></div>`});detailView.style.display="block";}
+    function closeDetails(){document.getElementById("detail-view").style.display="none"}
+    function openPlayer(itemId, episodeId){if(!itemId)return;const video=document.getElementById("v-vid");const episodes=getEpisodesForItem(itemId);const selectedEpisode=episodes.find(episode=>episode.id===episodeId)||episodes[0];if(selectedEpisode){video.src=selectedEpisode.url;video.play();}}
+    function filterContent(type,el){document.querySelectorAll(".section").forEach(sec=>{sec.style.display=(type==='inicio'||sec.dataset.type===type)?"block":"none";});document.querySelectorAll(".filter").forEach(f=>f.classList.remove("active"));el.classList.add("active");}
+    function filterCatalogBySearch(){const query=document.getElementById("globalSearch").value.trim().toLowerCase();document.querySelectorAll(".section").forEach(section=>{let matches=0;section.querySelectorAll(".card").forEach(card=>{const title=card.dataset.title||"";const show=!query||title.includes(query);card.style.display=show?"block":"none";if(show)matches+=1;});section.style.display=matches>0?"block":"none";});}
+    function toggleTheme(){const isLight=document.body.classList.toggle("light");document.getElementById("themeToggle").innerHTML=isLight?'<i data-lucide="moon"></i>':'<i data-lucide="sun"></i>';lucide.createIcons();}
+    function toggleSearchBar(){const searchBar=document.getElementById("searchBar");const input=document.getElementById("globalSearch");searchBar.classList.toggle("is-open");if(searchBar.classList.contains("is-open")){input.focus();}else{input.value="";filterCatalogBySearch();}}
+    function show(id){showScreen(id);document.getElementById("bottom-nav").style.display=id==="login"?"none":"flex";}
+    function setActiveNav(target){document.querySelectorAll(".nav-item").forEach(n=>{n.classList.toggle("active",n.dataset.target===target);});}
+    function showScreen(id,el){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));if(el)el.classList.add("active");}
+
+    function scrollHomeToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      const detailView = document.getElementById("detail-view");
+      if (detailView) detailView.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function goHomeAndScroll(el) {
+      showScreen("home", el);
+      setActiveNav("home");
+      scrollHomeToTop();
+    }
+
+    function returnHome() {
+      goHomeAndScroll(document.querySelector('.nav-item[data-target="home"]'));
+    }
+
+    buildEpisodeMap();
+    start();
+    lucide.createIcons();
+  </script>
 </body>
 </html>
