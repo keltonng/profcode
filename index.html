@@ -1,11 +1,474 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARV | Plataforma Premium</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#060606;
+  --bg-soft:#0d0d0d;
+  --card:#151515;
+  --card-hover:#1d1d1d;
+  --gold:#facc15;
+  --gold-soft:#fde68a;
+  --text:#ffffff;
+  --muted:#9ca3af;
+  --danger:#ef4444;
+  --line:#262626;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Montserrat',sans-serif;
+}
+
+body{
+  background:radial-gradient(circle at top right, #151515 0%, var(--bg) 40%);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* LOGIN */
+.login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.login-card{
+  width:min(420px,100%);
+  background:linear-gradient(160deg, #191919 0%, #101010 100%);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 20px 40px rgba(0,0,0,.5);
+}
+
+.brand{
+  color:var(--gold);
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:.8px;
+  margin-bottom:8px;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:22px;
+}
+
+.field{
+  margin-bottom:14px;
+}
+
+.field label{
+  display:block;
+  margin-bottom:6px;
+  font-size:12px;
+  color:var(--gold-soft);
+}
+
+.field input{
+  width:100%;
+  background:#0d0d0d;
+  border:1px solid #2e2e2e;
+  border-radius:10px;
+  padding:12px;
+  color:var(--text);
+  font-size:14px;
+}
+
+.field input:focus{
+  outline:none;
+  border-color:var(--gold);
+}
+
+.login-btn{
+  width:100%;
+  margin-top:8px;
+  background:var(--gold);
+  color:#000;
+  border:none;
+  border-radius:10px;
+  padding:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.login-error{
+  margin-top:12px;
+  color:var(--danger);
+  font-size:12px;
+  min-height:14px;
+}
+
+/* APP */
+.app{
+  display:none;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  backdrop-filter:blur(6px);
+  background:rgba(6,6,6,.75);
+  border-bottom:1px solid var(--line);
+  padding:16px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.header-title{
+  color:var(--gold);
+  font-size:22px;
+  font-weight:900;
+}
+
+.premium-tag{
+  font-size:11px;
+  color:#000;
+  background:linear-gradient(90deg,var(--gold),var(--gold-soft));
+  border-radius:999px;
+  padding:6px 10px;
+  font-weight:800;
+}
+
+.container{
+  padding:22px 20px 40px;
+}
+
+.module{
+  margin-bottom:34px;
+}
+
+.section-title{
+  font-size:20px;
+  margin-bottom:14px;
+  font-weight:700;
+}
+
+.grid{
+  display:flex;
+  gap:16px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+  padding-bottom:10px;
+}
+
+.grid::-webkit-scrollbar{ height:6px; }
+.grid::-webkit-scrollbar-thumb{
+  background:var(--gold);
+  border-radius:10px;
+}
+
+.card{
+  min-width:240px;
+  max-width:240px;
+  background:var(--card);
+  border:1px solid #272727;
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.25s ease;
+  flex-shrink:0;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  background:var(--card-hover);
+}
+
+.thumb{
+  height:132px;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+}
+
+.thumb::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.78),transparent);
+}
+
+.content{ padding:15px; }
+.content h3{
+  font-size:14px;
+  margin-bottom:8px;
+}
+.content p{
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:10px;
+  line-height:1.4;
+}
+
+.btn{
+  background:var(--gold);
+  color:#000;
+  padding:9px;
+  border:none;
+  border-radius:8px;
+  font-size:12px;
+  cursor:pointer;
+  width:100%;
+  font-weight:800;
+}
+
+/* PLAYER */
+.player{
+  position:fixed;
+  inset:0;
+  background:#000;
+  padding:16px;
+  display:none;
+  z-index:100;
+}
+
+.player-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
+  gap:8px;
+}
+
+.back-btn,
+.arrow-btn{
+  background:transparent;
+  border:1px solid #313131;
+  color:var(--gold);
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  border-radius:10px;
+  padding:8px 12px;
+}
+
+.arrow-wrap{ display:flex; gap:8px; }
+
+.player-title{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:10px;
+}
+
+video{
+  width:100%;
+  max-height:76vh;
+  border-radius:10px;
+  border:1px solid #222;
+  background:#111;
+}
+
+@media (max-width:700px){
+  .card{ min-width:220px; max-width:220px; }
+  .player-top{ flex-wrap:wrap; }
+}
+</style>
 </head>
+
 <body>
-    <h1>Prof Ajax</h1>
+
+<!-- LOGIN -->
+<section class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="brand">ARV PLATFORM</div>
+    <p class="subtitle">Área premium. Entre com seu acesso para continuar.</p>
+
+    <div class="field">
+      <label for="username">Login</label>
+      <input id="username" type="text" placeholder="Digite seu login" autocomplete="username">
+    </div>
+
+    <div class="field">
+      <label for="password">Senha</label>
+      <input id="password" type="password" placeholder="Digite sua senha" autocomplete="current-password">
+    </div>
+
+    <button class="login-btn" onclick="login()">Entrar na plataforma</button>
+    <p class="login-error" id="loginError"></p>
+  </div>
+</section>
+
+<!-- APP -->
+<main class="app" id="app">
+  <header>
+    <div class="header-title">ARV PLATFORM</div>
+    <div class="premium-tag">PREMIUM ACCESS</div>
+  </header>
+
+  <div class="container" id="modulesContainer"></div>
+</main>
+
+<!-- PLAYER FULLSCREEN -->
+<div class="player" id="player">
+  <div class="player-top">
+    <button class="back-btn" onclick="closePlayer()">← Voltar</button>
+    <div class="arrow-wrap">
+      <button class="arrow-btn" onclick="prevVideo()">← Aula anterior</button>
+      <button class="arrow-btn" onclick="nextVideo()">Próxima aula →</button>
+    </div>
+  </div>
+
+  <div class="player-title" id="playerTitle">Aula</div>
+  <video id="video" controls></video>
+</div>
+
+<script>
+const ACCESS = { login: 'premium', senha: 'arv2026' };
+
+const modules = [
+  {
+    title: 'Módulo 1 - Mentalidade',
+    lessons: [
+      { title: 'Disciplina é liberdade', desc: 'O princípio que separa amadores dos consistentes.', video: 'video1.mp4', thumb: 'imagens/aula1.jpg' },
+      { title: 'Mentalidade de riqueza', desc: 'Como o 1% pensa e age todos os dias.', video: 'video2.mp4', thumb: 'imagens/aula2.jpg' },
+      { title: 'Controle emocional', desc: 'Domine suas decisões em momentos críticos.', video: 'video3.mp4', thumb: 'imagens/aula3.jpg' },
+      { title: 'Foco extremo', desc: 'Eliminar distrações e acelerar resultados.', video: 'video4.mp4', thumb: 'imagens/aula4.jpg' },
+      { title: 'Hábitos milionários', desc: 'Rotinas que constroem riqueza no longo prazo.', video: 'video5.mp4', thumb: 'imagens/aula5.jpg' },
+      { title: 'Execução diária', desc: 'Transforme planos em ação consistente.', video: 'video6.mp4', thumb: 'imagens/aula6.jpg' },
+      { title: 'Visão de longo prazo', desc: 'Pensar como construtor e não como consumidor.', video: 'video7.mp4', thumb: 'imagens/aula7.jpg' }
+    ]
+  },
+  {
+    title: 'Módulo 2 - Vendas de Alta Conversão',
+    lessons: [
+      { title: 'Oferta irresistível', desc: 'Como estruturar uma oferta que vende todos os dias.', video: 'video8.mp4', thumb: 'imagens/aula8.jpg' },
+      { title: 'Script campeão', desc: 'Modelo de conversa para fechar com segurança.', video: 'video9.mp4', thumb: 'imagens/aula9.jpg' },
+      { title: 'Quebra de objeções', desc: 'Antecipe e neutralize dúvidas sem perder autoridade.', video: 'video10.mp4', thumb: 'imagens/aula10.jpg' }
+    ]
+  },
+  {
+    title: 'Módulo 3 - Marketing e Posicionamento',
+    lessons: [
+      { title: 'Marca pessoal premium', desc: 'Construa reputação para atrair clientes melhores.', video: 'video11.mp4', thumb: 'imagens/aula11.jpg' },
+      { title: 'Conteúdo que gera caixa', desc: 'Produza conteúdo com foco em conversão.', video: 'video12.mp4', thumb: 'imagens/aula12.jpg' },
+      { title: 'Autoridade digital', desc: 'Cresça no digital sem depender só de anúncios.', video: 'video13.mp4', thumb: 'imagens/aula13.jpg' }
+    ]
+  },
+  {
+    title: 'Módulo 4 - Gestão e Escala',
+    lessons: [
+      { title: 'Indicadores-chave', desc: 'Métricas para manter previsibilidade no negócio.', video: 'video14.mp4', thumb: 'imagens/aula14.jpg' },
+      { title: 'Contratação estratégica', desc: 'Monte um time enxuto e eficiente.', video: 'video15.mp4', thumb: 'imagens/aula15.jpg' },
+      { title: 'Processos inteligentes', desc: 'Padronize para crescer sem perder qualidade.', video: 'video16.mp4', thumb: 'imagens/aula16.jpg' }
+    ]
+  },
+  {
+    title: 'Módulo 5 - Investimentos e Patrimônio',
+    lessons: [
+      { title: 'Mapa da riqueza', desc: 'Planejamento para acumular patrimônio em camadas.', video: 'video17.mp4', thumb: 'imagens/aula17.jpg' },
+      { title: 'Alocação vencedora', desc: 'Distribuição inteligente entre risco e proteção.', video: 'video18.mp4', thumb: 'imagens/aula18.jpg' },
+      { title: 'Blindagem financeira', desc: 'Proteja ganhos com visão de longo prazo.', video: 'video19.mp4', thumb: 'imagens/aula19.jpg' }
+    ]
+  },
+  {
+    title: 'Módulo 6 - Performance de Elite',
+    lessons: [
+      { title: 'Rotina de alta performance', desc: 'Ritmo diário para energia, foco e execução.', video: 'video20.mp4', thumb: 'imagens/aula20.jpg' },
+      { title: 'Produtividade extrema', desc: 'Técnicas para produzir mais em menos tempo.', video: 'video21.mp4', thumb: 'imagens/aula21.jpg' },
+      { title: 'Evolução contínua', desc: 'Sistema para melhorar seus resultados mês a mês.', video: 'video22.mp4', thumb: 'imagens/aula22.jpg' }
+    ]
+  }
+];
+
+const flatLessons = modules.flatMap((module, moduleIndex) =>
+  module.lessons.map((lesson, lessonIndex) => ({ ...lesson, moduleIndex, lessonIndex, moduleTitle: module.title }))
+);
+
+let currentVideoIndex = 0;
+
+function renderModules(){
+  const container = document.getElementById('modulesContainer');
+
+  container.innerHTML = modules.map((module, moduleIndex) => `
+    <section class="module">
+      <div class="section-title">${module.title}</div>
+      <div class="grid">
+        ${module.lessons.map((lesson, lessonIndex) => `
+          <div class="card" onclick="playByPosition(${moduleIndex}, ${lessonIndex})">
+            <div class="thumb" style="background-image:url('${lesson.thumb}')"></div>
+            <div class="content">
+              <h3>${lesson.title}</h3>
+              <p>${lesson.desc}</p>
+              <button class="btn">Assistir</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+  `).join('');
+}
+
+function login(){
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  const error = document.getElementById('loginError');
+
+  if(user === ACCESS.login && pass === ACCESS.senha){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    error.textContent = '';
+    return;
+  }
+
+  error.textContent = 'Login ou senha inválidos. Tente novamente.';
+}
+
+function playByPosition(moduleIndex, lessonIndex){
+  const absoluteIndex = modules
+    .slice(0, moduleIndex)
+    .reduce((total, module) => total + module.lessons.length, 0) + lessonIndex;
+
+  playVideoByIndex(absoluteIndex);
+}
+
+function playVideoByIndex(index){
+  const player = document.getElementById('player');
+  const video = document.getElementById('video');
+  const title = document.getElementById('playerTitle');
+
+  currentVideoIndex = (index + flatLessons.length) % flatLessons.length;
+  const lesson = flatLessons[currentVideoIndex];
+
+  video.src = lesson.video;
+  title.textContent = `${lesson.moduleTitle} • ${lesson.title}`;
+  player.style.display = 'block';
+  video.play();
+}
+
+function nextVideo(){
+  playVideoByIndex(currentVideoIndex + 1);
+}
+
+function prevVideo(){
+  playVideoByIndex(currentVideoIndex - 1);
+}
+
+function closePlayer(){
+  const player = document.getElementById('player');
+  const video = document.getElementById('video');
+
+  video.pause();
+  video.currentTime = 0;
+  player.style.display = 'none';
+}
+
+renderModules();
+</script>
+
 </body>
 </html>
