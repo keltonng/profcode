@@ -1,11 +1,307 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>iNails</title>
+    <style>
+        :root {
+            --bg-soft: #fff4fa;
+            --bg-mid: #ffd7ea;
+            --bg-strong: #ff9dc7;
+            --pink-100: #ffd9eb;
+            --pink-200: #ffb3d6;
+            --pink-300: #ff92c4;
+            --pink-500: #ff5ea6;
+            --ink: #5d2f48;
+            --white: #ffffff;
+            --splash-duration: 3200ms;
+            --ease-out-back: cubic-bezier(0.17, 0.89, 0.32, 1.27);
+            --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(140deg, var(--bg-soft), #ffe8f4 45%, var(--bg-mid));
+            color: var(--ink);
+            overflow-x: hidden;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateY(20px) scale(0.99);
+            transition: opacity 600ms var(--ease-soft), transform 600ms var(--ease-soft);
+        }
+
+        .app.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .splash {
+            position: fixed;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            z-index: 1000;
+            background:
+                radial-gradient(110% 70% at 14% 8%, rgba(255, 255, 255, 0.95), transparent 55%),
+                radial-gradient(90% 80% at 85% 90%, rgba(255, 168, 209, 0.35), transparent 50%),
+                linear-gradient(160deg, #fff7fb, #ffe0ef 50%, #ffc5e3 100%);
+            opacity: 1;
+            transition: opacity 560ms var(--ease-soft), visibility 560ms var(--ease-soft);
+        }
+
+        .splash.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .halo {
+            position: absolute;
+            width: min(72vw, 420px);
+            aspect-ratio: 1;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(255, 154, 201, 0.42), rgba(255, 143, 195, 0.12) 45%, transparent 70%);
+            filter: blur(2px);
+            transform: scale(0.6);
+            opacity: 0;
+            animation: haloIn 1000ms var(--ease-soft) forwards;
+        }
+
+        .ring {
+            position: absolute;
+            width: min(78vw, 460px);
+            aspect-ratio: 1;
+            border-radius: 999px;
+            border: 2px solid rgba(255, 112, 179, 0.35);
+            box-shadow: 0 0 30px rgba(255, 94, 166, 0.18);
+            transform: scale(0.7);
+            opacity: 0;
+            animation: ringIn 1200ms var(--ease-soft) 240ms forwards;
+        }
+
+        .ring::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            border: 2px solid transparent;
+            border-top-color: rgba(255, 255, 255, 0.9);
+            border-right-color: rgba(255, 157, 208, 0.95);
+            animation: spin 1900ms linear infinite;
+        }
+
+        .logo-shell {
+            width: min(300px, 76vw);
+            aspect-ratio: 1;
+            border-radius: 28%;
+            position: relative;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(165deg, var(--pink-100), var(--pink-200));
+            box-shadow:
+                0 14px 36px rgba(255, 80, 158, 0.28),
+                inset 0 2px 12px rgba(255, 255, 255, 0.74),
+                inset 0 -8px 20px rgba(255, 94, 166, 0.2);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(22px) scale(0.45) rotate(-12deg);
+            animation: logoIntro 900ms var(--ease-out-back) 180ms forwards;
+        }
+
+        .logo-shell::before,
+        .logo-shell::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .logo-shell::before {
+            background:
+                radial-gradient(circle at 16% 20%, rgba(255, 255, 255, 0.7), transparent 24%),
+                radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.9), transparent 12%),
+                radial-gradient(circle at 86% 84%, rgba(255, 255, 255, 0.62), transparent 15%);
+            animation: twinkle 1800ms ease-in-out infinite;
+        }
+
+        .logo-shell::after {
+            background: linear-gradient(120deg, transparent 36%, rgba(255, 255, 255, 0.6) 48%, transparent 60%);
+            transform: translateX(-140%);
+            animation: gloss 1700ms var(--ease-soft) 700ms 2;
+        }
+
+        .logo {
+            width: 89%;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 12px rgba(237, 57, 142, 0.2));
+            animation: float 2200ms ease-in-out 950ms infinite;
+        }
+
+        .fallback {
+            display: none;
+            font-size: clamp(2rem, 9vw, 3.3rem);
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            color: var(--white);
+            text-shadow: 0 4px 14px rgba(255, 77, 155, 0.4);
+        }
+
+        .tagline {
+            position: absolute;
+            bottom: max(8dvh, 2.2rem);
+            color: rgba(93, 47, 72, 0.75);
+            font-size: clamp(0.9rem, 2.6vw, 1.02rem);
+            letter-spacing: 0.25px;
+            opacity: 0;
+            transform: translateY(6px);
+            animation: fadeUp 700ms var(--ease-soft) 1200ms forwards;
+        }
+
+        .skip-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            border: 0;
+            border-radius: 999px;
+            padding: 0.45rem 0.8rem;
+            font-size: 0.85rem;
+            color: #9f3f73;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+        }
+
+        @keyframes haloIn {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes ringIn {
+            0% { opacity: 0; transform: scale(0.65); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes logoIntro {
+            0% { opacity: 0; transform: translateY(22px) scale(0.45) rotate(-12deg); }
+            60% { opacity: 1; transform: translateY(-5px) scale(1.05) rotate(2deg); }
+            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+        }
+
+        @keyframes gloss {
+            from { transform: translateX(-140%); }
+            to { transform: translateX(140%); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.85; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .splash,
+            .halo,
+            .ring,
+            .logo-shell,
+            .logo-shell::before,
+            .logo-shell::after,
+            .logo,
+            .tagline,
+            .app {
+                animation: none !important;
+                transition: none !important;
+            }
+
+            .splash {
+                display: none;
+            }
+
+            .app {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+    <div id="splash" class="splash" role="status" aria-live="polite">
+        <button class="skip-btn" id="skipSplash" type="button">Pular</button>
+        <div class="halo" aria-hidden="true"></div>
+        <div class="ring" aria-hidden="true"></div>
+
+        <div class="logo-shell" role="img" aria-label="Logo iNails com animação de entrada avançada">
+            <img
+                class="logo"
+                src="./inails-logo.png"
+                alt="Logo iNails"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+            >
+            <span class="fallback">inails</span>
+        </div>
+
+        <p class="tagline">Preparando sua experiência iNails…</p>
+    </div>
+
+    <main id="app" class="app" aria-live="polite">
+        <section>
+            <h1>Bem-vinda ao iNails 💅</h1>
+            <p style="margin-top: .75rem; opacity: .86;">Versão avançada da animação aplicada na entrada do app.</p>
+        </section>
+    </main>
+
+    <script>
+        const splash = document.getElementById('splash');
+        const app = document.getElementById('app');
+        const skipSplash = document.getElementById('skipSplash');
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const splashDuration = prefersReducedMotion ? 0 : 3200;
+
+        const finishSplash = () => {
+            if (!splash || splash.dataset.done === 'true') return;
+            splash.dataset.done = 'true';
+            splash.classList.add('hidden');
+            app.classList.add('visible');
+
+            setTimeout(() => splash.remove(), 600);
+        };
+
+        if (prefersReducedMotion) {
+            finishSplash();
+        } else {
+            setTimeout(finishSplash, splashDuration);
+            skipSplash.addEventListener('click', finishSplash);
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') finishSplash();
+            });
+        }
+    </script>
 </body>
 </html>
