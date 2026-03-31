@@ -1,11 +1,173 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>iNails</title>
+    <style>
+        :root {
+            --pink-1: #ffd4e7;
+            --pink-2: #ff9fca;
+            --pink-3: #ff6fb0;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(140deg, #fff6fa 0%, #ffe6f2 45%, #ffd2e8 100%);
+            color: #5d2f48;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 480ms ease, transform 480ms ease;
+        }
+
+        .app.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .splash {
+            position: fixed;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 15% 20%, #fff 0%, #ffe4f1 45%, #ffcae3 100%);
+            z-index: 1000;
+            animation: hideSplash 900ms ease forwards;
+            animation-delay: 2500ms;
+        }
+
+        .logo-wrap {
+            width: min(290px, 76vw);
+            aspect-ratio: 1;
+            border-radius: 28%;
+            background: linear-gradient(165deg, var(--pink-1), var(--pink-2));
+            box-shadow:
+                inset 0 2px 10px rgba(255, 255, 255, 0.65),
+                inset 0 -4px 18px rgba(255, 91, 171, 0.2),
+                0 14px 30px rgba(255, 66, 153, 0.35);
+            display: grid;
+            place-items: center;
+            position: relative;
+            overflow: hidden;
+            transform: scale(0.35) rotate(-10deg);
+            opacity: 0;
+            animation:
+                logoIn 900ms cubic-bezier(.16, .9, .25, 1) forwards,
+                logoPulse 1400ms ease-in-out 950ms 1,
+                logoOut 600ms ease-in 2350ms forwards;
+        }
+
+        .logo-wrap::before,
+        .logo-wrap::after {
+            content: "";
+            position: absolute;
+            width: 55%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+            filter: blur(.3px);
+            animation: shine 1800ms ease-in-out infinite;
+        }
+
+        .logo-wrap::before {
+            top: 22%;
+            left: -35%;
+        }
+
+        .logo-wrap::after {
+            bottom: 20%;
+            right: -35%;
+            animation-delay: 700ms;
+        }
+
+        .logo {
+            width: 88%;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 10px rgba(235, 69, 150, .2));
+            animation: floating 2.4s ease-in-out infinite;
+        }
+
+        .fallback {
+            color: var(--white);
+            text-shadow: 0 2px 8px rgba(255, 84, 164, 0.45);
+            font-weight: 700;
+            font-size: clamp(2rem, 8vw, 3.2rem);
+            letter-spacing: .5px;
+            position: absolute;
+            inset: auto;
+        }
+
+        @keyframes logoIn {
+            0% { transform: scale(0.35) rotate(-10deg); opacity: 0; }
+            55% { transform: scale(1.06) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        @keyframes logoOut {
+            to { transform: scale(1.2); opacity: 0; }
+        }
+
+        @keyframes hideSplash {
+            to {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+        }
+
+        @keyframes shine {
+            from { transform: translateX(0); }
+            to { transform: translateX(190%); }
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+    <div id="splash" class="splash" aria-hidden="true">
+        <div class="logo-wrap" role="img" aria-label="Logo iNails com animação de entrada">
+            <!-- Salve o logo enviado pelo usuário como ./inails-logo.png -->
+            <img class="logo" src="./inails-logo.png" alt="Logo iNails" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="fallback" style="display:none;">inails</span>
+        </div>
+    </div>
+
+    <main id="app" class="app" aria-live="polite">
+        <section>
+            <h1>Bem-vinda ao iNails 💅</h1>
+            <p style="margin-top:.75rem; opacity:.85;">Seu conteúdo principal aparece após a animação de entrada do logo.</p>
+        </section>
+    </main>
+
+    <script>
+        const splash = document.getElementById('splash');
+        const app = document.getElementById('app');
+
+        setTimeout(() => app.classList.add('visible'), 2550);
+        setTimeout(() => splash.remove(), 3600);
+    </script>
 </body>
 </html>
