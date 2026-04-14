@@ -1,11 +1,302 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARV | Estilo Netflix</title>
+  <style>
+    :root {
+      --bg: #141414;
+      --surface: #181818;
+      --text: #fff;
+      --muted: #b3b3b3;
+      --brand: #e50914;
+      --line: rgba(255, 255, 255, 0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Inter, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* LOGIN */
+    .login-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, #2a2a2a, #111 55%);
+      padding: 16px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 380px;
+      background: rgba(0, 0, 0, 0.78);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .logo { color: var(--brand); font-weight: 900; letter-spacing: 1px; font-size: 34px; margin-bottom: 14px; }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: #222;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .btn-red { background: var(--brand); border: none; font-weight: 700; cursor: pointer; }
+
+    /* APP */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,0));
+    }
+
+    .topbar .logo { margin: 0; font-size: 28px; }
+    .topbar .right { display: flex; gap: 8px; }
+    .topbar button { width: auto; margin: 0; padding: 8px 12px; }
+
+    .hero {
+      margin: -54px 0 12px;
+      padding: 110px 18px 24px;
+      min-height: 48vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 10px;
+      background:
+        linear-gradient(to top, #141414 5%, rgba(20,20,20,.3)),
+        url('https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?auto=format&fit=crop&w=1200&q=60') center/cover;
+    }
+
+    .hero h1 { font-size: 30px; max-width: 580px; }
+    .hero p { color: var(--muted); max-width: 620px; }
+    .hero-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hero-actions button { width: auto; margin: 0; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+    .btn-light { background: #fff; color: #000; border: none; }
+
+    .controls { padding: 0 18px 8px; display: grid; gap: 8px; }
+
+    .row { padding: 12px 0 0 18px; }
+    .row h2 { font-size: 18px; margin-bottom: 10px; }
+
+    .rail {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 170px;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 0 18px 6px 0;
+      scrollbar-width: thin;
+    }
+
+    .card {
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,.06);
+      cursor: pointer;
+      transition: transform .2s ease;
+    }
+
+    .card:hover { transform: scale(1.04); }
+    .thumb {
+      aspect-ratio: 16/9;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      background: linear-gradient(130deg, #2d2d2d, #1c1c1c);
+      color: #e5e5e5;
+    }
+
+    .meta { padding: 8px; }
+    .meta h3 { font-size: 13px; margin-bottom: 4px; }
+    .meta p { font-size: 12px; color: var(--muted); }
+
+    /* PLAYER */
+    .player {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 40;
+    }
+
+    .player video { width: 100%; height: 100%; }
+    .close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: auto;
+      padding: 8px 12px;
+      background: rgba(0,0,0,.7);
+      border: 1px solid var(--line);
+    }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <section id="login" class="screen active">
+    <div class="login-wrap">
+      <div class="login-box">
+        <div class="logo">ARV</div>
+        <input id="email" type="email" placeholder="Email" value="aluno@arv.com" />
+        <input id="senha" type="password" placeholder="Senha" value="123456" />
+        <button class="btn-red" onclick="entrar()">Entrar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="app" class="screen">
+    <header class="topbar">
+      <div class="logo">ARV</div>
+      <div class="right">
+        <button onclick="sair()">Sair</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1>Curso de Edição Profissional</h1>
+      <p>Aprenda cortes, ritmo, legenda, color e edição para Reels em aulas rápidas, no estilo plataforma de streaming.</p>
+      <div class="hero-actions">
+        <button class="btn-light" onclick="tocarDestaque()">▶ Assistir</button>
+        <button onclick="window.scrollTo({top: 500, behavior: 'smooth'})">ℹ Mais aulas</button>
+      </div>
+    </section>
+
+    <section class="controls">
+      <input id="busca" type="search" placeholder="Pesquisar aula" oninput="renderTudo()" />
+      <select id="modulo" onchange="renderTudo()">
+        <option value="todos">Todos os módulos</option>
+        <option value="basico">Básico</option>
+        <option value="reels">Reels</option>
+        <option value="color">Color</option>
+      </select>
+    </section>
+
+    <section class="row">
+      <h2>Continuar assistindo</h2>
+      <div id="continuar" class="rail"></div>
+    </section>
+
+    <section class="row">
+      <h2>Módulo Básico</h2>
+      <div id="basico" class="rail"></div>
+    </section>
+
+    <section class="row">
+      <h2>Módulo Reels</h2>
+      <div id="reels" class="rail"></div>
+    </section>
+
+    <section class="row" style="padding-bottom:24px;">
+      <h2>Módulo Color</h2>
+      <div id="color" class="rail"></div>
+    </section>
+  </section>
+
+  <div id="player" class="player">
+    <button class="close" onclick="fecharPlayer()">Fechar</button>
+    <video id="video" controls></video>
+  </div>
+
+  <script>
+    const aulas = [
+      { id: 'a1', titulo: 'Boas-vindas', modulo: 'basico', tempo: '8 min', video: 'videos/basico/boas-vindas.mp4' },
+      { id: 'a2', titulo: 'Cortes no tempo certo', modulo: 'basico', tempo: '14 min', video: 'videos/basico/cortes.mp4' },
+      { id: 'a3', titulo: 'Legendas que prendem', modulo: 'reels', tempo: '12 min', video: 'videos/reels/legenda.mp4' },
+      { id: 'a4', titulo: 'Edição para Reels', modulo: 'reels', tempo: '18 min', video: 'videos/reels/reels.mp4' },
+      { id: 'a5', titulo: 'Color rápido para social', modulo: 'color', tempo: '16 min', video: 'videos/color/correcao.mp4' }
+    ];
+
+    function trocarTela(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function entrar() {
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+      if (!email || !senha) return;
+      localStorage.setItem('arv_email', email);
+      trocarTela('app');
+      renderTudo();
+    }
+
+    function sair() {
+      localStorage.removeItem('arv_email');
+      trocarTela('login');
+    }
+
+    function criarCard(aula) {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="thumb">${aula.titulo.slice(0, 18)}</div>
+        <div class="meta">
+          <h3>${aula.titulo}</h3>
+          <p>${aula.tempo}</p>
+        </div>
+      `;
+      card.onclick = () => abrirPlayer(aula.video);
+      return card;
+    }
+
+    function limparRails() {
+      ['continuar', 'basico', 'reels', 'color'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
+      });
+    }
+
+    function renderTudo() {
+      const termo = document.getElementById('busca').value.toLowerCase();
+      const modulo = document.getElementById('modulo').value;
+
+      const filtradas = aulas.filter(a => {
+        const okTexto = a.titulo.toLowerCase().includes(termo);
+        const okModulo = modulo === 'todos' || a.modulo === modulo;
+        return okTexto && okModulo;
+      });
+
+      limparRails();
+      filtradas.slice(0, 3).forEach(a => document.getElementById('continuar').appendChild(criarCard(a)));
+      filtradas.filter(a => a.modulo === 'basico').forEach(a => document.getElementById('basico').appendChild(criarCard(a)));
+      filtradas.filter(a => a.modulo === 'reels').forEach(a => document.getElementById('reels').appendChild(criarCard(a)));
+      filtradas.filter(a => a.modulo === 'color').forEach(a => document.getElementById('color').appendChild(criarCard(a)));
+    }
+
+    function tocarDestaque() {
+      abrirPlayer(aulas[0].video);
+    }
+
+    function abrirPlayer(videoUrl) {
+      const v = document.getElementById('video');
+      v.src = videoUrl;
+      document.getElementById('player').style.display = 'block';
+      v.play();
+    }
+
+    function fecharPlayer() {
+      const v = document.getElementById('video');
+      v.pause();
+      v.currentTime = 0;
+      document.getElementById('player').style.display = 'none';
+    }
+
+    if (localStorage.getItem('arv_email')) {
+      trocarTela('app');
+      renderTudo();
+    }
+  </script>
 </body>
 </html>
