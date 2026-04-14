@@ -1,11 +1,250 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARV | Cursinho de Edição</title>
+  <style>
+    :root {
+      --bg: #0b0b0f;
+      --card: #171720;
+      --text: #f7f7f8;
+      --muted: #9fa3ad;
+      --primary: #e50914;
+      --border: #2a2a36;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .login {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .box {
+      width: 100%;
+      max-width: 360px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    h1 { color: var(--primary); margin-bottom: 12px; }
+    input, button, select {
+      width: 100%;
+      padding: 11px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #101018;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    button { cursor: pointer; font-weight: 700; }
+    .btn-primary { background: var(--primary); border: none; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px 6px;
+    }
+
+    .header small { color: var(--muted); }
+    .search { padding: 0 16px 12px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      padding: 0 16px 90px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+    .card h3 { font-size: 14px; margin-bottom: 5px; }
+    .card p { color: var(--muted); font-size: 12px; }
+
+    .player {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: none;
+      z-index: 99;
+    }
+
+    video { width: 100%; height: 100%; }
+    .close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: auto;
+      padding: 8px 12px;
+    }
+
+    .bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      background: #0f0f16;
+      border-top: 1px solid var(--border);
+    }
+
+    .bottom button { margin: 0; }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <section id="login" class="screen active">
+    <div class="login">
+      <div class="box">
+        <h1>ARV</h1>
+        <input id="email" type="email" placeholder="Email" value="aluno@arv.com" />
+        <input id="senha" type="password" placeholder="Senha" value="123456" />
+        <button class="btn-primary" onclick="entrar()">Entrar</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="home" class="screen">
+    <div class="header">
+      <div>
+        <h2>Olá, <span id="nomeAluno">Aluno</span></h2>
+        <small>Cursinho de Edição</small>
+      </div>
+      <button style="width:auto" onclick="sair()">Sair</button>
+    </div>
+
+    <div class="search">
+      <input id="busca" type="search" placeholder="Buscar aula" oninput="filtrarAulas()" />
+      <select id="filtroModulo" onchange="filtrarAulas()">
+        <option value="todos">Todos os módulos</option>
+        <option value="basico">Módulo Básico</option>
+        <option value="reels">Módulo Reels</option>
+        <option value="color">Módulo Color</option>
+      </select>
+    </div>
+
+    <div id="listaAulas" class="grid"></div>
+
+    <div class="bottom">
+      <button class="btn-primary" onclick="abrirPrimeiraAula()">Continuar aula</button>
+      <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">Topo</button>
+    </div>
+  </section>
+
+  <div id="player" class="player">
+    <button class="close" onclick="fecharPlayer()">Fechar</button>
+    <video id="video" controls></video>
+  </div>
+
+  <script>
+    const aulas = [
+      { id: "a1", titulo: "Boas-vindas", modulo: "basico", duracao: "08 min", video: "videos/basico/boas-vindas.mp4" },
+      { id: "a2", titulo: "Cortes rápidos", modulo: "basico", duracao: "14 min", video: "videos/basico/cortes.mp4" },
+      { id: "a3", titulo: "Legenda automática", modulo: "reels", duracao: "12 min", video: "videos/reels/legenda.mp4" },
+      { id: "a4", titulo: "Edição para Reels", modulo: "reels", duracao: "18 min", video: "videos/reels/reels.mp4" },
+      { id: "a5", titulo: "Correção de cor", modulo: "color", duracao: "16 min", video: "videos/color/correcao.mp4" }
+    ];
+
+    function nomeDoEmail(email) {
+      return (email.split("@")[0] || "Aluno").replace(/[^a-zA-ZÀ-ÿ]/g, "");
+    }
+
+    function entrar() {
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      if (!email || !senha) return;
+      localStorage.setItem("arv_email", email);
+      mostrarHome();
+    }
+
+    function sair() {
+      localStorage.removeItem("arv_email");
+      trocarTela("login");
+    }
+
+    function mostrarHome() {
+      const email = localStorage.getItem("arv_email");
+      if (!email) return trocarTela("login");
+      document.getElementById("nomeAluno").textContent = nomeDoEmail(email);
+      trocarTela("home");
+      renderAulas(aulas);
+    }
+
+    function trocarTela(id) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    function renderAulas(lista) {
+      const el = document.getElementById("listaAulas");
+      el.innerHTML = "";
+      if (!lista.length) {
+        el.innerHTML = '<p style="color:#9fa3ad">Nenhuma aula encontrada.</p>';
+        return;
+      }
+
+      lista.forEach(aula => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${aula.titulo}</h3>
+          <p>${aula.modulo.toUpperCase()} • ${aula.duracao}</p>
+        `;
+        card.onclick = () => abrirPlayer(aula.video);
+        el.appendChild(card);
+      });
+    }
+
+    function filtrarAulas() {
+      const q = document.getElementById("busca").value.toLowerCase();
+      const modulo = document.getElementById("filtroModulo").value;
+
+      const resultado = aulas.filter(a => {
+        const okTexto = a.titulo.toLowerCase().includes(q);
+        const okModulo = modulo === "todos" || a.modulo === modulo;
+        return okTexto && okModulo;
+      });
+
+      renderAulas(resultado);
+    }
+
+    function abrirPlayer(url) {
+      const video = document.getElementById("video");
+      video.src = url;
+      document.getElementById("player").style.display = "block";
+      video.play();
+    }
+
+    function fecharPlayer() {
+      const video = document.getElementById("video");
+      video.pause();
+      video.currentTime = 0;
+      document.getElementById("player").style.display = "none";
+    }
+
+    function abrirPrimeiraAula() {
+      abrirPlayer(aulas[0].video);
+    }
+
+    mostrarHome();
+  </script>
 </body>
 </html>
