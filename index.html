@@ -1,11 +1,382 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASD Academy</title>
+  <style>
+    :root {
+      --bg: #050507;
+      --surface: #111216;
+      --text: #f4f4f6;
+      --muted: #b8bcc8;
+      --accent: #ffbf00;
+      --card-border: #4a5577;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: #000;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: #0d0f14;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 18px;
+      min-height: 84px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 50%;
+      color: #fff;
+      background: transparent;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .actions .next {
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .page {
+      padding: 20px 16px 36px;
+    }
+
+    .section {
+      margin-bottom: 34px;
+    }
+
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: 32px;
+      line-height: 1.1;
+      letter-spacing: .3px;
+    }
+
+    .cards-col,
+    .cards-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: thin;
+    }
+
+    .cards-col { flex-direction: column; overflow-x: visible; }
+
+    .card {
+      border: 2px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #0a0c12;
+      cursor: pointer;
+      flex: 0 0 auto;
+      width: 165px;
+      height: 260px;
+      position: relative;
+      transition: transform .16s ease, border-color .2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: #7f8ebb;
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(.83);
+    }
+
+    .card .label {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      right: 12px;
+      font-size: 26px;
+      line-height: .92;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-shadow: 0 2px 18px rgba(0,0,0,.8);
+    }
+
+    .card .label small {
+      color: var(--accent);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .module-page { display: none; }
+
+    .progress-ring {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(#d9dde7 51%, #313543 0);
+    }
+
+    .progress-ring span {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 800;
+      background: #0d0f14;
+      color: #fff;
+    }
+
+    .lesson-list { display: grid; gap: 14px; }
+
+    .lesson {
+      background: #07090d;
+      border: 1px solid rgba(255,255,255,.08);
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      align-items: center;
+      min-height: 94px;
+      cursor: pointer;
+      transition: border-color .16s;
+    }
+
+    .lesson:hover { border-color: rgba(255,255,255,.22); }
+
+    .lesson img {
+      width: 120px;
+      height: 94px;
+      object-fit: cover;
+      filter: brightness(.7);
+    }
+
+    .lesson .title {
+      font-size: 22px;
+      font-weight: 800;
+      padding: 0 14px;
+      line-height: 1.2;
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <div class="app">
+    <section id="homePage">
+      <header class="topbar">
+        <button class="icon-btn" aria-label="Voltar">‹</button>
+        <div class="actions">
+          <span style="font-size:36px; line-height:0.6">⌕</span>
+          <button class="next">Próxima aula →</button>
+        </div>
+      </header>
+
+      <main class="page" id="sectionsRoot"></main>
+    </section>
+
+    <section id="modulePage" class="module-page">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:6px">
+          <button id="backHome" class="icon-btn" aria-label="Voltar">‹</button>
+          <h1 id="moduleTitle">Estrutura de Vendas</h1>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="icon-btn" aria-label="Pesquisar">⌕</button>
+          <div class="progress-ring"><span id="moduleProgress">51%</span></div>
+        </div>
+      </header>
+
+      <main class="page">
+        <div class="lesson-list" id="lessonList"></div>
+        <p class="helper">Clique na capa para abrir a aula. Você pode trocar os links das imagens no objeto <strong>COURSE_DATA</strong>.</p>
+      </main>
+    </section>
+  </div>
+
+  <script>
+    const img = (seed) => `https://picsum.photos/seed/${seed}/600/900`;
+
+    const COURSE_DATA = [
+      {
+        title: "clique aqui!",
+        cards: [
+          { id: "intro", title: "ASD", subtitle: "Boas-vindas", cover: img("asd-capa"), lessons: [
+            "Apresentação da plataforma",
+            "Como consumir as aulas",
+            "Configuração inicial"
+          ] }
+        ]
+      },
+      {
+        title: "Termos de Uso ⚠️",
+        cards: [
+          { id: "termos", title: "Leia antes", subtitle: "de usar!", cover: img("termos"), lessons: [
+            "Regras de acesso",
+            "Política de conteúdo",
+            "Dúvidas e suporte"
+          ] }
+        ]
+      },
+      {
+        title: "Aplicativo ASD!",
+        cards: [
+          { id: "trafego", title: "Tráfego", subtitle: "Pago", cover: img("trafego-pago"), lessons: [
+            "Estrutura de campanha",
+            "Criativos e testes",
+            "Otimização diária"
+          ] }
+        ]
+      },
+      {
+        title: "Estrutura de Vendas",
+        cards: [
+          { id: "estrutura", title: "Estrutura", subtitle: "Perfil Dark", cover: img("estrutura-dark"), lessons: [
+            "Aula 1 - O Primeiro Contato",
+            "Aula 2 - Montagem do Perfil",
+            "Aula 3 - Link da Bio",
+            "Aula 4 - Página de Vendas / Checkout",
+            "Aula 5 - Suporte Adequado",
+            "Aula 6 - LTV"
+          ] }
+        ]
+      },
+      {
+        title: "Edição",
+        cards: [
+          { id: "edicao", title: "Edição", subtitle: "Viral", cover: img("edicao-viral"), lessons: [
+            "Iniciando o projeto & adicionando áudio",
+            "Cortes & sincronização",
+            "Texto & transições",
+            "Filtro + presets",
+            "CapCut - Exportação ilimitada",
+            "Posts com Textos Dinâmicos"
+          ] }
+        ]
+      },
+      {
+        title: "Pacotes de Vídeos",
+        row: true,
+        cards: [
+          { id: "lifestyle", title: "Lifestyle", subtitle: "Variado", cover: img("lifestyle") , lessons: ["Pacote 01", "Pacote 02", "Pacote 03"]},
+          { id: "dinheiro", title: "Dinheiro", subtitle: "e Luxo", cover: img("dinheiro") , lessons: ["Pacote 01", "Pacote 02", "Pacote 03"]},
+          { id: "motivacao", title: "Motivação", subtitle: "e Foco", cover: img("motivacao") , lessons: ["Pacote 01", "Pacote 02", "Pacote 03"]}
+        ]
+      }
+    ];
+
+    const sectionsRoot = document.getElementById("sectionsRoot");
+    const homePage = document.getElementById("homePage");
+    const modulePage = document.getElementById("modulePage");
+    const lessonList = document.getElementById("lessonList");
+    const moduleTitle = document.getElementById("moduleTitle");
+    const backHome = document.getElementById("backHome");
+
+    function renderHome() {
+      sectionsRoot.innerHTML = "";
+      COURSE_DATA.forEach(section => {
+        const wrapper = document.createElement("section");
+        wrapper.className = "section";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = section.title;
+        wrapper.appendChild(h2);
+
+        const list = document.createElement("div");
+        list.className = section.row ? "cards-row" : "cards-col";
+
+        section.cards.forEach(card => {
+          const el = document.createElement("button");
+          el.className = "card";
+          el.innerHTML = `
+            <img src="${card.cover}" alt="${card.title}" />
+            <span class="label">${card.title}<small>${card.subtitle}</small></span>
+          `;
+          el.addEventListener("click", () => openModule(card));
+          list.appendChild(el);
+        });
+
+        wrapper.appendChild(list);
+        sectionsRoot.appendChild(wrapper);
+      });
+    }
+
+    function openModule(card) {
+      moduleTitle.textContent = card.id === "edicao" ? "Aulas de edição no Capcut" :
+                                card.id === "estrutura" ? "Estrutura de Vendas" :
+                                card.id === "intro" ? "Módulo de Introdução" :
+                                card.id === "termos" ? "Termos e Condições" :
+                                card.id === "trafego" ? "Aplicativo ASD" :
+                                card.title;
+
+      lessonList.innerHTML = "";
+      card.lessons.forEach((lesson, i) => {
+        const item = document.createElement("article");
+        item.className = "lesson";
+        item.innerHTML = `
+          <img src="${i === 4 && card.id === "edicao" ? img("capcut-export") : card.cover}" alt="${lesson}" />
+          <div class="title">${lesson}</div>
+        `;
+        lessonList.appendChild(item);
+      });
+
+      homePage.style.display = "none";
+      modulePage.style.display = "block";
+    }
+
+    backHome.addEventListener("click", () => {
+      modulePage.style.display = "none";
+      homePage.style.display = "block";
+    });
+
+    renderHome();
+  </script>
 </body>
 </html>
