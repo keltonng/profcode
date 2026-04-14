@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARV | Ajuste de Carrossel</title>
+  <style>
+    body { font-family: Montserrat, sans-serif; background:#000; color:#fff; }
+    .carousel { display:flex; gap:10px; overflow-x:auto; }
+    .card { flex:0 0 115px; aspect-ratio:2/3; background:#1f1f1f; border-radius:4px; }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <h1>Ajuste aplicado</h1>
+  <p>Sem alterar o CSS original do projeto, o ajuste deve ser feito somente no JS:</p>
+  <pre><code>function renderHome() {
+  const container = document.getElementById("sections-container");
+  container.innerHTML = "";
+
+  // colunas/seções limitadas a 5
+  const visibleCategories = categories.slice(0, 5);
+
+  visibleCategories.forEach((cat) => {
+    const section = document.createElement("div");
+    section.className = "section";
+
+    const carousel = document.createElement("div");
+    carousel.className = "carousel";
+
+    const items = catalogByCategory[cat.id] || [];
+    const shuffledItems = shuffleArray(items);
+
+    // cards do carrossel reduzidos para 5
+    const visibleItems = shuffledItems.slice(0, 5);
+
+    visibleItems.forEach((item) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      carousel.appendChild(card);
+    });
+
+    section.appendChild(carousel);
+    container.appendChild(section);
+  });
+}</code></pre>
 </body>
 </html>
