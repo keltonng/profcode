@@ -1,0 +1,52 @@
+Use este ajuste no seu código para mostrar apenas 5 contêineres (seções) e 6 cards por carrossel.
+
+// Limites da home
+const MAX_CONTAINERS = 5;
+const MAX_CARDS_PER_CAROUSEL = 6;
+
+function renderHome() {
+  const container = document.getElementById("sections-container");
+  container.innerHTML = "";
+
+  const visibleCategories = categories.slice(0, MAX_CONTAINERS);
+
+  visibleCategories.forEach((cat) => {
+    const section = document.createElement("div");
+    section.className = "section";
+    section.dataset.type = cat.type;
+    section.innerHTML = `<div class="section-title">${cat.title}</div>`;
+
+    const carousel = document.createElement("div");
+    carousel.className = "carousel";
+
+    const items = catalogByCategory[cat.id] || catalogByCategory.inicio;
+    const shuffledItems = shuffleArray(items).slice(0, MAX_CARDS_PER_CAROUSEL);
+
+    shuffledItems.forEach((item, i) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.dataset.title = item.title.toLowerCase();
+
+      const media = item.img
+        ? `<img src="${item.img}" alt="Capa" onclick='openDetails(${JSON.stringify(item)})'>`
+        : `<div class="card-placeholder" onclick='openDetails(${JSON.stringify(item)})'>Sem imagem</div>`;
+
+      card.innerHTML = `
+        ${(i === 0 || item.top10) ? '<div class="top10-badge">TOP 10</div>' : ''}
+        ${media}
+        ${typeof item.progress === 'number' ? `<div class="progress-bar"><div class="progress-fill" style="width:${item.progress}%"></div></div>` : ''}
+        ${item.label ? `<div class="card-label"><span>${item.label}</span>${item.labelSecondary ? `<span class="label-secondary">${item.labelSecondary}</span>` : ''}</div>` : ''}
+        <div class="card-options-btn" onclick='openSheet(${JSON.stringify(item)}, event)'>
+          <i data-lucide="more-vertical" size="16" color="white"></i>
+        </div>
+      `;
+
+      carousel.appendChild(card);
+    });
+
+    section.appendChild(carousel);
+    container.appendChild(section);
+  });
+
+  lucide.createIcons();
+}
