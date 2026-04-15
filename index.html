@@ -38,7 +38,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 18px;
+      padding: 18px;
       min-height: 84px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
@@ -84,20 +84,20 @@
     }
 
     .section {
-      margin-bottom: 34px;
+      margin-bottom: 30px;
     }
 
     .section h2 {
-      margin: 0 0 14px;
-      font-size: 32px;
+      margin: 0 0 12px;
+      font-size: 30px;
       line-height: 1.1;
-      letter-spacing: .3px;
+      letter-spacing: .2px;
     }
 
     .cards-col,
     .cards-row {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       overflow-x: auto;
       padding-bottom: 6px;
       scrollbar-width: thin;
@@ -112,8 +112,8 @@
       background: #0a0c12;
       cursor: pointer;
       flex: 0 0 auto;
-      width: 165px;
-      height: 260px;
+      width: 146px;
+      height: 225px;
       position: relative;
       transition: transform .16s ease, border-color .2s ease;
     }
@@ -133,11 +133,11 @@
 
     .card .label {
       position: absolute;
-      left: 12px;
-      bottom: 12px;
-      right: 12px;
-      font-size: 26px;
-      line-height: .92;
+      left: 10px;
+      bottom: 10px;
+      right: 10px;
+      font-size: 21px;
+      line-height: .95;
       font-weight: 900;
       text-transform: uppercase;
       text-shadow: 0 2px 18px rgba(0,0,0,.8);
@@ -172,38 +172,88 @@
       color: #fff;
     }
 
-    .lesson-list { display: grid; gap: 14px; }
+    .lesson-list { display: grid; gap: 12px; }
 
     .lesson {
       background: #07090d;
       border: 1px solid rgba(255,255,255,.08);
       display: grid;
-      grid-template-columns: 120px 1fr;
+      grid-template-columns: 106px 1fr;
       align-items: center;
-      min-height: 94px;
-      cursor: pointer;
+      min-height: 88px;
       transition: border-color .16s;
     }
 
     .lesson:hover { border-color: rgba(255,255,255,.22); }
 
     .lesson img {
-      width: 120px;
-      height: 94px;
+      width: 106px;
+      height: 88px;
       object-fit: cover;
-      filter: brightness(.7);
+      filter: brightness(.72);
+    }
+
+    .lesson .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
     }
 
     .lesson .title {
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 800;
-      padding: 0 14px;
       line-height: 1.2;
+      margin: 0;
     }
+
+    .play {
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .video-panel {
+      display: none;
+      margin-top: 16px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.14);
+      background: #040507;
+    }
+
+    .video-panel iframe,
+    .video-panel video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      display: block;
+      background: #000;
+    }
+
+    .video-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .video-header strong { color: #fff; }
 
     .helper {
       color: var(--muted);
-      font-size: 14px;
+      font-size: 13px;
       margin-top: 8px;
     }
   </style>
@@ -236,78 +286,151 @@
 
       <main class="page">
         <div class="lesson-list" id="lessonList"></div>
-        <p class="helper">Clique na capa para abrir a aula. Você pode trocar os links das imagens no objeto <strong>COURSE_DATA</strong>.</p>
+
+        <section class="video-panel" id="videoPanel">
+          <div class="video-header">
+            <strong id="videoTitle">Aula selecionada</strong>
+            <button class="play" id="closeVideo">Fechar vídeo</button>
+          </div>
+          <iframe
+            id="videoFrame"
+            src=""
+            title="Player de aula"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+          <video id="videoTag" controls style="display:none"></video>
+        </section>
+
+        <p class="helper">Agora cada aula possui vídeo. Para trocar, edite a propriedade <strong>video</strong> de cada item em <strong>COURSE_DATA</strong>.</p>
       </main>
     </section>
   </div>
 
   <script>
     const img = (seed) => `https://picsum.photos/seed/${seed}/600/900`;
+    const yt = (id) => `https://www.youtube.com/embed/${id}`;
+
+    const lessonsFromTitles = (titles, youtubeIds = []) => titles.map((title, index) => ({
+      title,
+      video: yt(youtubeIds[index] || "M7lc1UVf-VE")
+    }));
 
     const COURSE_DATA = [
       {
         title: "clique aqui!",
         cards: [
-          { id: "intro", title: "ASD", subtitle: "Boas-vindas", cover: img("asd-capa"), lessons: [
-            "Apresentação da plataforma",
-            "Como consumir as aulas",
-            "Configuração inicial"
-          ] }
+          {
+            id: "intro",
+            title: "ASD",
+            subtitle: "Boas-vindas",
+            cover: img("asd-capa"),
+            lessons: lessonsFromTitles(
+              ["Apresentação da plataforma", "Como consumir as aulas", "Configuração inicial"],
+              ["ysz5S6PUM-U", "aqz-KE-bpKQ", "ScMzIvxBSi4"]
+            )
+          }
         ]
       },
       {
         title: "Termos de Uso ⚠️",
         cards: [
-          { id: "termos", title: "Leia antes", subtitle: "de usar!", cover: img("termos"), lessons: [
-            "Regras de acesso",
-            "Política de conteúdo",
-            "Dúvidas e suporte"
-          ] }
+          {
+            id: "termos",
+            title: "Leia antes",
+            subtitle: "de usar!",
+            cover: img("termos"),
+            lessons: lessonsFromTitles(
+              ["Regras de acesso", "Política de conteúdo", "Dúvidas e suporte"],
+              ["M7lc1UVf-VE", "5qap5aO4i9A", "dQw4w9WgXcQ"]
+            )
+          }
         ]
       },
       {
         title: "Aplicativo ASD!",
         cards: [
-          { id: "trafego", title: "Tráfego", subtitle: "Pago", cover: img("trafego-pago"), lessons: [
-            "Estrutura de campanha",
-            "Criativos e testes",
-            "Otimização diária"
-          ] }
+          {
+            id: "trafego",
+            title: "Tráfego",
+            subtitle: "Pago",
+            cover: img("trafego-pago"),
+            lessons: lessonsFromTitles(
+              ["Estrutura de campanha", "Criativos e testes", "Otimização diária"],
+              ["ysz5S6PUM-U", "aqz-KE-bpKQ", "ScMzIvxBSi4"]
+            )
+          }
         ]
       },
       {
         title: "Estrutura de Vendas",
         cards: [
-          { id: "estrutura", title: "Estrutura", subtitle: "Perfil Dark", cover: img("estrutura-dark"), lessons: [
-            "Aula 1 - O Primeiro Contato",
-            "Aula 2 - Montagem do Perfil",
-            "Aula 3 - Link da Bio",
-            "Aula 4 - Página de Vendas / Checkout",
-            "Aula 5 - Suporte Adequado",
-            "Aula 6 - LTV"
-          ] }
+          {
+            id: "estrutura",
+            title: "Estrutura",
+            subtitle: "Perfil Dark",
+            cover: img("estrutura-dark"),
+            lessons: lessonsFromTitles(
+              [
+                "Aula 1 - O Primeiro Contato",
+                "Aula 2 - Montagem do Perfil",
+                "Aula 3 - Link da Bio",
+                "Aula 4 - Página de Vendas / Checkout",
+                "Aula 5 - Suporte Adequado",
+                "Aula 6 - LTV"
+              ],
+              ["M7lc1UVf-VE", "ysz5S6PUM-U", "aqz-KE-bpKQ", "ScMzIvxBSi4", "dQw4w9WgXcQ", "5qap5aO4i9A"]
+            )
+          }
         ]
       },
       {
         title: "Edição",
         cards: [
-          { id: "edicao", title: "Edição", subtitle: "Viral", cover: img("edicao-viral"), lessons: [
-            "Iniciando o projeto & adicionando áudio",
-            "Cortes & sincronização",
-            "Texto & transições",
-            "Filtro + presets",
-            "CapCut - Exportação ilimitada",
-            "Posts com Textos Dinâmicos"
-          ] }
+          {
+            id: "edicao",
+            title: "Edição",
+            subtitle: "Viral",
+            cover: img("edicao-viral"),
+            lessons: lessonsFromTitles(
+              [
+                "Iniciando o projeto & adicionando áudio",
+                "Cortes & sincronização",
+                "Texto & transições",
+                "Filtro + presets",
+                "CapCut - Exportação ilimitada",
+                "Posts com Textos Dinâmicos"
+              ],
+              ["ysz5S6PUM-U", "aqz-KE-bpKQ", "ScMzIvxBSi4", "M7lc1UVf-VE", "dQw4w9WgXcQ", "5qap5aO4i9A"]
+            )
+          }
         ]
       },
       {
         title: "Pacotes de Vídeos",
         row: true,
         cards: [
-          { id: "lifestyle", title: "Lifestyle", subtitle: "Variado", cover: img("lifestyle") , lessons: ["Pacote 01", "Pacote 02", "Pacote 03"]},
-          { id: "dinheiro", title: "Dinheiro", subtitle: "e Luxo", cover: img("dinheiro") , lessons: ["Pacote 01", "Pacote 02", "Pacote 03"]},
-          { id: "motivacao", title: "Motivação", subtitle: "e Foco", cover: img("motivacao") , lessons: ["Pacote 01", "Pacote 02", "Pacote 03"]}
+          {
+            id: "lifestyle",
+            title: "Lifestyle",
+            subtitle: "Variado",
+            cover: img("lifestyle"),
+            lessons: lessonsFromTitles(["Pacote 01", "Pacote 02", "Pacote 03"], ["M7lc1UVf-VE", "ysz5S6PUM-U", "aqz-KE-bpKQ"])
+          },
+          {
+            id: "dinheiro",
+            title: "Dinheiro",
+            subtitle: "e Luxo",
+            cover: img("dinheiro"),
+            lessons: lessonsFromTitles(["Pacote 01", "Pacote 02", "Pacote 03"], ["ScMzIvxBSi4", "dQw4w9WgXcQ", "5qap5aO4i9A"])
+          },
+          {
+            id: "motivacao",
+            title: "Motivação",
+            subtitle: "e Foco",
+            cover: img("motivacao"),
+            lessons: lessonsFromTitles(["Pacote 01", "Pacote 02", "Pacote 03"], ["aqz-KE-bpKQ", "M7lc1UVf-VE", "ysz5S6PUM-U"])
+          }
         ]
       }
     ];
@@ -318,6 +441,11 @@
     const lessonList = document.getElementById("lessonList");
     const moduleTitle = document.getElementById("moduleTitle");
     const backHome = document.getElementById("backHome");
+    const videoPanel = document.getElementById("videoPanel");
+    const videoTitle = document.getElementById("videoTitle");
+    const videoFrame = document.getElementById("videoFrame");
+    const videoTag = document.getElementById("videoTag");
+    const closeVideo = document.getElementById("closeVideo");
 
     function renderHome() {
       sectionsRoot.innerHTML = "";
@@ -348,30 +476,71 @@
       });
     }
 
+    function playLesson(lesson) {
+      videoPanel.style.display = "block";
+      videoTitle.textContent = lesson.title;
+
+      const isEmbed = lesson.video.includes("youtube.com/embed");
+      if (isEmbed) {
+        videoFrame.style.display = "block";
+        videoTag.style.display = "none";
+        videoTag.pause();
+        videoTag.removeAttribute("src");
+        videoFrame.src = lesson.video;
+      } else {
+        videoFrame.style.display = "none";
+        videoFrame.src = "";
+        videoTag.style.display = "block";
+        videoTag.src = lesson.video;
+        videoTag.load();
+      }
+    }
+
+    function resetVideoPlayer() {
+      videoFrame.src = "";
+      videoTag.pause();
+      videoTag.removeAttribute("src");
+      videoPanel.style.display = "none";
+    }
+
     function openModule(card) {
       moduleTitle.textContent = card.id === "edicao" ? "Aulas de edição no Capcut" :
-                                card.id === "estrutura" ? "Estrutura de Vendas" :
-                                card.id === "intro" ? "Módulo de Introdução" :
-                                card.id === "termos" ? "Termos e Condições" :
-                                card.id === "trafego" ? "Aplicativo ASD" :
-                                card.title;
+        card.id === "estrutura" ? "Estrutura de Vendas" :
+          card.id === "intro" ? "Módulo de Introdução" :
+            card.id === "termos" ? "Termos e Condições" :
+              card.id === "trafego" ? "Aplicativo ASD" :
+                card.title;
 
       lessonList.innerHTML = "";
       card.lessons.forEach((lesson, i) => {
         const item = document.createElement("article");
         item.className = "lesson";
         item.innerHTML = `
-          <img src="${i === 4 && card.id === "edicao" ? img("capcut-export") : card.cover}" alt="${lesson}" />
-          <div class="title">${lesson}</div>
+          <img src="${i === 4 && card.id === "edicao" ? img("capcut-export") : card.cover}" alt="${lesson.title}" />
+          <div class="meta">
+            <p class="title">${lesson.title}</p>
+            <button class="play" type="button">Assistir</button>
+          </div>
         `;
+
+        item.querySelector(".play").addEventListener("click", (event) => {
+          event.stopPropagation();
+          playLesson(lesson);
+        });
+
+        item.addEventListener("click", () => playLesson(lesson));
         lessonList.appendChild(item);
       });
 
+      resetVideoPlayer();
       homePage.style.display = "none";
       modulePage.style.display = "block";
     }
 
+    closeVideo.addEventListener("click", () => resetVideoPlayer());
+
     backHome.addEventListener("click", () => {
+      resetVideoPlayer();
       modulePage.style.display = "none";
       homePage.style.display = "block";
     });
