@@ -1,11 +1,390 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pré Página de Venda | Estilo Dark Premium</title>
+  <style>
+    :root {
+      --bg: #040404;
+      --card: #0a0a0a;
+      --line: rgba(255, 183, 0, 0.34);
+      --text: #f6f6f6;
+      --muted: #b9b9b9;
+      --accent: #ffb700;
+      --accent-soft: #ffd158;
+      --glow: 0 0 28px rgba(255, 183, 0, .33);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at 50% -5%, #252525 0, #090909 24%, #000 58%);
+    }
+
+    .wrap { width: min(100%, 470px); margin-inline: auto; padding: 18px 14px 130px; }
+    h1,h2,h3,p { margin: 0; }
+    .section { margin-top: 20px; }
+
+    .glass {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, #0d0d0d, #050505);
+      box-shadow: var(--glow);
+    }
+
+    .hero { padding: 10px 6px 2px; text-align: center; }
+    .hero h1 { font-size: clamp(1.5rem, 6vw, 2.2rem); line-height: 1.12; }
+    .hero h1 span { color: var(--accent); text-shadow: var(--glow); }
+    .hero p { margin-top: 10px; color: var(--muted); }
+
+    .divider-arrow {
+      text-align: center;
+      color: var(--accent);
+      font-size: 56px;
+      text-shadow: var(--glow);
+      line-height: 1;
+      margin: 12px 0;
+    }
+
+    .modules { padding: 14px; }
+    .modules h2 { text-align: center; margin-bottom: 10px; font-size: 1.45rem; }
+    .modules h2 span { color: var(--accent); }
+
+    .carousel { overflow: hidden; border-radius: 18px; border: 1px solid rgba(255,183,0,.2); }
+    .track { display: flex; transition: transform .35s ease; }
+    .slide { min-width: 100%; background: #0f0f0f; }
+    .poster {
+      height: 250px;
+      display: flex;
+      align-items: end;
+      padding: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: .95;
+      font-size: 1.8rem;
+      background: linear-gradient(130deg, #0f1f37, #0d0d0d 48%, #322002);
+    }
+    .poster.b { background: linear-gradient(130deg, #131313, #0d0d0d 42%, #3b1800); }
+
+    .dots { display: flex; justify-content: center; gap: 7px; margin-top: 10px; }
+    .dot { width: 9px; height: 9px; border: 0; border-radius: 50%; background: #5a4410; }
+    .dot.active { background: var(--accent); box-shadow: var(--glow); }
+
+    .sales-box { padding: 15px; text-align: center; }
+    .sales-box small { color: #d8ba74; }
+    .sales-box strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--accent);
+      font-size: clamp(2.1rem, 9vw, 3rem);
+      text-shadow: var(--glow);
+    }
+
+    .proof-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .proof-card { padding: 10px; }
+    .photo-slot {
+      width: 100%;
+      aspect-ratio: 3/4;
+      border-radius: 16px;
+      border: 1px dashed rgba(255,183,0,.6);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #f8c13e;
+      font-weight: 700;
+      font-size: .95rem;
+      background: linear-gradient(180deg, rgba(255,183,0,.08), rgba(255,183,0,.02));
+      padding: 10px;
+    }
+    .proof-card p { margin-top: 8px; color: #d4d4d4; font-size: .93rem; }
+
+    .pricing-title {
+      text-align: center;
+      margin: 16px 0 8px;
+      font-size: 1.8rem;
+    }
+    .pricing-title span { color: var(--accent); text-shadow: var(--glow); }
+
+    .price-card { padding: 14px; position: relative; }
+    .badge {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+    .price-card h3 { color: var(--accent); font-size: clamp(2rem, 8vw, 3rem); text-shadow: var(--glow); }
+
+    .list { list-style: none; padding: 0; margin: 16px 0 8px; }
+    .list li { margin-bottom: 8px; color: #f0f0f0; font-size: 1.05rem; }
+    .list li::before { content: '✔ '; color: var(--accent-soft); text-shadow: var(--glow); }
+    .list li.muted { color: #6a6a6a; }
+    .list li.muted::before { color: #444; text-shadow: none; }
+    .big { color: var(--accent); font-size: clamp(3rem, 12vw, 4.4rem); font-weight: 900; text-align: center; text-shadow: var(--glow); }
+    .installment { text-align: center; color: #a9a9a9; margin-top: 2px; }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 15px 20px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 900;
+      font-size: 1.12rem;
+      background: linear-gradient(125deg, rgba(255,183,0,.18), rgba(255,183,0,.03));
+      box-shadow: var(--glow);
+    }
+
+    .guarantee { padding: 18px 14px 14px; position: relative; margin-top: 20px; }
+    .stamp {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      color: var(--accent);
+      margin: -62px auto 10px;
+      background: #060606;
+      box-shadow: var(--glow);
+    }
+    .guarantee h2 { text-align: center; font-size: clamp(2rem, 10vw, 3rem); line-height: 1.1; }
+    .guarantee h2 span { color: var(--accent); text-shadow: var(--glow); }
+    .guarantee > p { text-align: center; margin-top: 10px; color: #bdbdbd; font-size: 1.45rem; line-height: 1.25; }
+
+    .risk-box { margin-top: 12px; border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 18px; color: #b8b8b8; font-size: 1.4rem; line-height: 1.35; text-align: center; }
+    .risk-box strong { color: var(--accent); text-shadow: var(--glow); }
+
+    .guarantee-items { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .guarantee-item { border: 1px solid var(--line); border-radius: 18px; padding: 16px 10px; text-align: center; }
+    .guarantee-item span { display: block; color: var(--accent); font-size: 1.7rem; }
+    .guarantee-item p { margin-top: 8px; font-size: 1.85rem; }
+
+    .faq-title { text-align: center; font-size: clamp(2.2rem, 13vw, 4.3rem); margin: 26px 0 12px; }
+    .faq-title span { color: var(--accent); text-shadow: var(--glow); }
+
+    .faq { display: grid; gap: 10px; }
+    details {
+      border: 1px solid rgba(255,183,0,.3);
+      border-radius: 20px;
+      padding: 12px 14px;
+      background: #070707;
+    }
+    summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: clamp(1.26rem, 5vw, 1.8rem);
+    }
+    summary::-webkit-details-marker { display: none; }
+    .q-icon { color: var(--accent); margin-right: 8px; text-shadow: var(--glow); }
+    details p { margin-top: 10px; color: #c9c9c9; font-size: 1.1rem; line-height: 1.35; }
+
+    .trust {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-top: 1px solid rgba(255,183,0,.2);
+      background: rgba(0,0,0,.94);
+      display: flex;
+      justify-content: space-around;
+      padding: 9px 5px;
+      color: #c7c7c7;
+      font-size: .95rem;
+      backdrop-filter: blur(6px);
+    }
+
+    @media (max-width: 410px) {
+      .proof-grid, .guarantee-items { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <main class="wrap">
+    <section class="hero">
+      <h1>Você está a um passo de ter um <span>arsenal completo</span> para vendas no automático.</h1>
+      <p>Layout no mesmo estilo das referências, com área de mindset, carrossel e provas sociais com foto para inserir.</p>
+    </section>
+
+    <section class="section modules glass">
+      <h2>Mindset e <span>Carrossel de Módulos</span></h2>
+      <div class="carousel">
+        <div class="track" id="track">
+          <article class="slide"><div class="poster">Mindset<br>Dark</div></article>
+          <article class="slide"><div class="poster b">Criação e<br>Aquecimento</div></article>
+          <article class="slide"><div class="poster">Vendas em<br>Dólar</div></article>
+        </div>
+      </div>
+      <div class="dots" id="dots"></div>
+    </section>
+
+    <section class="section sales-box glass">
+      <small>Total em vendas realizadas por alunos:</small>
+      <strong>R$ 520.081,61</strong>
+    </section>
+
+    <section class="section glass" style="padding: 14px;">
+      <h2 style="text-align:center; font-size:1.5rem;">Provas sociais com <span style="color:var(--accent)">foto</span></h2>
+      <p style="text-align:center; color:#bcbcbc; margin-top:6px;">Substitua pelos seus prints/reviews reais.</p>
+      <div class="proof-grid section">
+        <article class="proof-card glass">
+          <div class="photo-slot">📷 ADICIONAR FOTO<br>PROVA SOCIAL 01</div>
+          <p>“Meus primeiros 30 dias: R$ 5.897,83.”</p>
+        </article>
+        <article class="proof-card glass">
+          <div class="photo-slot">📷 ADICIONAR FOTO<br>PROVA SOCIAL 02</div>
+          <p>“Primeira venda em 48h sem aparecer.”</p>
+        </article>
+        <article class="proof-card glass">
+          <div class="photo-slot">📷 ADICIONAR FOTO<br>PROVA SOCIAL 03</div>
+          <p>“Hoje vendo todos os dias com o funil pronto.”</p>
+        </article>
+        <article class="proof-card glass">
+          <div class="photo-slot">📷 ADICIONAR FOTO<br>PROVA SOCIAL 04</div>
+          <p>“Saí do zero para resultados reais em semanas.”</p>
+        </article>
+      </div>
+    </section>
+
+    <div class="divider-arrow">↓</div>
+
+    <h2 class="pricing-title">Escolha o plano <span>ideal pra você</span></h2>
+
+    <section class="section price-card glass">
+      <div class="badge">↗ Mais popular</div>
+      <h3>Arsenal Standard</h3>
+      <ul class="list">
+        <li>Funil de Vendas 100% Orgânico</li>
+        <li>Estrutura de Perfil Completa</li>
+        <li>Primeira Venda em Tempo Recorde</li>
+        <li>Funil de Escala</li>
+        <li>Aulas de Automação + Scripts</li>
+        <li><strong>25.000 Vídeos em 4K UHD</strong></li>
+        <li>Vídeos Virais Prontos</li>
+        <li>Aulas de Edição Viral + Presets</li>
+        <li>Vídeos Novos Todos os Dias</li>
+        <li>Afiliação com 80% de Comissão</li>
+        <li>8.000 Posts Virais Prontos</li>
+        <li>Ferramentas IA</li>
+        <li>Grupo VIP de Networking</li>
+        <li>Bônus</li>
+      </ul>
+      <div class="big">R$ 19,90</div>
+      <p class="installment">ou 4x de R$ 5,42</p>
+      <a class="btn" href="#">🛒 Sim, quero o Standard!</a>
+    </section>
+
+    <div class="divider-arrow">↓</div>
+
+    <section class="section price-card glass">
+      <div class="badge">⭐ Mais completo</div>
+      <h3>Arsenal Advanced</h3>
+      <ul class="list">
+        <li><strong>60.000 Vídeos em 4K UHD</strong></li>
+        <li>Inclui Arsenal Starter</li>
+        <li>Inclui Arsenal Standard</li>
+      </ul>
+      <p class="installment" style="text-decoration:line-through; font-size:1.6rem;">De R$ 197,00 por</p>
+      <div class="big">R$ 5,41</div>
+      <p class="installment">8x de R$ 5,41 ou R$ 37,97 à vista</p>
+      <a class="btn" href="#">🛒 Sim, quero o Advanced!</a>
+    </section>
+
+    <section class="guarantee glass">
+      <div class="stamp">🛡️</div>
+      <h2>Garantia Incondicional de <span>7 Dias</span></h2>
+      <p>Se por qualquer motivo você não ficar satisfeito, devolvemos cada centavo.</p>
+      <div class="risk-box">
+        Sei que você já tentou outras coisas e tem receio de uma nova decepção.<br><br>
+        Por isso assumo <strong>todo o risco</strong> para você testar o método por <strong>7 dias completos</strong>.
+      </div>
+      <div class="guarantee-items">
+        <article class="guarantee-item"><span>✔</span><p>100% Seguro</p></article>
+        <article class="guarantee-item"><span>✔</span><p>Reembolso Total</p></article>
+      </div>
+    </section>
+
+    <h2 class="faq-title">Dúvidas <span>Frequentes</span></h2>
+    <section class="faq">
+      <details>
+        <summary><span><span class="q-icon">⏱</span>"Não tenho muito tempo"</span><span>⌄</span></summary>
+        <p>O método é pensado para rotina corrida, com execução simples e reaproveitamento de conteúdo pronto.</p>
+      </details>
+      <details>
+        <summary><span><span class="q-icon">⚠</span>"Deve ser muito difícil para mim"</span><span>⌄</span></summary>
+        <p>Foi criado para iniciantes, com passo a passo e estrutura para você só copiar e aplicar.</p>
+      </details>
+      <details>
+        <summary><span><span class="q-icon">📈</span>"Será que vou ter resultados?"</span><span>⌄</span></summary>
+        <p>Resultado depende da aplicação, mas o método já foi validado por milhares de alunos.</p>
+      </details>
+      <details>
+        <summary><span><span class="q-icon">💲</span>"Não tenho dinheiro para anúncios"</span><span>⌄</span></summary>
+        <p>A estratégia é orgânica: foco em alcance com conteúdo curto e perfil otimizado.</p>
+      </details>
+      <details>
+        <summary><span><span class="q-icon">💬</span>"Eu vou ter suporte?"</span><span>⌄</span></summary>
+        <p>Sim, você terá suporte da comunidade e atualizações do material.</p>
+      </details>
+      <details>
+        <summary><span><span class="q-icon">🛡</span>"O pagamento é seguro?"</span><span>⌄</span></summary>
+        <p>Sim, o checkout é protegido e você ainda conta com garantia de 7 dias.</p>
+      </details>
+      <details>
+        <summary><span><span class="q-icon">❓</span>"Vale a pena mesmo?"</span><span>⌄</span></summary>
+        <p>Se você quer estrutura pronta para vender sem aparecer, essa é a rota mais rápida para começar.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="trust">
+    <span>🛡️ 100% seguro</span>
+    <span>⚡ Acesso imediato</span>
+    <span>✅ Garantia de 7 dias</span>
+  </footer>
+
+  <script>
+    const track = document.getElementById('track');
+    const dots = document.getElementById('dots');
+    const slides = [...track.children];
+    let index = 0;
+
+    const paintDots = () => {
+      dots.innerHTML = '';
+      slides.forEach((_, i) => {
+        const b = document.createElement('button');
+        b.className = `dot ${i === index ? 'active' : ''}`;
+        b.setAttribute('aria-label', `Slide ${i + 1}`);
+        b.addEventListener('click', () => go(i));
+        dots.appendChild(b);
+      });
+    };
+
+    const go = (i) => {
+      index = i;
+      track.style.transform = `translateX(-${i * 100}%)`;
+      paintDots();
+    };
+
+    setInterval(() => go((index + 1) % slides.length), 3300);
+    paintDots();
+  </script>
 </body>
 </html>
