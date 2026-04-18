@@ -1,11 +1,383 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arsenal Dark Pro | Pré-venda</title>
+  <meta name="description" content="Pré-venda do Arsenal Dark Pro: estratégias prontas, conteúdo atualizado e comunidade para acelerar seus resultados.">
+  <style>
+    :root {
+      --bg: #050507;
+      --bg-soft: #101117;
+      --card: #141722;
+      --card-border: #272b3a;
+      --accent: #8e63ff;
+      --accent-2: #2ef2cd;
+      --text: #f5f7ff;
+      --muted: #a8afc8;
+      --danger: #ff5670;
+      --ok: #58e39c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at 15% 10%, #241746 0%, transparent 35%),
+                  radial-gradient(circle at 80% 0%, #123237 0%, transparent 30%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 32px 0 64px;
+    }
+
+    .hero-card {
+      background: linear-gradient(170deg, rgba(20, 23, 34, 0.95), rgba(9, 10, 16, 0.96));
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 34px;
+      box-shadow: 0 28px 70px rgba(4, 5, 8, 0.7);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      width: 100%;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid #3a4061;
+      padding: 7px 14px;
+      border-radius: 100px;
+      color: var(--accent-2);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5.6vw, 4rem);
+      line-height: 1.1;
+      margin-bottom: 16px;
+      max-width: 14ch;
+    }
+
+    h1 span {
+      color: var(--accent-2);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 46ch;
+      margin-bottom: 28px;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 20px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(95deg, var(--accent), #ad8dff);
+      color: white;
+      box-shadow: 0 10px 30px rgba(132, 93, 255, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.06);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #353a52;
+      color: var(--text);
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(110px, 1fr));
+      gap: 12px;
+    }
+
+    .meta div {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid #2a2f46;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .meta small {
+      color: var(--muted);
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .meta strong {
+      font-size: 1.2rem;
+    }
+
+    .offer {
+      background: linear-gradient(160deg, rgba(10,13,21,0.9), rgba(11,16,29,0.9));
+      border: 1px solid #28304a;
+      border-radius: 22px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      justify-content: space-between;
+    }
+
+    .offer h2 { font-size: 1.5rem; }
+
+    .price {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .price .old {
+      color: var(--muted);
+      text-decoration: line-through;
+      font-size: 0.95rem;
+    }
+
+    .price .new {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent-2);
+      line-height: 1;
+    }
+
+    .list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: #d8ddf6;
+    }
+
+    .list li::before {
+      content: "✔";
+      color: var(--ok);
+      margin-right: 10px;
+      font-weight: 700;
+    }
+
+    .countdown {
+      margin-top: 10px;
+      font-weight: 700;
+      color: var(--danger);
+    }
+
+    .section {
+      padding: 72px 0;
+    }
+
+    .section h3 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      margin-bottom: 12px;
+    }
+
+    .section p.lead {
+      color: var(--muted);
+      margin-bottom: 24px;
+      max-width: 65ch;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid #2a3044;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .card h4 {
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .faq {
+      display: grid;
+      gap: 12px;
+    }
+
+    details {
+      background: var(--card);
+      border: 1px solid #2d3349;
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    details p {
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    footer {
+      border-top: 1px solid #212638;
+      padding: 24px 0 40px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 940px) {
+      .hero-card {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .meta {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <header class="hero">
+    <div class="container">
+      <div class="hero-card">
+        <div>
+          <div class="tag">🔥 Pré-venda liberada por tempo limitado</div>
+          <h1>Transforme seu perfil em uma <span>máquina de vendas</span></h1>
+          <p class="subtitle">Acesse o Arsenal Dark Pro com estratégias prontas, criativos validados e plano de ação para começar ainda hoje, mesmo partindo do zero.</p>
+          <div class="cta-row">
+            <a href="#oferta" class="btn btn-primary">Quero entrar agora</a>
+            <a href="#conteudo" class="btn btn-ghost">Ver o conteúdo</a>
+          </div>
+          <div class="meta">
+            <div><small>Alunos</small><strong>+2.400</strong></div>
+            <div><small>Avaliação</small><strong>4.9/5</strong></div>
+            <div><small>Garantia</small><strong>7 dias</strong></div>
+          </div>
+        </div>
+
+        <aside id="oferta" class="offer">
+          <div>
+            <h2>Lote de pré-venda</h2>
+            <p>Entre no primeiro lote com acesso imediato + bônus exclusivos.</p>
+          </div>
+
+          <div class="price">
+            <span class="old">de R$197</span>
+            <span class="new">R$47</span>
+          </div>
+
+          <ul class="list">
+            <li>Módulo completo de posicionamento lucrativo</li>
+            <li>Biblioteca com modelos prontos para copiar</li>
+            <li>Aulas rápidas e atualizações mensais</li>
+            <li>Suporte estratégico em comunidade fechada</li>
+          </ul>
+
+          <a class="btn btn-primary" href="#">Garantir minha vaga</a>
+          <p class="countdown">⚠️ Últimas vagas do lote atual.</p>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="conteudo">
+      <div class="container">
+        <h3>O que você recebe ao entrar hoje</h3>
+        <p class="lead">Tudo que você precisa para criar uma oferta forte, ganhar autoridade e vender de forma previsível nas redes sociais.</p>
+        <div class="grid-3">
+          <article class="card">
+            <h4>📦 Arsenal de Conteúdo</h4>
+            <p>Modelos de posts, roteiros e copies para acelerar sua produção e converter mais.</p>
+          </article>
+          <article class="card">
+            <h4>🎯 Funil simplificado</h4>
+            <p>Estrutura validada para levar seguidores ao direct e transformar conversas em vendas.</p>
+          </article>
+          <article class="card">
+            <h4>🚀 Plano de 30 dias</h4>
+            <p>Calendário com tarefas diárias para você aplicar e enxergar evolução rapidamente.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h3>Perguntas frequentes</h3>
+        <div class="faq">
+          <details>
+            <summary>É para iniciantes?</summary>
+            <p>Sim. O treinamento foi estruturado do básico ao avançado, com aulas diretas e aplicação prática.</p>
+          </details>
+          <details>
+            <summary>Como recebo acesso?</summary>
+            <p>Após a confirmação do pagamento, o acesso chega no seu e-mail automaticamente em alguns minutos.</p>
+          </details>
+          <details>
+            <summary>Tem garantia?</summary>
+            <p>Sim. Você tem 7 dias de garantia incondicional para testar sem risco.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Arsenal Dark Pro • Todos os direitos reservados.</p>
+    </div>
+  </footer>
 </body>
 </html>
