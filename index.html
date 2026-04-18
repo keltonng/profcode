@@ -1,11 +1,436 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pré Página de Venda | Estilo Dark</title>
+  <style>
+    :root {
+      --bg: #030303;
+      --card: #090909;
+      --line: #1b1b1b;
+      --text: #f5f5f5;
+      --muted: #b8b8b8;
+      --accent: #ffb400;
+      --accent-strong: #ff9800;
+      --danger: #ff3b3b;
+      --success: #ffd24d;
+      --radius: 22px;
+      --glow: 0 0 30px rgba(255, 166, 0, 0.25);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at 50% -5%, #232323 0%, var(--bg) 35%);
+      color: var(--text);
+    }
+
+    .container {
+      width: min(100%, 460px);
+      margin-inline: auto;
+      padding: 24px 16px 120px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 12px 10px 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      border: 1px solid rgba(255, 180, 0, 0.35);
+      background: linear-gradient(120deg, rgba(255, 180, 0, 0.08), rgba(255, 180, 0, 0.02));
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: var(--glow);
+    }
+
+    h1 {
+      margin: 16px 0 8px;
+      font-size: clamp(1.75rem, 5vw, 2.35rem);
+      line-height: 1.08;
+    }
+
+    .highlight { color: var(--accent); }
+    .sub { color: var(--muted); margin: 0; font-size: 1.05rem; }
+
+    .section { margin-top: 28px; }
+
+    .card,
+    .benefit,
+    .proof,
+    .total-box,
+    .compare,
+    .carousel {
+      background: linear-gradient(180deg, #0d0d0d, #070707);
+      border: 1px solid rgba(255, 180, 0, 0.25);
+      border-radius: var(--radius);
+      box-shadow: var(--glow);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .benefit {
+      padding: 14px;
+      min-height: 190px;
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--accent);
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+      background: rgba(255, 180, 0, 0.08);
+      border: 1px solid rgba(255, 180, 0, 0.3);
+    }
+
+    .benefit h3 { margin: 0 0 8px; color: #ffbf3e; font-size: 1.48rem; }
+    .benefit p { margin: 0; color: #d6d6d6; line-height: 1.35; }
+
+    .compare {
+      margin-top: 16px;
+      padding: 18px 14px;
+    }
+
+    .compare-title {
+      margin: 0 0 16px;
+      color: var(--accent);
+      text-align: center;
+      font-size: 1.8rem;
+    }
+
+    .compare-columns {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      gap: 12px;
+    }
+
+    .divider { background: rgba(255,255,255,0.12); }
+
+    ul { list-style: none; margin: 0; padding: 0; }
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: #e7e7e7;
+    }
+
+    .x { color: var(--danger); }
+    .ok { color: var(--success); }
+
+    .thumb-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .thumb {
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      letter-spacing: .5px;
+      color: white;
+      background: radial-gradient(circle at top, #303030 0%, #0a0a0a 58%);
+    }
+
+    .thumb.bad { border: 2px solid #ff3232; box-shadow: 0 0 24px rgba(255, 50, 50, .3); }
+    .thumb.good { border: 2px solid var(--accent); box-shadow: var(--glow); }
+
+    .cta {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn {
+      border: 1px solid rgba(255, 180, 0, .45);
+      color: var(--accent);
+      background: linear-gradient(140deg, rgba(255,180,0,.13), rgba(255,180,0,.02));
+      font-size: 1.12rem;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 16px 24px;
+      width: 100%;
+      box-shadow: var(--glow);
+      text-transform: uppercase;
+      text-align: center;
+      text-decoration: none;
+      letter-spacing: .3px;
+    }
+
+    .carousel {
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carousel h2 {
+      margin: 0 0 12px;
+      text-align: center;
+    }
+
+    .track {
+      display: flex;
+      transition: transform .35s ease;
+    }
+
+    .slide {
+      min-width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #111;
+      border: 1px solid rgba(255,180,0,.2);
+    }
+
+    .slide-image {
+      height: 260px;
+      display: grid;
+      place-items: end start;
+      padding: 16px;
+      font-size: 1.6rem;
+      font-weight: 900;
+      line-height: .95;
+      color: white;
+      text-transform: uppercase;
+      background: linear-gradient(120deg, #101c2b, #02060d 45%, #2d1b00);
+    }
+
+    .slide-image.alt {
+      background: linear-gradient(120deg, #130f0a, #120606 45%, #35210a);
+    }
+
+    .controls {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: none;
+      background: #53401d;
+      cursor: pointer;
+    }
+
+    .dot.active { background: var(--accent); box-shadow: var(--glow); }
+
+    .total-box {
+      margin-top: 16px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .total-box small { color: #d8b874; }
+
+    .total-box strong {
+      display: block;
+      margin-top: 8px;
+      color: var(--accent);
+      font-size: clamp(2rem, 8vw, 3rem);
+      letter-spacing: 1px;
+    }
+
+    .proof {
+      margin-top: 16px;
+      padding: 14px;
+    }
+
+    .proof h3 { margin: 0 0 12px; }
+
+    .proof-item {
+      border: 1px solid rgba(255,180,0,.25);
+      border-radius: 14px;
+      padding: 12px;
+      background: #0a0a0a;
+      margin-top: 10px;
+    }
+
+    .proof-item p { margin: 6px 0 0; color: #d8d8d8; }
+
+    .sticky {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0), #000 40%);
+      padding: 12px 14px 16px;
+    }
+
+    .guarantees {
+      margin-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: .89rem;
+      color: #cbcbcb;
+      text-align: center;
+    }
+
+    @media (max-width: 390px) {
+      .feature-grid { grid-template-columns: 1fr; }
+      .compare-columns { grid-template-columns: 1fr; }
+      .divider { display: none; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <main class="container">
+    <section class="hero">
+      <span class="badge">⚡ Acesso imediato</span>
+      <h1>Você está a um passo de montar um perfil anônimo que <span class="highlight">vende todos os dias</span>.</h1>
+      <p class="sub">Pré-página com visual premium escuro, foco em conversão e prova social.</p>
+    </section>
+
+    <section class="section carousel" aria-label="Carrossel de módulos">
+      <h2>Módulos de <span class="highlight">Mindset + Execução</span></h2>
+      <div class="track" id="moduleTrack">
+        <article class="slide">
+          <div class="slide-image">Mindset<br/>Dark</div>
+        </article>
+        <article class="slide">
+          <div class="slide-image alt">Criação e<br/>Aquecimento</div>
+        </article>
+        <article class="slide">
+          <div class="slide-image">Vendas em<br/>Dólar</div>
+        </article>
+      </div>
+      <div class="controls" id="dots" aria-label="Controle de slides"></div>
+    </section>
+
+    <section class="total-box section">
+      <small>Total em vendas realizadas por alunos:</small>
+      <strong>R$ 520.081,61</strong>
+    </section>
+
+    <section class="section">
+      <div class="feature-grid">
+        <article class="benefit">
+          <div class="icon">🙈</div>
+          <h3>Você não precisa aparecer.</h3>
+          <p>Perfis anônimos com posicionamento forte e conteúdo que chama atenção.</p>
+        </article>
+        <article class="benefit">
+          <div class="icon">💬</div>
+          <h3>Não precisa conversar para vender.</h3>
+          <p>Estrutura feita para vendas em automático com funil simples.</p>
+        </article>
+        <article class="benefit">
+          <div class="icon">⏱️</div>
+          <h3>Vídeos curtos.</h3>
+          <p>Estratégia de conteúdos rápidos para crescer sem complicação.</p>
+        </article>
+        <article class="benefit">
+          <div class="icon">🧭</div>
+          <h3>Liberdade.</h3>
+          <p>Modelo escalável para vender mais e ganhar tempo no dia a dia.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section compare">
+      <h2 class="compare-title">A verdade é que:</h2>
+      <div class="compare-columns">
+        <div>
+          <h3>Sem estrutura:</h3>
+          <ul>
+            <li><span class="x">✖</span> Você não vende</li>
+            <li><span class="x">✖</span> Não viraliza</li>
+            <li><span class="x">✖</span> Não escala</li>
+            <li><span class="x">✖</span> Posta muito e não cresce</li>
+          </ul>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <h3>Com estrutura:</h3>
+          <ul>
+            <li><span class="ok">✔</span> Vende no automático</li>
+            <li><span class="ok">✔</span> Viraliza com facilidade</li>
+            <li><span class="ok">✔</span> Primeira venda em tempo recorde</li>
+            <li><span class="ok">✔</span> Escala com consistência</li>
+          </ul>
+        </div>
+      </div>
+      <div class="thumb-row">
+        <div class="thumb bad">SEM ESTRUTURA</div>
+        <div class="thumb good">COM ESTRUTURA</div>
+      </div>
+    </section>
+
+    <div class="cta section">
+      <a class="btn" href="#">🛒 Estou pronto para começar!</a>
+    </div>
+
+    <section class="proof section">
+      <h3>👨‍🎓 + de 12 mil alunos com resultados</h3>
+      <div class="proof-item"><strong>@lucasdark</strong><p>“Primeiros 30 dias: R$ 5.897,83 aplicando o método.”</p></div>
+      <div class="proof-item"><strong>@anaanonima</strong><p>“Fiz minha primeira venda em 48h usando os vídeos curtos.”</p></div>
+      <div class="proof-item"><strong>@perfilalpha</strong><p>“Saí do zero para vendas diárias sem aparecer.”</p></div>
+    </section>
+
+    <div class="guarantees">
+      <span>🛡️ 100% seguro</span>
+      <span>⚡ Acesso imediato</span>
+      <span>✅ Garantia de 7 dias</span>
+    </div>
+  </main>
+
+  <div class="sticky">
+    <div class="container" style="padding:0;">
+      <a class="btn" href="#">Quero começar agora!</a>
+    </div>
+  </div>
+
+  <script>
+    const track = document.getElementById('moduleTrack');
+    const dotsWrap = document.getElementById('dots');
+    const slides = Array.from(track.children);
+    let index = 0;
+
+    function renderDots() {
+      dotsWrap.innerHTML = '';
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = `dot ${i === index ? 'active' : ''}`;
+        dot.setAttribute('aria-label', `Ir para slide ${i + 1}`);
+        dot.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(dot);
+      });
+    }
+
+    function goTo(i) {
+      index = i;
+      track.style.transform = `translateX(-${index * 100}%)`;
+      renderDots();
+    }
+
+    setInterval(() => goTo((index + 1) % slides.length), 3400);
+    renderDots();
+  </script>
 </body>
 </html>
