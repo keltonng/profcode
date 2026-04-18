@@ -1,11 +1,403 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arsenal Blue Dark | Pré-página</title>
+  <meta name="description" content="Pré-página estilo blue dark com oferta, bônus, benefícios e planos para conversão.">
+  <style>
+    :root {
+      --bg: #02050d;
+      --bg-soft: #060b17;
+      --card: #070e1f;
+      --card-2: #091328;
+      --line: #18315f;
+      --text: #eef4ff;
+      --muted: #9db0d1;
+      --blue: #2f7bff;
+      --blue-strong: #1f5fe0;
+      --cyan: #00d9ff;
+      --green: #46e8a2;
+      --danger: #ff4d78;
+      --glow: 0 0 16px rgba(47, 123, 255, 0.65), 0 0 30px rgba(0, 217, 255, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 20% 0%, rgba(47, 123, 255, 0.2), transparent 38%),
+        radial-gradient(circle at 80% 18%, rgba(0, 217, 255, 0.15), transparent 36%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .container {
+      width: min(980px, 92%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 38px 0 26px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #2a4b84;
+      color: var(--cyan);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      box-shadow: var(--glow);
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 6vw, 3.2rem);
+      margin: 16px auto 10px;
+      max-width: 16ch;
+      line-height: 1.14;
+    }
+
+    .highlight {
+      color: var(--cyan);
+      text-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 56ch;
+      margin: 0 auto;
+    }
+
+    .offer-box {
+      margin: 26px auto 0;
+      border: 1px solid #2958a7;
+      border-radius: 24px;
+      background: linear-gradient(165deg, rgba(8, 18, 39, 0.95), rgba(5, 10, 22, 0.98));
+      padding: 24px 18px;
+      box-shadow: var(--glow);
+      max-width: 720px;
+    }
+
+    .offer-box .old {
+      color: #6b80a7;
+      text-decoration: line-through;
+      font-size: 1.2rem;
+    }
+
+    .offer-box .new {
+      display: block;
+      margin: 5px 0;
+      font-size: clamp(2.7rem, 10vw, 5rem);
+      font-weight: 800;
+      color: var(--cyan);
+      text-shadow: var(--glow);
+      line-height: 1;
+    }
+
+    .offer-box .free {
+      color: #ccdefe;
+      margin-bottom: 12px;
+      font-size: 1.14rem;
+    }
+
+    .big-number {
+      font-size: clamp(1.7rem, 6vw, 2.5rem);
+      color: #7ec5ff;
+      text-shadow: var(--glow);
+      font-weight: 800;
+    }
+
+    .cta {
+      margin-top: 18px;
+      display: inline-flex;
+      width: min(560px, 100%);
+      justify-content: center;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 800;
+      border: 2px solid #4c8cff;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-size: clamp(1rem, 3.5vw, 1.6rem);
+      background: linear-gradient(90deg, #184296, #0d2a64 60%, #16398a);
+      box-shadow: var(--glow);
+      transition: .2s ease;
+    }
+
+    .cta:hover { transform: translateY(-2px); }
+
+    .trust {
+      margin: 12px auto 0;
+      color: #a6b9db;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: .95rem;
+    }
+
+    .section {
+      padding: 54px 0 24px;
+    }
+
+    .section h2 {
+      text-align: center;
+      font-size: clamp(1.5rem, 5vw, 2.4rem);
+      margin-bottom: 20px;
+      color: #9ad8ff;
+      text-shadow: 0 0 12px rgba(47, 123, 255, 0.45);
+    }
+
+    .benefits {
+      display: grid;
+      gap: 14px;
+    }
+
+    .benefit {
+      border: 1px solid #245298;
+      background: linear-gradient(160deg, var(--card), var(--card-2));
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 0 22px rgba(24, 70, 161, 0.25);
+    }
+
+    .benefit h3 {
+      font-size: 1.25rem;
+      margin-bottom: 6px;
+      color: #8ac1ff;
+    }
+
+    .benefit p { color: var(--muted); }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .module {
+      aspect-ratio: 3 / 4;
+      border-radius: 16px;
+      border: 1px solid #234c8b;
+      overflow: hidden;
+      background: linear-gradient(150deg, #0f203f, #050b18 65%);
+      box-shadow: 0 0 18px rgba(29, 97, 217, 0.35);
+      display: flex;
+      align-items: end;
+      padding: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #eaf2ff;
+    }
+
+    .bonus {
+      margin: 42px auto 10px;
+      max-width: 660px;
+      border: 2px solid #2b78ff;
+      border-radius: 22px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--glow);
+      background: radial-gradient(circle at 50% -30%, rgba(0, 217, 255, 0.18), transparent 55%), #071123;
+    }
+
+    .bonus strong {
+      font-size: clamp(1.7rem, 6vw, 3rem);
+      color: #84d3ff;
+      text-shadow: var(--glow);
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .plan {
+      border-radius: 22px;
+      border: 1px solid #275eb3;
+      background: linear-gradient(150deg, #071022, #060d1b);
+      padding: 18px;
+    }
+
+    .plan.popular {
+      border: 2px solid #49a5ff;
+      box-shadow: var(--glow);
+    }
+
+    .plan h3 {
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      margin-bottom: 12px;
+      color: #8fcbff;
+    }
+
+    .list {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      color: #dce8ff;
+      margin-bottom: 14px;
+    }
+
+    .list li::before {
+      content: "✔";
+      color: var(--green);
+      margin-right: 8px;
+      font-weight: 700;
+    }
+
+    .price {
+      font-size: clamp(2rem, 7vw, 3.8rem);
+      font-weight: 900;
+      color: var(--cyan);
+      text-shadow: var(--glow);
+      line-height: 1;
+      margin-top: 6px;
+    }
+
+    .installments {
+      color: var(--muted);
+      margin: 4px 0 14px;
+      font-size: 1.02rem;
+    }
+
+    .btn {
+      display: block;
+      text-decoration: none;
+      text-align: center;
+      border-radius: 999px;
+      border: 1px solid #3e95ff;
+      color: white;
+      padding: 12px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #1d4eab, #0b2f73);
+      box-shadow: var(--glow);
+    }
+
+    footer {
+      text-align: center;
+      color: #8e9fbd;
+      border-top: 1px solid #112347;
+      margin-top: 52px;
+      padding: 22px 0 34px;
+      font-size: .92rem;
+    }
+
+    @media (max-width: 760px) {
+      .plans { grid-template-columns: 1fr; }
+      .gallery { grid-template-columns: 1fr 1fr; }
+      .section { padding-top: 42px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <header class="hero container">
+    <span class="badge">⚡ Apenas hoje • acesso imediato</span>
+    <h1>Obtendo o Arsenal <span class="highlight">ainda hoje</span> você recebe módulos de graça</h1>
+    <p class="lead">Mais de 7.500 vídeos virais e aulas práticas para postar todos os dias com estratégia, edição e escala.</p>
+
+    <div class="offer-box">
+      <span class="old">de R$119,00</span>
+      <span class="new">R$0,00</span>
+      <p class="free">Grátis para quem adquirir hoje no primeiro acesso.</p>
+      <p class="big-number">+7.573 vídeos virais!</p>
+      <a class="cta" href="#planos">🛒 QUERO APROVEITAR!</a>
+      <div class="trust">
+        <span>🛡️ 100% seguro</span>
+        <span>⚡ Acesso imediato</span>
+        <span>✅ Garantia de 7 dias</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section">
+      <h2>Você também terá acesso a:</h2>
+      <div class="benefits">
+        <article class="benefit">
+          <h3>Grupo VIP no WhatsApp</h3>
+          <p>Networking e direcionamento para acelerar resultados com pessoas no mesmo nível de execução.</p>
+        </article>
+        <article class="benefit">
+          <h3>Suporte eficiente</h3>
+          <p>Acompanhamento para tirar dúvidas e aplicar as estratégias sem travar no processo.</p>
+        </article>
+        <article class="benefit">
+          <h3>Atualizações diárias</h3>
+          <p>Vídeos novos, aulas extras e melhorias contínuas sem nenhum custo adicional.</p>
+        </article>
+        <article class="benefit">
+          <h3>Afiliação com comissão</h3>
+          <p>Possibilidade de revenda e geração de renda com comissões agressivas.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>E não se preocupe com edição...</h2>
+      <p class="lead" style="text-align:center">Você terá aulas de CapCut e edição com IA para criar vídeos que prendem atenção e convertem.</p>
+      <div class="gallery">
+        <div class="module">Edição Viral</div>
+        <div class="module">Inteligência Artificial</div>
+      </div>
+    </section>
+
+    <section class="bonus">
+      <strong>🔥 BÔNUS APENAS HOJE 🔥</strong>
+      <p style="margin-top:8px;color:#b8ceef">9 módulos exclusivos liberados sem custo extra para novos alunos.</p>
+    </section>
+
+    <section class="section" id="planos">
+      <h2>Escolha seu plano</h2>
+      <div class="plans">
+        <article class="plan">
+          <h3>Arsenal Starter</h3>
+          <ul class="list">
+            <li>15.000 vídeos em 4K UHD</li>
+            <li>Vídeos virais prontos</li>
+            <li>Aulas de edição viral + presets</li>
+            <li>Vídeos novos todos os dias</li>
+            <li>Funil de vendas orgânico</li>
+          </ul>
+          <div class="price">R$ 9,90</div>
+          <p class="installments">ou 2x de R$ 5,21</p>
+          <a href="#" class="btn">SIM, QUERO O STARTER!</a>
+        </article>
+
+        <article class="plan popular">
+          <h3>Arsenal Standard ⭐</h3>
+          <ul class="list">
+            <li>25.000 vídeos em 4K UHD</li>
+            <li>Funil de escala + automação</li>
+            <li>8.000 posts virais prontos</li>
+            <li>Ferramentas de IA aplicadas</li>
+            <li>Grupo VIP de networking</li>
+            <li>Bônus + afiliação inclusos</li>
+          </ul>
+          <div class="price">R$ 19,90</div>
+          <p class="installments">ou 4x de R$ 5,42</p>
+          <a href="#" class="btn">SIM, QUERO O STANDARD!</a>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Arsenal Blue Dark • 100% digital • suporte via comunidade.
+  </footer>
 </body>
 </html>
