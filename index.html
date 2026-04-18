@@ -1,11 +1,372 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ARV | Página Premium</title>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+:root{
+  --bg:#020711;
+  --card:#07101f;
+  --accent:#ffb629;
+  --accent-blue:#4ea3ff;
+  --text:#f3f8ff;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:radial-gradient(circle at top,#11161f,#01040a);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+
+.wrap{
+  max-width:480px;
+  margin:auto;
+  padding:20px;
+  padding-bottom:95px;
+}
+
+.hero{ text-align:center; }
+.hero h1{ font-size:2.2rem; font-weight:900; }
+.hero span{ color:var(--accent); text-shadow:0 0 18px rgba(255,182,41,.45); }
+.hero p{ margin-top:10px; opacity:.86; }
+
+.cta{
+  display:block;
+  margin-top:20px;
+  padding:16px;
+  border-radius:999px;
+  text-align:center;
+  font-weight:700;
+  text-decoration:none;
+  color:var(--accent);
+  border:1px solid rgba(255,182,41,.65);
+  box-shadow:0 0 20px rgba(255,182,41,.25);
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(180deg,#1b1508,#0a0905);
+}
+
+.cta::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.2),transparent);
+  opacity:0;
+}
+
+.cta:hover::after{ opacity:1; animation:shine 1s linear; }
+@keyframes shine{ from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:24px;
+}
+
+.card{
+  background:var(--card);
+  padding:14px;
+  border-radius:16px;
+  border:1px solid rgba(255,182,41,.27);
+  transition:.3s;
+}
+.card:hover{ transform:translateY(-5px); box-shadow:0 0 20px rgba(255,182,41,.2); }
+
+.icon{ width:26px; height:26px; margin-bottom:10px; transition:.3s; color:var(--accent); }
+.card:hover .icon{ transform:scale(1.2); filter:drop-shadow(0 0 8px var(--accent)); }
+.card h3{ color:var(--accent); font-size:1.1rem; }
+.card p{ font-size:.9rem; opacity:.82; }
+
+.carousel-section{ margin-top:34px; }
+.carousel-title{
+  text-align:center;
+  font-size:2rem;
+  margin-bottom:10px;
+  line-height:1.2;
+}
+.carousel-title .highlight{ color:var(--accent); text-shadow:0 0 16px rgba(255,182,41,.45); }
+.carousel-title.small{ font-size:1.8rem; }
+
+.carousel-shell{ position:relative; }
+.carousel-track{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+  scroll-snap-type:x mandatory;
+  padding:10px 2px;
+  -ms-overflow-style:none;
+  scrollbar-width:none;
+}
+.carousel-track::-webkit-scrollbar{ display:none; }
+
+.poster{
+  flex:0 0 43%;
+  scroll-snap-align:start;
+  aspect-ratio:3/4;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(255,182,41,.45);
+  position:relative;
+  background:#080b11;
+}
+.poster img{ width:100%; height:100%; object-fit:cover; display:block; }
+.poster::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.74),rgba(0,0,0,.08));
+}
+.poster-title{
+  position:absolute;
+  z-index:2;
+  left:10px;
+  right:10px;
+  bottom:10px;
+  line-height:1.02;
+  font-size:1rem;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.poster-title span{ color:var(--accent); }
+
+.phone-frame{
+  flex:0 0 86%;
+  scroll-snap-align:center;
+  border-radius:36px;
+  border:10px solid #141924;
+  overflow:hidden;
+  background:#000;
+  box-shadow:0 0 28px rgba(255,182,41,.18);
+}
+.phone-frame img{ width:100%; aspect-ratio:9/16; object-fit:cover; display:block; }
+
+.result-card{
+  flex:0 0 86%;
+  scroll-snap-align:center;
+  border-radius:26px;
+  border:1px solid rgba(255,182,41,.62);
+  overflow:hidden;
+  background:#05070b;
+  box-shadow:0 0 20px rgba(255,182,41,.2);
+}
+.result-card img{ width:100%; aspect-ratio:9/13; object-fit:cover; display:block; }
+
+.carousel-nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  border:1px solid rgba(255,182,41,.5);
+  background:rgba(0,0,0,.72);
+  box-shadow:0 0 18px rgba(255,182,41,.3);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  cursor:pointer;
+  z-index:3;
+}
+.carousel-prev{ left:-12px; }
+.carousel-next{ right:-12px; }
+
+.dots{
+  display:flex;
+  justify-content:center;
+  gap:7px;
+  margin-top:8px;
+}
+.dot{
+  width:8px;height:8px;border-radius:99px;
+  background:rgba(255,255,255,.3);
+  transition:.2s;
+}
+.dot.active{
+  width:18px;
+  background:var(--accent);
+  box-shadow:0 0 12px rgba(255,182,41,.5);
+}
+
+.section{ margin-top:30px; text-align:center; }
+.stamp{ font-size:2rem; margin-bottom:10px; color:var(--accent); }
+
+.footer{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:rgba(0,0,0,.84);
+  backdrop-filter:blur(10px);
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
+  border-top:1px solid rgba(255,182,41,.25);
+}
+.footer span{ display:flex; align-items:center; gap:5px; font-size:.82rem; opacity:.95; }
+.footer i{ color:var(--accent); }
+
+.fade{ opacity:0; transform:translateY(20px); transition:.5s; }
+.fade.show{ opacity:1; transform:translateY(0); }
+
+@media (max-width:420px){
+  .poster{ flex-basis:58%; }
+  .carousel-prev{ left:-6px; }
+  .carousel-next{ right:-6px; }
+}
+</style>
 </head>
+
 <body>
-    <h1>Prof Ajax</h1>
+<div class="wrap">
+  <div class="hero fade">
+    <h1>Seu <span>arsenal digital</span> começa aqui</h1>
+    <p>Venda no automático sem aparecer</p>
+    <a href="#" class="cta">COMEÇAR AGORA</a>
+  </div>
+
+  <section class="carousel-section fade">
+    <h2 class="carousel-title small"><span class="highlight">60.000</span> vídeos em 4K</h2>
+    <div class="carousel-shell" data-carousel="videos">
+      <button class="carousel-nav carousel-prev" data-prev aria-label="Voltar">‹</button>
+      <div class="carousel-track" data-track>
+        <article class="poster">
+          <img src="https://images.unsplash.com/photo-1518241353330-0f7941fd7f7d?auto=format&fit=crop&w=900&q=80" alt="Lifestyle variado" loading="lazy">
+          <h3 class="poster-title">Lifestyle <span>Variado</span></h3>
+        </article>
+        <article class="poster">
+          <img src="https://images.unsplash.com/photo-1565514158740-064f34bd6cfd?auto=format&fit=crop&w=900&q=80" alt="Dinheiro e luxo" loading="lazy">
+          <h3 class="poster-title">Dinheiro <span>e luxo</span></h3>
+        </article>
+        <article class="poster">
+          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80" alt="Motivação diária" loading="lazy">
+          <h3 class="poster-title">Motivação <span>diária</span></h3>
+        </article>
+      </div>
+      <button class="carousel-nav carousel-next" data-next aria-label="Avançar">›</button>
+    </div>
+  </section>
+
+  <section class="carousel-section fade">
+    <h2 class="carousel-title">+<span class="highlight">8.000</span> Wallpapers e imagens prontas</h2>
+    <div class="carousel-shell" data-carousel="wallpapers">
+      <button class="carousel-nav carousel-prev" data-prev aria-label="Voltar">‹</button>
+      <div class="carousel-track" data-track>
+        <article class="phone-frame"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80" alt="Wallpaper montanha" loading="lazy"></article>
+        <article class="phone-frame"><img src="https://images.unsplash.com/photo-1521292270410-a8c4d716d518?auto=format&fit=crop&w=900&q=80" alt="Wallpaper cidade" loading="lazy"></article>
+        <article class="phone-frame"><img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=900&q=80" alt="Wallpaper oceano" loading="lazy"></article>
+      </div>
+      <button class="carousel-nav carousel-next" data-next aria-label="Avançar">›</button>
+    </div>
+    <div class="dots" data-dots>
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </section>
+
+  <section class="carousel-section fade">
+    <h2 class="carousel-title small">+ de <span class="highlight">12 mil</span> alunos com resultados</h2>
+    <div class="carousel-shell" data-carousel="resultados">
+      <button class="carousel-nav carousel-prev" data-prev aria-label="Voltar">‹</button>
+      <div class="carousel-track" data-track>
+        <article class="result-card"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80" alt="Resultado de vendas 1" loading="lazy"></article>
+        <article class="result-card"><img src="https://images.unsplash.com/photo-1551281044-8d8d7f5f8d8f?auto=format&fit=crop&w=900&q=80" alt="Resultado de vendas 2" loading="lazy"></article>
+        <article class="result-card"><img src="https://images.unsplash.com/photo-1638913659197-68d4c5e3e58b?auto=format&fit=crop&w=900&q=80" alt="Resultado de vendas 3" loading="lazy"></article>
+      </div>
+      <button class="carousel-nav carousel-next" data-next aria-label="Avançar">›</button>
+    </div>
+    <div class="dots" data-dots>
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </section>
+
+  <div class="grid">
+    <div class="card fade">
+      <i data-lucide="eye-off" class="icon"></i>
+      <h3>Sem aparecer</h3>
+      <p>Venda com perfis anônimos</p>
+    </div>
+    <div class="card fade">
+      <i data-lucide="mail" class="icon"></i>
+      <h3>Automático</h3>
+      <p>Sem conversar com clientes</p>
+    </div>
+    <div class="card fade">
+      <i data-lucide="clock" class="icon"></i>
+      <h3>24h rodando</h3>
+      <p>Venda enquanto dorme</p>
+    </div>
+    <div class="card fade">
+      <i data-lucide="compass" class="icon"></i>
+      <h3>Liberdade</h3>
+      <p>Trabalhe de qualquer lugar</p>
+    </div>
+  </div>
+
+  <div class="section fade">
+    <h2>+ de <span style="color:var(--accent)">R$520k</span> gerados</h2>
+  </div>
+
+  <div class="section fade">
+    <div class="stamp"><i data-lucide="shield-check"></i></div>
+    <h2>Garantia de 7 dias</h2>
+    <p>Risco zero pra você</p>
+  </div>
+
+  <div class="section fade">
+    <a href="#" class="cta">QUERO COMEÇAR AGORA</a>
+  </div>
+</div>
+
+<div class="footer">
+  <span><i data-lucide="shield"></i> 100% seguro</span>
+  <span><i data-lucide="zap"></i> Acesso imediato</span>
+  <span><i data-lucide="check-circle"></i> Garantia de 7 dias</span>
+</div>
+
+<script>
+lucide.createIcons();
+
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("show"); });
+});
+document.querySelectorAll(".fade").forEach(el=>obs.observe(el));
+
+const setupCarousel = (shell)=>{
+  const track = shell.querySelector('[data-track]');
+  const prev = shell.querySelector('[data-prev]');
+  const next = shell.querySelector('[data-next]');
+  const dotsWrap = shell.parentElement.querySelector('[data-dots]');
+  const dots = dotsWrap ? [...dotsWrap.querySelectorAll('.dot')] : [];
+
+  const scroll = (dir)=>{
+    const step = track.clientWidth * 0.85;
+    track.scrollBy({ left: dir * step, behavior: 'smooth' });
+  };
+
+  prev.addEventListener('click', ()=>scroll(-1));
+  next.addEventListener('click', ()=>scroll(1));
+
+  if(dots.length){
+    track.addEventListener('scroll', ()=>{
+      const index = Math.round(track.scrollLeft / track.clientWidth);
+      dots.forEach((dot,i)=>dot.classList.toggle('active', i === index));
+    });
+  }
+};
+
+document.querySelectorAll('[data-carousel]').forEach(setupCarousel);
+</script>
 </body>
 </html>
