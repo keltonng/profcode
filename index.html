@@ -1,11 +1,395 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pré Página de Venda | Dark Blue Premium</title>
+  <style>
+    :root {
+      --bg: #020711;
+      --bg-soft: #081225;
+      --card: #07101f;
+      --line: rgba(49, 130, 255, 0.35);
+      --line-strong: rgba(75, 160, 255, 0.7);
+      --text: #f3f8ff;
+      --muted: #b8c5d8;
+      --accent: #4ea3ff;
+      --accent-soft: #8bc8ff;
+      --radius: 24px;
+      --radius-sm: 18px;
+      --glow: 0 0 22px rgba(78, 163, 255, 0.22);
+      --glow-strong: 0 0 28px rgba(78, 163, 255, 0.42);
+      --font: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background:
+        radial-gradient(70% 28% at 50% -5%, rgba(78, 163, 255, 0.22), transparent 75%),
+        radial-gradient(110% 42% at 50% 0, #0b1830 0, #071022 32%, #01040a 62%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap { width: min(100%, 490px); margin: 0 auto; padding: 20px 14px 120px; }
+    .section { margin-top: 18px; }
+
+    .glass {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, #0a1830 0%, #060d1b 100%);
+      box-shadow: var(--glow);
+    }
+
+    .hero { text-align: center; margin-top: 8px; padding: 6px; }
+    .hero h1 { font-size: clamp(2rem, 9.5vw, 3.2rem); line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; }
+    .hero h1 span { color: var(--accent); text-shadow: var(--glow-strong); }
+    .hero p { margin-top: 14px; font-size: clamp(1.1rem, 4vw, 1.4rem); color: #d7e3f3; line-height: 1.35; }
+
+    .cta-main, .btn {
+      margin-top: 20px;
+      display: block;
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      padding: 16px 18px;
+      color: var(--accent);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: 900;
+      text-align: center;
+      font-size: clamp(1rem, 4.8vw, 1.8rem);
+      background: linear-gradient(120deg, rgba(78,163,255,.22), rgba(78,163,255,.08) 58%, rgba(255,255,255,.2) 92%);
+      box-shadow: var(--glow-strong);
+    }
+
+    .benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+
+    .benefit-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: #040b17;
+      padding: 14px 14px 18px;
+      box-shadow: inset 0 0 0 1px rgba(78,163,255,.16), var(--glow);
+    }
+
+    .benefit-icon {
+      width: 52px; height: 52px; border-radius: 16px;
+      border: 1px solid rgba(78,163,255,.5);
+      display: grid; place-items: center; color: var(--accent); font-size: 1.4rem;
+      box-shadow: var(--glow); margin-bottom: 12px;
+    }
+
+    .benefit-card h3 { color: var(--accent); font-size: clamp(1.2rem, 4.8vw, 2rem); margin-bottom: 8px; line-height: 1.12; }
+    .benefit-card p { font-size: clamp(1.06rem, 3.8vw, 1.5rem); color: #d7e1ed; line-height: 1.35; }
+
+    .headline { margin-top: 28px; text-align: center; font-size: clamp(1.8rem, 8.8vw, 3rem); font-weight: 800; line-height: 1.1; }
+    .headline span { color: var(--accent); text-shadow: var(--glow); }
+
+    .modules { padding: 14px; }
+    .modules h2 { text-align: center; font-size: clamp(1.3rem, 6vw, 2.1rem); margin-bottom: 10px; }
+    .modules h2 span { color: var(--accent); text-shadow: var(--glow); }
+
+    .carousel-shell {
+      position: relative; margin-top: 8px; border-radius: 20px;
+      border: 1px solid rgba(78,163,255,.3); overflow: hidden; background: #050f1f;
+    }
+
+    .track { display: flex; transition: transform .35s ease; }
+    .slide { min-width: 100%; padding: 8px; }
+
+    .poster {
+      position: relative; aspect-ratio: 3 / 4; border-radius: 18px; overflow: hidden;
+      border: 1px solid rgba(78,163,255,.28);
+      background: linear-gradient(130deg, #0e1f3f, #0b1528 45%, #153466 85%);
+    }
+
+    .poster img { width: 100%; height: 100%; object-fit: cover; opacity: 0.84; }
+    .poster::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.72), rgba(0,0,0,.05)); }
+
+    .poster-title {
+      position: absolute; z-index: 2; left: 12px; right: 12px; bottom: 12px;
+      font-size: clamp(1.36rem, 6vw, 2.2rem); line-height: .95; font-weight: 900;
+      text-transform: uppercase; text-shadow: 0 4px 16px rgba(0,0,0,.7);
+    }
+
+    .poster-title span { color: var(--accent); }
+
+    .nav-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      border: 1px solid rgba(255,255,255,.15); background: rgba(0,0,0,.72); color: #fff;
+      width: 46px; height: 46px; border-radius: 14px; font-size: 1.5rem; cursor: pointer;
+      box-shadow: 0 0 20px rgba(86, 163, 255, .2);
+    }
+
+    .nav-btn.prev { left: 10px; }
+    .nav-btn.next { right: 10px; }
+
+    .dots { display: flex; justify-content: center; gap: 7px; margin-top: 12px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; border: 0; background: #1d3255; }
+    .dot.active { background: var(--accent); box-shadow: var(--glow-strong); }
+
+    .sales-box, .proof-section, .guarantee { padding: 16px; }
+    .sales-box { text-align: center; }
+    .sales-box small { font-size: clamp(1rem, 4vw, 1.45rem); color: #9fc3ef; }
+    .sales-box strong { display: block; margin-top: 8px; color: var(--accent); font-size: clamp(2.2rem, 11vw, 4rem); text-shadow: var(--glow-strong); font-weight: 900; }
+
+    .proof-section h2 { text-align: center; font-size: clamp(1.3rem, 6.2vw, 2.2rem); }
+    .proof-section h2 span { color: var(--accent); text-shadow: var(--glow); }
+    .proof-section > p { text-align: center; margin-top: 6px; color: #c3d0df; font-size: 1rem; }
+    .proof-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+    .proof-card { border: 1px solid rgba(78,163,255,.35); border-radius: 16px; overflow: hidden; background: #0b1527; }
+    .proof-image, .proof-placeholder { width: 100%; aspect-ratio: 9 / 16; display: block; }
+    .proof-image { object-fit: cover; }
+
+    .proof-placeholder {
+      display: grid; place-items: center; text-align: center; padding: 10px;
+      color: #9ec8ff; font-weight: 700;
+      background: linear-gradient(180deg, rgba(78,163,255,.14), rgba(78,163,255,.04));
+    }
+
+    .proof-card p { padding: 10px; font-size: .96rem; color: #d4dceb; line-height: 1.3; }
+
+    .stamp {
+      width: 90px; height: 90px; margin: -66px auto 8px; border-radius: 50%;
+      border: 2px solid var(--line-strong); display: grid; place-items: center;
+      background: #09152a; color: var(--accent); font-size: 2rem; box-shadow: var(--glow-strong);
+    }
+
+    .guarantee h2 { text-align: center; font-size: clamp(2rem, 10vw, 4rem); line-height: 1.05; font-weight: 700; }
+    .guarantee h2 span { color: var(--accent); text-shadow: var(--glow); }
+    .guarantee > p { margin-top: 8px; text-align: center; color: #ccd9e8; font-size: clamp(1.3rem, 4.8vw, 1.9rem); line-height: 1.3; }
+
+    .risk-box {
+      margin-top: 12px; border: 1px solid rgba(255,255,255,.12); border-radius: 20px;
+      padding: 16px; text-align: center; color: #c3d2e4;
+      font-size: clamp(1.05rem, 4.3vw, 1.45rem); line-height: 1.35;
+    }
+
+    .risk-box strong { color: var(--accent); text-shadow: var(--glow); }
+
+    .guarantee-items { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .guarantee-item { border: 1px solid var(--line); border-radius: 16px; text-align: center; padding: 14px 10px; }
+    .guarantee-item span { color: var(--accent); font-size: 1.5rem; display: block; }
+    .guarantee-item p { margin-top: 6px; font-size: 1.12rem; color: #e3ebf8; }
+
+    .faq-title { text-align: center; margin: 24px 0 10px; font-size: clamp(2rem, 11vw, 4.3rem); }
+    .faq-title span { color: var(--accent); text-shadow: var(--glow); }
+    .faq { display: grid; gap: 10px; }
+
+    details { border: 1px solid rgba(78,163,255,.3); border-radius: 18px; background: #071322; padding: 12px 14px; }
+    summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: clamp(1.07rem, 4.6vw, 1.55rem); }
+    summary::-webkit-details-marker { display: none; }
+    .q-icon { color: var(--accent); text-shadow: var(--glow); margin-right: 7px; }
+    details p { margin-top: 9px; color: #c7d7e8; line-height: 1.35; font-size: 1.02rem; }
+
+    .final-cta { margin-top: 24px; text-align: center; padding: 8px 6px; }
+    .final-cta p { color: #cfdaea; line-height: 1.4; font-size: clamp(1.25rem, 4.8vw, 1.75rem); margin-top: 8px; }
+    .final-cta p strong { color: var(--accent); }
+
+    .check-list { margin-top: 14px; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; color: #d7e0ed; font-size: clamp(1rem, 3.8vw, 1.2rem); }
+    .check-list span { color: var(--accent-soft); text-shadow: var(--glow); }
+
+    .legal { margin-top: 24px; color: #8699b1; text-align: center; font-size: .94rem; line-height: 1.5; }
+    .legal p + p { margin-top: 8px; }
+    .legal .links { margin-top: 12px; }
+    .legal a { color: #aac8ea; }
+
+    .trust {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      border-top: 1px solid rgba(78,163,255,.26); background: rgba(2,8,18,.93);
+      backdrop-filter: blur(8px); display: flex; justify-content: space-around;
+      gap: 6px; padding: 8px 5px; color: #d0d9e7; font-size: clamp(.8rem, 2.8vw, 1rem);
+    }
+
+    @media (max-width: 410px) {
+      .benefits-grid, .proof-grid, .guarantee-items { grid-template-columns: 1fr; }
+      .nav-btn { width: 40px; height: 40px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Prof Ajax</h1>
+  <main class="wrap">
+    <section class="hero">
+      <h1>Você está a um passo de montar seu <span>arsenal completo</span> para vender no automático.</h1>
+      <p>Design dark blue premium, pronto para mobile e com foco em conversão.</p>
+      <a class="cta-main" href="#garantia">🛒 Quero começar agora!</a>
+    </section>
+
+    <section class="benefits-grid section">
+      <article class="benefit-card">
+        <div class="benefit-icon">🙈</div>
+        <h3>Você não precisa aparecer.</h3>
+        <p>Perfis anônimos funcionam muito bem para vender sem expor sua imagem.</p>
+      </article>
+      <article class="benefit-card">
+        <div class="benefit-icon">✉️</div>
+        <h3>Não precisa conversar para vender.</h3>
+        <p>Com estrutura certa, as plataformas trabalham 24h por você.</p>
+      </article>
+      <article class="benefit-card">
+        <div class="benefit-icon">⏱️</div>
+        <h3>A magia dos vídeos curtos.</h3>
+        <p>Aprenda a postar conteúdos simples com potencial de viralizar todos os dias.</p>
+      </article>
+      <article class="benefit-card">
+        <div class="benefit-icon">🗺️</div>
+        <h3>Liberdade.</h3>
+        <p>Monetize com estratégia orgânica e construa sua renda de onde estiver.</p>
+      </article>
+    </section>
+
+    <h2 class="headline">Mesmo sem experiência, <span>qualquer um consegue aplicar.</span></h2>
+
+    <section class="section modules glass">
+      <h2>Mindset e <span>Carrossel de Módulos</span></h2>
+      <div class="carousel-shell">
+        <div class="track" id="track">
+          <article class="slide">
+            <div class="poster">
+              <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80" alt="Módulo Mindset Dark" loading="lazy" />
+              <h3 class="poster-title">Mindset <span>Dark</span></h3>
+            </div>
+          </article>
+          <article class="slide">
+            <div class="poster">
+              <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&w=900&q=80" alt="Módulo Criação e Aquecimento" loading="lazy" />
+              <h3 class="poster-title">Criação e <span>Aquecimento</span></h3>
+            </div>
+          </article>
+          <article class="slide">
+            <div class="poster">
+              <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80" alt="Módulo Vendas em Dólar" loading="lazy" />
+              <h3 class="poster-title">Vendas em <span>Dólar</span></h3>
+            </div>
+          </article>
+        </div>
+        <button class="nav-btn prev" id="prev" aria-label="Slide anterior">‹</button>
+        <button class="nav-btn next" id="next" aria-label="Próximo slide">›</button>
+      </div>
+      <div class="dots" id="dots"></div>
+    </section>
+
+    <section class="section sales-box glass">
+      <small>Total em vendas realizadas por alunos:</small>
+      <strong>R$ 520.081,61</strong>
+    </section>
+
+    <section class="section proof-section glass">
+      <h2>Provas sociais com <span>imagem</span></h2>
+      <p>Troque as imagens abaixo pelos seus prints reais de vendas, depoimentos e resultados.</p>
+      <div class="proof-grid">
+        <article class="proof-card">
+          <img class="proof-image" src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=900&q=80" alt="Exemplo de prova social 1" loading="lazy" />
+          <p>“Primeiros 30 dias com resultado real.”</p>
+        </article>
+        <article class="proof-card">
+          <img class="proof-image" src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80" alt="Exemplo de prova social 2" loading="lazy" />
+          <p>“Primeira venda em menos de 48h.”</p>
+        </article>
+        <article class="proof-card">
+          <div class="proof-placeholder">📷 ADICIONAR PRINT REAL<br />PROVA SOCIAL 03</div>
+          <p>“Hoje vendo todos os dias com funil pronto.”</p>
+        </article>
+        <article class="proof-card">
+          <div class="proof-placeholder">📷 ADICIONAR PRINT REAL<br />PROVA SOCIAL 04</div>
+          <p>“Saí do zero para vendas em poucas semanas.”</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="guarantee glass" id="garantia">
+      <div class="stamp">🛡️</div>
+      <h2>Garantia Incondicional de <span>7 Dias</span></h2>
+      <p>Se não gostar por qualquer motivo, devolvemos 100% do valor.</p>
+      <div class="risk-box">
+        Você pode testar todo o método por <strong>7 dias completos</strong>.<br /><br />
+        Se não fizer sentido para você, o <strong>risco é todo nosso</strong>.
+      </div>
+      <div class="guarantee-items">
+        <article class="guarantee-item"><span>✔</span><p>100% Seguro</p></article>
+        <article class="guarantee-item"><span>✔</span><p>Reembolso Total</p></article>
+      </div>
+    </section>
+
+    <h2 class="faq-title">Dúvidas <span>Frequentes</span></h2>
+    <section class="faq">
+      <details>
+        <summary><span><span class="q-icon">⏱</span>"Não tenho muito tempo"</span><span>⌄</span></summary>
+        <p>Você consegue aplicar em rotina corrida, com conteúdo simples e reaproveitável.</p>
+      </details>
+      <details>
+        <summary><span><span class="q-icon">⚠</span>"Parece difícil para iniciantes"</span><span>⌄</span></summary>
+        <p>O passo a passo foi pensado para quem está começando do zero.</p>
+      </details>
+      <details>
+        <summary><span><span class="q-icon">📈</span>"Será que funciona para mim?"</span><span>⌄</span></summary>
+        <p>Resultado depende da aplicação, mas o método já foi validado por milhares de alunos.</p>
+      </details>
+      <details>
+        <summary><span><span class="q-icon">💬</span>"Vou ter suporte?"</span><span>⌄</span></summary>
+        <p>Sim. Você terá comunidade ativa, suporte e atualização dos materiais.</p>
+      </details>
+    </section>
+
+    <section class="final-cta" id="finalizacao">
+      <h2 class="headline">Agora é com <span>você!</span></h2>
+      <p>Ou você continua como está, ou decide que hoje é o seu ponto de virada.</p>
+      <a class="cta-main" href="#">🛒 Sim, quero começar agora</a>
+      <div class="check-list">
+        <div><span>✔</span> 7 dias de garantia</div>
+        <div><span>✔</span> Pagamento seguro</div>
+        <div><span>✔</span> Suporte incluso</div>
+      </div>
+    </section>
+
+    <section class="legal">
+      <p>© 2026 Arena de renda Visionaria - ARV. Todos os direitos reservados.</p>
+      <p>Este site não é afiliado ao Facebook, Instagram ou qualquer entidade da Meta.</p>
+      <p class="links"><a href="#">Termos de Uso</a> &nbsp; | &nbsp; <a href="#">Política de Privacidade</a></p>
+    </section>
+  </main>
+
+  <footer class="trust">
+    <span>🛡️ 100% seguro</span>
+    <span>⚡ Acesso imediato</span>
+    <span>✅ Garantia de 7 dias</span>
+  </footer>
+
+  <script>
+    const track = document.getElementById('track');
+    const dots = document.getElementById('dots');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    const slides = [...track.children];
+
+    let index = 0;
+
+    const paintDots = () => {
+      dots.innerHTML = '';
+      slides.forEach((_, i) => {
+        const b = document.createElement('button');
+        b.className = `dot ${i === index ? 'active' : ''}`;
+        b.setAttribute('aria-label', `Ir para slide ${i + 1}`);
+        b.addEventListener('click', () => go(i));
+        dots.appendChild(b);
+      });
+    };
+
+    const go = (i) => {
+      index = (i + slides.length) % slides.length;
+      track.style.transform = `translateX(-${index * 100}%)`;
+      paintDots();
+    };
+
+    prev.addEventListener('click', () => go(index - 1));
+    next.addEventListener('click', () => go(index + 1));
+    setInterval(() => go(index + 1), 3600);
+
+    paintDots();
+  </script>
 </body>
 </html>
