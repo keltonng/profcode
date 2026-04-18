@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arsenal Dark Pro | Pré-venda</title>
-  <meta name="description" content="Pré-venda do Arsenal Dark Pro: estratégias prontas, conteúdo atualizado e comunidade para acelerar seus resultados.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arsenal Blue Dark | Pré-venda</title>
+  <meta name="description" content="Pré-página de venda no estilo dark azul com estrutura de conversão, prova social e oferta por tempo limitado." />
   <style>
     :root {
-      --bg: #050507;
-      --bg-soft: #101117;
-      --card: #141722;
-      --card-border: #272b3a;
-      --accent: #8e63ff;
-      --accent-2: #2ef2cd;
-      --text: #f5f7ff;
-      --muted: #a8afc8;
-      --danger: #ff5670;
-      --ok: #58e39c;
+      --bg: #03070f;
+      --bg-soft: #070f1d;
+      --surface: #0b1426;
+      --surface-2: #0f1a31;
+      --stroke: #173257;
+      --primary: #2ea8ff;
+      --primary-2: #7fd1ff;
+      --text: #f5f8ff;
+      --muted: #a7bdd8;
+      --ok: #4dd2ff;
+      --bad: #ff5f7f;
+      --glow: rgba(46, 168, 255, 0.35);
     }
 
     * {
@@ -27,357 +29,348 @@
     }
 
     body {
-      background: radial-gradient(circle at 15% 10%, #241746 0%, transparent 35%),
-                  radial-gradient(circle at 80% 0%, #123237 0%, transparent 30%),
-                  var(--bg);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(22, 89, 161, 0.35), transparent 30%),
+        radial-gradient(circle at 85% 0%, rgba(33, 157, 255, 0.22), transparent 30%),
+        var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     .container {
-      width: min(1120px, 92%);
+      width: min(980px, 92%);
       margin: 0 auto;
     }
 
     .hero {
-      min-height: 100svh;
-      display: grid;
-      place-items: center;
-      padding: 32px 0 64px;
+      padding: 42px 0 26px;
+      text-align: center;
     }
 
-    .hero-card {
-      background: linear-gradient(170deg, rgba(20, 23, 34, 0.95), rgba(9, 10, 16, 0.96));
-      border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 34px;
-      box-shadow: 0 28px 70px rgba(4, 5, 8, 0.7);
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 28px;
-      width: 100%;
-    }
-
-    .tag {
+    .badge {
       display: inline-flex;
-      align-items: center;
       gap: 8px;
-      font-size: 0.82rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border: 1px solid #3a4061;
-      padding: 7px 14px;
-      border-radius: 100px;
-      color: var(--accent-2);
-      margin-bottom: 18px;
+      border: 1px solid #1f4a7e;
+      background: linear-gradient(120deg, rgba(19, 49, 88, 0.8), rgba(13, 23, 42, 0.85));
+      padding: 8px 15px;
+      border-radius: 999px;
+      color: var(--primary-2);
+      font-size: 0.84rem;
+      margin-bottom: 14px;
+      box-shadow: 0 0 0 1px rgba(100, 174, 255, 0.08), 0 10px 26px rgba(10, 32, 61, 0.8);
     }
 
     h1 {
-      font-size: clamp(2rem, 5.6vw, 4rem);
-      line-height: 1.1;
-      margin-bottom: 16px;
-      max-width: 14ch;
+      font-size: clamp(1.9rem, 7vw, 3.2rem);
+      line-height: 1.14;
+      margin-bottom: 12px;
     }
 
-    h1 span {
-      color: var(--accent-2);
+    h1 span,
+    .accent {
+      color: var(--primary);
+      text-shadow: 0 0 16px var(--glow);
     }
 
-    .subtitle {
+    .lead {
       color: var(--muted);
-      max-width: 46ch;
-      margin-bottom: 28px;
+      max-width: 62ch;
+      margin: 0 auto 20px;
     }
 
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 14px;
-      padding: 14px 20px;
-      font-weight: 700;
-      text-decoration: none;
+    .pill-cta {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: 0.25s ease;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background: linear-gradient(95deg, var(--accent), #ad8dff);
-      color: white;
-      box-shadow: 0 10px 30px rgba(132, 93, 255, 0.4);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.06);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid #353a52;
-      color: var(--text);
-    }
-
-    .meta {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(110px, 1fr));
-      gap: 12px;
-    }
-
-    .meta div {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid #2a2f46;
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .meta small {
-      color: var(--muted);
-      display: block;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .meta strong {
-      font-size: 1.2rem;
-    }
-
-    .offer {
-      background: linear-gradient(160deg, rgba(10,13,21,0.9), rgba(11,16,29,0.9));
-      border: 1px solid #28304a;
-      border-radius: 22px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      justify-content: space-between;
-    }
-
-    .offer h2 { font-size: 1.5rem; }
-
-    .price {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-
-    .price .old {
-      color: var(--muted);
-      text-decoration: line-through;
-      font-size: 0.95rem;
-    }
-
-    .price .new {
-      font-size: 2.2rem;
+      text-decoration: none;
+      color: #eaf5ff;
+      background: linear-gradient(100deg, #0f2241, #102d54 45%, #1d3f69);
+      border: 1px solid #2d5a8f;
+      padding: 14px 24px;
+      border-radius: 999px;
       font-weight: 800;
-      color: var(--accent-2);
-      line-height: 1;
+      letter-spacing: 0.01em;
+      box-shadow: 0 0 0 1px rgba(102, 173, 255, 0.12), 0 0 32px rgba(25, 110, 196, 0.35);
+      transition: 0.25s;
+    }
+
+    .pill-cta:hover { transform: translateY(-2px); }
+
+    .feature-strip {
+      margin: 20px auto 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      color: #c6dbf3;
+      font-size: 0.98rem;
+    }
+
+    .section {
+      padding: 42px 0;
+    }
+
+    .section h2 {
+      text-align: center;
+      font-size: clamp(1.5rem, 6vw, 2.3rem);
+      margin-bottom: 22px;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .compare-col {
+      background: linear-gradient(165deg, rgba(11, 20, 38, 0.95), rgba(6, 12, 22, 0.96));
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 18px 38px rgba(4, 13, 25, 0.8);
+    }
+
+    .compare-col h3 {
+      margin-bottom: 12px;
+      font-size: 1.2rem;
     }
 
     .list {
       list-style: none;
       display: grid;
-      gap: 10px;
-      font-size: 0.95rem;
-      color: #d8ddf6;
+      gap: 8px;
+      margin-bottom: 14px;
     }
 
-    .list li::before {
-      content: "✔";
-      color: var(--ok);
-      margin-right: 10px;
-      font-weight: 700;
+    .list li {
+      display: flex;
+      gap: 8px;
+      color: #ccddf0;
     }
 
-    .countdown {
-      margin-top: 10px;
-      font-weight: 700;
-      color: var(--danger);
-    }
+    .bad::before { content: "✘"; color: var(--bad); font-weight: 700; }
+    .ok::before { content: "✔"; color: var(--ok); font-weight: 700; }
 
-    .section {
-      padding: 72px 0;
-    }
-
-    .section h3 {
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
-      margin-bottom: 12px;
-    }
-
-    .section p.lead {
-      color: var(--muted);
-      margin-bottom: 24px;
-      max-width: 65ch;
-    }
-
-    .grid-3 {
+    .photo-box {
+      height: 210px;
+      border-radius: 16px;
+      border: 1px solid #29568a;
+      background:
+        radial-gradient(circle at 70% 30%, rgba(63, 145, 223, 0.36), transparent 35%),
+        linear-gradient(145deg, #0a172d, #0f2946);
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
+      place-items: center;
+      color: #acd4f7;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 16px;
     }
 
     .card {
-      background: var(--card);
-      border: 1px solid #2a3044;
-      border-radius: 16px;
+      background: linear-gradient(160deg, var(--surface), var(--surface-2));
+      border: 1px solid var(--stroke);
+      border-radius: 18px;
       padding: 18px;
+      box-shadow: inset 0 0 0 1px rgba(91, 156, 222, 0.06);
+    }
+
+    .card .icon {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      background: #0e2240;
+      border: 1px solid #24548a;
+      box-shadow: 0 0 18px rgba(45, 140, 235, 0.28);
     }
 
     .card h4 {
-      margin-bottom: 6px;
-      font-size: 1rem;
+      font-size: 1.35rem;
+      color: var(--primary-2);
+      margin-bottom: 8px;
     }
 
-    .card p {
-      color: var(--muted);
+    .card p { color: var(--muted); }
+
+    .proof {
+      margin-top: 18px;
+      border: 1px solid #24558d;
+      border-radius: 22px;
+      padding: 18px;
+      background: linear-gradient(130deg, rgba(11, 26, 48, 0.96), rgba(7, 14, 24, 0.98));
+      text-align: center;
+    }
+
+    .proof small {
+      color: #b7cee8;
       font-size: 0.95rem;
     }
 
-    .faq {
+    .proof strong {
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(2rem, 8vw, 3rem);
+      color: var(--primary);
+      text-shadow: 0 0 22px var(--glow);
+    }
+
+    .gallery {
       display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
+      margin-top: 18px;
     }
 
-    details {
-      background: var(--card);
-      border: 1px solid #2d3349;
-      border-radius: 14px;
-      padding: 14px 16px;
-    }
-
-    summary {
-      cursor: pointer;
+    .gallery-item {
+      border-radius: 16px;
+      border: 1px solid #1d4a80;
+      min-height: 210px;
+      padding: 14px;
+      display: flex;
+      align-items: end;
       font-weight: 700;
+      background:
+        linear-gradient(to top, rgba(4, 8, 16, 0.95) 0%, rgba(10, 20, 40, 0.5) 38%, rgba(11, 22, 42, 0.3) 100%),
+        linear-gradient(140deg, #13335e, #0a1931);
     }
 
-    details p {
-      color: var(--muted);
-      margin-top: 8px;
+    .offer {
+      margin-top: 24px;
+      padding: 20px;
+      border: 1px solid #2a6298;
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(9, 21, 39, 0.98), rgba(9, 18, 31, 0.98));
+      text-align: center;
+      box-shadow: 0 0 32px rgba(20, 101, 182, 0.2);
     }
+
+    .price {
+      font-size: clamp(2rem, 8vw, 2.8rem);
+      color: var(--primary-2);
+      margin: 6px 0 10px;
+      font-weight: 800;
+    }
+
+    .old { color: var(--muted); text-decoration: line-through; }
 
     footer {
-      border-top: 1px solid #212638;
-      padding: 24px 0 40px;
-      color: var(--muted);
+      padding: 32px 0 40px;
       text-align: center;
-      font-size: 0.92rem;
+      color: #8ea9c8;
+      font-size: 0.9rem;
     }
 
-    @media (max-width: 940px) {
-      .hero-card {
-        grid-template-columns: 1fr;
-      }
-
-      .grid-3 {
-        grid-template-columns: 1fr;
-      }
-
-      .meta {
+    @media (min-width: 760px) {
+      .compare {
         grid-template-columns: 1fr 1fr;
+      }
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .gallery {
+        grid-template-columns: repeat(4, 1fr);
       }
     }
   </style>
 </head>
 <body>
-  <header class="hero">
-    <div class="container">
-      <div class="hero-card">
-        <div>
-          <div class="tag">🔥 Pré-venda liberada por tempo limitado</div>
-          <h1>Transforme seu perfil em uma <span>máquina de vendas</span></h1>
-          <p class="subtitle">Acesse o Arsenal Dark Pro com estratégias prontas, criativos validados e plano de ação para começar ainda hoje, mesmo partindo do zero.</p>
-          <div class="cta-row">
-            <a href="#oferta" class="btn btn-primary">Quero entrar agora</a>
-            <a href="#conteudo" class="btn btn-ghost">Ver o conteúdo</a>
-          </div>
-          <div class="meta">
-            <div><small>Alunos</small><strong>+2.400</strong></div>
-            <div><small>Avaliação</small><strong>4.9/5</strong></div>
-            <div><small>Garantia</small><strong>7 dias</strong></div>
-          </div>
-        </div>
-
-        <aside id="oferta" class="offer">
-          <div>
-            <h2>Lote de pré-venda</h2>
-            <p>Entre no primeiro lote com acesso imediato + bônus exclusivos.</p>
-          </div>
-
-          <div class="price">
-            <span class="old">de R$197</span>
-            <span class="new">R$47</span>
-          </div>
-
-          <ul class="list">
-            <li>Módulo completo de posicionamento lucrativo</li>
-            <li>Biblioteca com modelos prontos para copiar</li>
-            <li>Aulas rápidas e atualizações mensais</li>
-            <li>Suporte estratégico em comunidade fechada</li>
-          </ul>
-
-          <a class="btn btn-primary" href="#">Garantir minha vaga</a>
-          <p class="countdown">⚠️ Últimas vagas do lote atual.</p>
-        </aside>
-      </div>
+  <header class="hero container">
+    <div class="badge">🔵 PRÉ-VENDA ABERTA • ESTILO BLUE DARK</div>
+    <h1>Você está a um passo de criar um perfil anônimo que <span>vende no automático</span></h1>
+    <p class="lead">Modelo inspirado no layout que você enviou: visual impactante, estrutura de conversão e comunicação direta para transformar seguidores em clientes.</p>
+    <a href="#oferta" class="pill-cta">🛒 QUERO COMEÇAR AGORA</a>
+    <div class="feature-strip">
+      <span>🛡️ 100% seguro</span>
+      <span>⚡ Acesso imediato</span>
+      <span>✅ Garantia de 7 dias</span>
     </div>
   </header>
 
   <main>
-    <section class="section" id="conteudo">
-      <div class="container">
-        <h3>O que você recebe ao entrar hoje</h3>
-        <p class="lead">Tudo que você precisa para criar uma oferta forte, ganhar autoridade e vender de forma previsível nas redes sociais.</p>
-        <div class="grid-3">
-          <article class="card">
-            <h4>📦 Arsenal de Conteúdo</h4>
-            <p>Modelos de posts, roteiros e copies para acelerar sua produção e converter mais.</p>
-          </article>
-          <article class="card">
-            <h4>🎯 Funil simplificado</h4>
-            <p>Estrutura validada para levar seguidores ao direct e transformar conversas em vendas.</p>
-          </article>
-          <article class="card">
-            <h4>🚀 Plano de 30 dias</h4>
-            <p>Calendário com tarefas diárias para você aplicar e enxergar evolução rapidamente.</p>
-          </article>
-        </div>
+    <section class="section container">
+      <h2>A verdade é que:</h2>
+      <div class="compare">
+        <article class="compare-col">
+          <h3>Sem estrutura:</h3>
+          <ul class="list">
+            <li class="bad">Você não vende</li>
+            <li class="bad">Não viraliza com consistência</li>
+            <li class="bad">Não escala seus resultados</li>
+            <li class="bad">Produz muito e cresce pouco</li>
+          </ul>
+          <div class="photo-box">Cenário sem método<br/>resultado imprevisível</div>
+        </article>
+        <article class="compare-col">
+          <h3>Com estrutura:</h3>
+          <ul class="list">
+            <li class="ok">Você vende no automático</li>
+            <li class="ok">Viraliza com facilidade</li>
+            <li class="ok">Atinge a primeira venda rápido</li>
+            <li class="ok">Escala para os primeiros 10k</li>
+          </ul>
+          <div class="photo-box">Estratégia aplicada<br/>resultado previsível</div>
+        </article>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <h3>Perguntas frequentes</h3>
-        <div class="faq">
-          <details>
-            <summary>É para iniciantes?</summary>
-            <p>Sim. O treinamento foi estruturado do básico ao avançado, com aulas diretas e aplicação prática.</p>
-          </details>
-          <details>
-            <summary>Como recebo acesso?</summary>
-            <p>Após a confirmação do pagamento, o acesso chega no seu e-mail automaticamente em alguns minutos.</p>
-          </details>
-          <details>
-            <summary>Tem garantia?</summary>
-            <p>Sim. Você tem 7 dias de garantia incondicional para testar sem risco.</p>
-          </details>
-        </div>
+    <section class="section container">
+      <h2>Mesmo sem experiência, você recebe uma estrutura completa</h2>
+      <div class="cards">
+        <article class="card">
+          <div class="icon">🙈</div>
+          <h4>Sem aparecer</h4>
+          <p>Aprenda a operar perfis anônimos com conteúdo curto, sem depender da sua imagem pessoal.</p>
+        </article>
+        <article class="card">
+          <div class="icon">💬</div>
+          <h4>Sem conversa infinita</h4>
+          <p>Funil e páginas prontas para vender com previsibilidade e reduzir esforço manual no direct.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🎬</div>
+          <h4>Vídeos curtos virais</h4>
+          <p>Use modelos e prompts para criar peças rápidas, focadas em alcance e conversão.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🗺️</div>
+          <h4>Liberdade</h4>
+          <p>Estrutura pensada para gerar renda com rotina simples, mesmo com pouco tempo por dia.</p>
+        </article>
       </div>
+
+      <div class="proof">
+        <small>Total em vendas já geradas por alunos:</small>
+        <strong>R$ 519.997,78</strong>
+      </div>
+
+      <div class="gallery">
+        <div class="gallery-item">Lifestyle Variado</div>
+        <div class="gallery-item">Dinheiro e Luxo</div>
+        <div class="gallery-item">Estrutura Perfil Dark</div>
+        <div class="gallery-item">Vendas em Dólar</div>
+      </div>
+
+      <article class="offer" id="oferta">
+        <p class="old">de R$197</p>
+        <div class="price">por R$47</div>
+        <p class="lead">Entrada no lote de pré-venda + bônus exclusivos e acesso imediato após o pagamento.</p>
+        <a href="#" class="pill-cta">🛒 QUERO COMEÇAR AGORA</a>
+      </article>
     </section>
   </main>
 
   <footer>
-    <div class="container">
-      <p>© 2026 Arsenal Dark Pro • Todos os direitos reservados.</p>
-    </div>
+    © 2026 Arsenal Blue Dark • Todos os direitos reservados.
   </footer>
 </body>
 </html>
